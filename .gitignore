@@ -1,0 +1,5 @@
+*.o
+run_*
+bench_*
+test_*
+.vscode/
