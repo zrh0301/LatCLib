@@ -1,18 +1,9 @@
+#include "../inc/types.h"
+#include "../inc/rand.h"
 #include "../inc/poly.h"
-typedef lssi_t poly[MAX_POLY_COEFS];
+#include <stdio.h>
 
-void rand_bytes(uint8_t* output, int len){
-    int tot = 0;
-    while(tot < len){
-        int ret = getrandom(output+tot, len-tot, 0);
-        if(ret < 0){
-            if(errno == EINTR) continue;
-            perror("getrandom failed");
-            exit(1);
-        }
-        tot += ret;
-    }
-}
+typedef lssi_t poly[MAX_POLY_COEFS];
 
 void poly_zero(lssi_t* a, int coefs){
     for(int i=0;i<coefs;++i) a[i] = 0;

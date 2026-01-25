@@ -81,18 +81,16 @@ void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode){
     lssi_t n_inv = mod_inv(scale_div, Q->q);
     Q->n_inv = to_mont(n_inv, Q->q);
 }
-
+#include <stdio.h>
 void poly_ntt(lssi_t* a, lp_ctx* Q){
     lssi_t q = Q->q;
     lssi_t qc = Q->qc;
     int coefs = Q->n;
-
     if (Q->mode == NTT_FULL_MODE){
         bit_reverse_array(a, Q->rev_table, coefs);
-        
         for(int len=1;len<coefs;len<<=1){
             int step = (coefs/len) >> 1;
-            for(int i=0;i<coefs;i+=(len>>1)){
+            for(int i=0;i<coefs;i+=(len<<1)){
                 int k = 0;
                 for(int j=0;j<len;++j){
                     lssi_t zeta = Q->w[k*step];

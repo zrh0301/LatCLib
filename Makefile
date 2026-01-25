@@ -5,45 +5,77 @@
 CC = gcc
 
 # 编译选项
-# -O3    : 最高级优化 (性能测试必需)
-# -Wall  : 开启警告
-# -I./inc: 头文件目录
-CFLAGS = -O3 -Wall -Wextra -I./inc
+CFLAGS = -O3 -Wall -Wextra -I./inc -I./test/inc
 
-# 目标
-TARGET = run_full_test
+# Windows 需要链接 advapi32 库
+LDFLAGS = -ladvapi32
 
-# 源文件 (包含核心库和新的测试文件)
-SRCS = src/poly.c src/poly_ntt.c src/test_poly.c
+# 输出目录
+OUTPUT_DIR = output
 
-# 自动生成 .o 文件名
-OBJS = $(SRCS:.c=.o)
+# 测试程序目标
+TARGET_POLY = test_poly.exe
+TARGET_NTT = test_ntt.exe
+
+# 核心库源文件
+CORE_SRCS = src/poly.c src/poly_ntt.c src/rand.c
+CORE_OBJS = $(addprefix $(OUTPUT_DIR)/, $(notdir $(CORE_SRCS:.c=.o)))
+
+# 测试源文件（新位置：test/src/）
+TEST_POLY_SRCS = test/src/test_poly.c
+TEST_NTT_SRCS = test/src/test_ntt.c
+TEST_POLY_OBJS = $(addprefix $(OUTPUT_DIR)/, $(notdir $(TEST_POLY_SRCS:.c=.o)))
+TEST_NTT_OBJS = $(addprefix $(OUTPUT_DIR)/, $(notdir $(TEST_NTT_SRCS:.c=.o)))
 
 # 头文件依赖
-DEPS = inc/poly.h inc/types.h
+DEPS = inc/poly.h inc/types.h inc/rand.h test/inc/test_common.h
 
-# 默认目标
-all: $(TARGET)
+# 默认目标：编译所有测试
+all: $(OUTPUT_DIR) $(TARGET_POLY) $(TARGET_NTT)
 
-# 链接
-$(TARGET): $(OBJS)
-	@echo "Linking $(TARGET)..."
-	$(CC) $(CFLAGS) -o $@ $^
+# 创建输出目录
+$(OUTPUT_DIR):
+	@if not exist $(OUTPUT_DIR) mkdir $(OUTPUT_DIR)
 
-# 编译 (.c -> .o)
-%.o: %.c $(DEPS)
-	@echo "Compiling $<"
+# 链接 test_poly
+$(TARGET_POLY): $(CORE_OBJS) $(TEST_POLY_OBJS)
+	@echo "Linking $(TARGET_POLY)..."
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# 链接 test_ntt
+$(TARGET_NTT): $(CORE_OBJS) $(TEST_NTT_OBJS)
+	@echo "Linking $(TARGET_NTT)..."
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# 编译规则 - src 目录
+$(OUTPUT_DIR)/%.o: src/%.c $(DEPS)
+	@echo "Compiling $<..."
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 运行测试
-test: $(TARGET)
-	@echo "\n============================================="
-	@echo ">>> Running Complete Correctness & Benchmark <<<"
-	@echo "=============================================\n"
-	@./$(TARGET)
+# 编译规则 - test/src 目录
+$(OUTPUT_DIR)/%.o: test/src/%.c $(DEPS)
+	@echo "Compiling $<..."
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# 运行所有测试
+test: all
+	@echo.
+	@echo =============================================
+	@echo    Running Polynomial Tests
+	@echo =============================================
+	@echo.
+	./$(TARGET_POLY)
+	@echo.
+	@echo.
+	@echo =============================================
+	@echo    Running NTT Tests
+	@echo =============================================
+	@echo.
+	./$(TARGET_NTT)
 
 # 清理
 clean:
-	rm -f src/*.o $(TARGET)
+	-del /Q $(OUTPUT_DIR)\*.o $(TARGET_POLY) $(TARGET_NTT) 2>nul
+	-rmdir $(OUTPUT_DIR) 2>nul
 
 .PHONY: all test clean

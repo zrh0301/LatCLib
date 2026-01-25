@@ -1,5 +1,8 @@
+#ifndef POLY_H
+#define POLY_H
+
 #include "../inc/types.h"
-#include <sys/random.h>
+#include "../inc/rand.h"
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -56,3 +59,5 @@ void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode);
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+
+#endif // POLY_H
