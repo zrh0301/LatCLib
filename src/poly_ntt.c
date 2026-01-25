@@ -38,13 +38,13 @@ void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode){
     Q->q = (mode == NTT_FULL_MODE) ? 8380417 : 3329;
     Q->mode = mode;
     
-    // 计算 logn
+    
     Q->logn = 0;
     while(coefs > (1<<Q->logn)) ++Q->logn;
 
     poly_mont_init(&(Q->qc), Q->q);
 
-    // 1. 初始化位反转表 rev_table
+    
     int k;
     for(int i=0; i<coefs; ++i){
         k = 0;
@@ -54,7 +54,7 @@ void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode){
         Q->rev_table[i] = k;
     }
 
-    // 2. 初始化旋转因子表 (Twiddle Factors)
+    
     lssi_t inv_root = mod_inv(root, Q->q);
 
     if (mode == NTT_FULL_MODE){
