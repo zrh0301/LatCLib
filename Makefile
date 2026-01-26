@@ -6,7 +6,7 @@ CC = gcc
 # 关键：-O3 优化，-g 用于调试（如果需要），-I./inc 头文件
 CFLAGS = -O3 -Wall -Wextra -I./inc
 
-DEPS = inc/poly.h inc/types.h
+DEPS = inc/poly.h inc/types.h inc/kyber_ntt_tables.h inc/dili_ntt_tables.h
 COMMON_SRCS = src/poly.c src/poly_ntt.c
 COMMON_OBJS = $(COMMON_SRCS:.c=.o)
 
