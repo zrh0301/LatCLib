@@ -56,6 +56,8 @@ static lssi_t mod_inv(lssi_t a, lssi_t q);
 static lssi_t to_mont(lssi_t a, lssi_t q);
 static void bit_reverse(lssi_t *a, int *rev, int n);
 void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode);
+void init_ntt_dili(lp_ctx* Q);
+void init_ntt_kyber(lp_ctx* Q);
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);

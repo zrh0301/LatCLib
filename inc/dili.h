@@ -5,6 +5,7 @@
 #define DILI_D 14
 #define DILI_BETA 392
 #define DILI_OMEGA 80
+#include <stdint.h>
 
 typedef struct {
     uint8_t seed_A[32];
