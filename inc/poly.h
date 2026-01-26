@@ -48,10 +48,10 @@ lssi_t lssi_mont_mul(const lssi_t x, const lssi_t y, const lssi_t q, lssi_t qc);
 void poly_mont_mul(lssi_t *r, const lssi_t *x, const lssi_t *y, const lssi_t q, lssi_t qc, int coefs);
 void poly_mont_rdc(lssi_t* r, const lssi_t* x, const lssi_t q, lssi_t qc, int coefs);
 
-static lssi_t mod_exp(lssi_t base, lssi_t exp, lssi_t q);
-static lssi_t mod_inv(lssi_t a, lssi_t q);
-static lssi_t to_mont(lssi_t a, lssi_t q);
-static void bit_reverse(lssi_t *a, int *rev, int n);
+lssi_t mod_exp(lssi_t base, lssi_t exp, lssi_t q);
+lssi_t mod_inv(lssi_t a, lssi_t q);
+lssi_t to_mont(lssi_t a, lssi_t q);
+void bit_reverse(lssi_t *a, int *rev, int n);
 void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode);
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);

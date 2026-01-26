@@ -1,49 +1,40 @@
 # ==========================================
-# My_PQC Full Suite Makefile
+# My_PQC Ultimate Benchmark Makefile
 # ==========================================
 
 CC = gcc
-
-# 编译选项
-# -O3    : 最高级优化 (性能测试必需)
-# -Wall  : 开启警告
-# -I./inc: 头文件目录
+# 关键：-O3 优化，-g 用于调试（如果需要），-I./inc 头文件
 CFLAGS = -O3 -Wall -Wextra -I./inc
 
-# 目标
-TARGET = run_full_test
-
-# 源文件 (包含核心库和新的测试文件)
-SRCS = src/poly.c src/poly_ntt.c src/test_poly.c
-
-# 自动生成 .o 文件名
-OBJS = $(SRCS:.c=.o)
-
-# 头文件依赖
 DEPS = inc/poly.h inc/types.h
+COMMON_SRCS = src/poly.c src/poly_ntt.c
+COMMON_OBJS = $(COMMON_SRCS:.c=.o)
 
-# 默认目标
-all: $(TARGET)
+# 目标: 全函数性能测试
+TARGET_BENCH = bench_all
+SRC_BENCH    = src/test_perf_all.c
+OBJ_BENCH    = $(SRC_BENCH:.c=.o)
+
+# ------------------------------------------
+
+all: $(TARGET_BENCH)
 
 # 链接
-$(TARGET): $(OBJS)
-	@echo "Linking $(TARGET)..."
+$(TARGET_BENCH): $(OBJ_BENCH) $(COMMON_OBJS)
+	@echo "Linking $(TARGET_BENCH)..."
 	$(CC) $(CFLAGS) -o $@ $^
 
-# 编译 (.c -> .o)
+# 编译
 %.o: %.c $(DEPS)
 	@echo "Compiling $<"
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 运行测试
-test: $(TARGET)
-	@echo "\n============================================="
-	@echo ">>> Running Complete Correctness & Benchmark <<<"
-	@echo "=============================================\n"
-	@./$(TARGET)
+# 运行
+test: $(TARGET_BENCH)
+	@echo "\n>>> Running All Functions Performance Test <<<\n"
+	@./$(TARGET_BENCH)
 
-# 清理
 clean:
-	rm -f src/*.o $(TARGET)
+	rm -f src/*.o $(TARGET_BENCH)
 
 .PHONY: all test clean
