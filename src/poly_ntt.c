@@ -117,24 +117,36 @@ void poly_ntt(lssi_t* a, lp_ctx* Q){
     lssi_t qc = Q->qc;
     int coefs = Q->n;
     if (Q->mode == NTT_FULL_MODE){
-        bit_reverse_array(a, Q->rev_table, coefs);
+        /*bit_reverse_array(a, Q->rev_table, coefs);
         for(int len=1;len<coefs;len<<=1){
             int step = (coefs/len) >> 1;
             for(int i=0;i<coefs;i+=(len<<1)){
-                int k = 0;
                 for(int j=0;j<len;++j){
-                    lssi_t zeta = Q->w[k*step];
+                    lssi_t zeta = Q->w[j*step];
                     lssi_t u = a[i+j];
                     lssi_t v = lssi_mont_mul(a[i+j+len], zeta, q, qc);
                     
                     lssi_t res_add = u + v;
                     lssi_t res_sub = u - v;
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0)  res_sub += q;
-                    
+                    lssi_t t_add = res_add - q;
+                    res_add = t_add + (q & (t_add >> 31));
+                    res_sub += q & (res_sub >> 31);
+
                     a[i+j] = res_add;
                     a[i+j+len] = res_sub;
-                    ++k;
+                }
+            }
+        }*/
+        lssi_t zeta, t;
+        unsigned int j, k, len, start;
+        k=0;
+        for(len = coefs>>1; len > 0; len >>= 1) {
+            for(start = 0; start < coefs; start = j + len) {
+                zeta = Q->w[++k];
+                for(j = start; j < start + len; ++j) {
+                    t = lssi_mont_mul(zeta, a[j + len], Q->q, Q->qc);
+                    a[j + len] = a[j] - t;
+                    a[j] = a[j] + t;
                 }
             }
         }
@@ -152,9 +164,9 @@ void poly_ntt(lssi_t* a, lp_ctx* Q){
                     
                     lssi_t res_add = u + t;
                     lssi_t res_sub = u - t;
-                    
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0)  res_sub += q;
+                    lssi_t t_add = res_add - q;
+                    res_add = t_add + (q & (t_add >> 31));
+                    res_sub += q & (res_sub >> 31);
                     
                     a[j] = res_add;
                     a[j + len] = res_sub;

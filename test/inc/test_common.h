@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
+#include <intrin.h>
 #include "../../inc/types.h"
 #include "../../inc/poly.h"
 #include "../../inc/rand.h"
@@ -48,10 +49,9 @@
         _FUNCTION;                      \
     }                                   \
     bench_after();
-
-static clock_t _bench_before;
-static clock_t _bench_after;
-static long long _bench_total;
+uint64_t _bench_before;
+static uint64_t _bench_after;
+static uint64_t _bench_total;
 
 static inline void test_fail(void) {
     printf("[FAIL]\n");
@@ -68,11 +68,11 @@ static inline void bench_reset(void) {
 }
 
 static inline void bench_before(void) {
-    _bench_before = clock();
+    _bench_before = __rdtsc();
 }
 
 static inline void bench_after(void) {
-    _bench_after = clock();
+    _bench_after = __rdtsc();
     _bench_total += (_bench_after - _bench_before);
 }
 
@@ -83,10 +83,11 @@ static inline void bench_compute(int benches) {
 }
 
 static inline void bench_print(int rounds) {
-    double total_ms = (double)_bench_total / CLOCKS_PER_SEC * 1000.0;
-    double per_op_us = (total_ms * 1000.0) / rounds;
+    uint64_t cycles_per_op = _bench_total / rounds;
     
-    printf("%.3f ms total | %.3f us/op\n", total_ms, per_op_us);
+    printf("%llu cycles total | %llu cycles/op\n", 
+           (unsigned long long)_bench_total, 
+           (unsigned long long)cycles_per_op);
 }
 
 static inline unsigned long long bench_total(void) {
