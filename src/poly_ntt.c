@@ -117,7 +117,7 @@ void poly_ntt(lssi_t* a, lp_ctx* Q){
     lssi_t qc = Q->qc;
     int coefs = Q->n;
     if (Q->mode == NTT_FULL_MODE){
-        /*bit_reverse_array(a, Q->rev_table, coefs);
+        bit_reverse_array(a, Q->rev_table, coefs);
         for(int len=1;len<coefs;len<<=1){
             int step = (coefs/len) >> 1;
             for(int i=0;i<coefs;i+=(len<<1)){
@@ -134,19 +134,6 @@ void poly_ntt(lssi_t* a, lp_ctx* Q){
 
                     a[i+j] = res_add;
                     a[i+j+len] = res_sub;
-                }
-            }
-        }*/
-        lssi_t zeta, t;
-        unsigned int j, k, len, start;
-        k=0;
-        for(len = coefs>>1; len > 0; len >>= 1) {
-            for(start = 0; start < coefs; start = j + len) {
-                zeta = Q->w[++k];
-                for(j = start; j < start + len; ++j) {
-                    t = lssi_mont_mul(zeta, a[j + len], Q->q, Q->qc);
-                    a[j + len] = a[j] - t;
-                    a[j] = a[j] + t;
                 }
             }
         }
