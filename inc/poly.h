@@ -130,8 +130,8 @@ typedef struct {
     ntt_mode_t mode;
     
     lssi_t n_inv;
-    lssi_t zetas[MAX_POLY_COEFS]; // origin root table
-    int rev_table[MAX_POLY_COEFS];
+    const lssi_t* zetas; // origin root table
+    const int* rev_table;
 } lp_ctx;
 
 void rand_bytes(uint8_t* output, int len);
@@ -151,4 +151,5 @@ void poly_invntt(lssi_t* a, lp_ctx* Q);
 
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 void poly_scalar_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 #endif // POLY_H

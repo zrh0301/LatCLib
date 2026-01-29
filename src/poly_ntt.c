@@ -10,27 +10,31 @@ void init_ntt_dili(lp_ctx* Q){
     Q->mode = NTT_FULL_MODE;
     Q->logn = 8;
     Q->n_inv = DILI_NTT_N_INV;
-    Q->q = 8380417;
     Q->qc = 58728449;
-    memcpy(Q->zetas, zetas_dili_256, sizeof(zetas_dili_256));
-    memcpy(Q->rev_table, DILI_NTT_REV_TABLE, sizeof(DILI_NTT_REV_TABLE));
-    Q->n_inv = DILI_NTT_N_INV;
+    Q->zetas = zetas_dili_256;
+    Q->rev_table = DILI_NTT_REV_TABLE;
 }
 
 void poly_ntt(int32_t a[256], lp_ctx* Q) {
-    unsigned int len, start, j, k;
+    unsigned int n, len, start, j, k, jlen;
+    int32_t q, qc;
     const int32_t* zetas;
     int32_t zeta, t;
-    k = 0;
+    
+    n = Q->n;
+    q = Q->q;
+    qc = Q->qc;
     zetas = Q->zetas;
-    len = Q->n >> 1;
+    k = 0;
+    len = n >> 1;
 
     for(; len > 0; len >>= 1) {
-        for(start = 0; start < Q->n; start = j + len) {
+        for(start = 0; start < n; start = j + len) {
             zeta = zetas[++k];
             for(j = start; j < start + len; ++j) {
-                t = MONTGOMERY_REDUCE((int64_t)zeta * a[j + len], Q->q, Q->qc);
-                a[j + len] = a[j] - t;
+                jlen = j + len;
+                t = MONTGOMERY_REDUCE((int64_t)zeta * a[jlen], q, qc);
+                a[jlen] = a[j] - t;
                 a[j] = a[j] + t;
             }
         }
@@ -38,27 +42,33 @@ void poly_ntt(int32_t a[256], lp_ctx* Q) {
 }
 
 void poly_invntt(int32_t a[256], lp_ctx* Q) {
-    unsigned int start, len, j, k;
+    unsigned int n, start, len, j, k, jlen;
+    int32_t q, qc, f;
+    const int32_t* zetas;
     int32_t t, zeta;
-    int32_t f = 41978;
-    const int32_t* zetas = Q->zetas;
-    k = 256;
+    
+    n = Q->n;
+    q = Q->q;
+    qc = Q->qc;
+    zetas = Q->zetas;
     f = 41978;
+    k = 256;
 
-    for(len = 1; len < Q->n; len <<= 1) {
-        for(start = 0; start < Q->n; start = j + len) {
+    for(len = 1; len < n; len <<= 1) {
+        for(start = 0; start < n; start = j + len) {
             zeta = -zetas[--k];
             for(j = start; j < start + len; ++j) {
+                jlen = j + len;
                 t = a[j];
-                a[j] = t + a[j + len];
-                a[j + len] = t - a[j + len];
-                a[j + len] = MONTGOMERY_REDUCE((int64_t)zeta * a[j + len], Q->q, Q->qc);
+                a[j] = t + a[jlen];
+                a[jlen] = t - a[jlen];
+                a[jlen] = MONTGOMERY_REDUCE((int64_t)zeta * a[jlen], q, qc);
             }
         }
     }
     
-    for(j = 0; j < Q->n; ++j) {
-        a[j] = MONTGOMERY_REDUCE((int64_t)f * a[j], Q->q, Q->qc);
+    for(j = 0; j < n; ++j) {
+        a[j] = MONTGOMERY_REDUCE((int64_t)f * a[j], q, qc);
     }
 }
 
@@ -88,15 +98,26 @@ static void bit_reverse_array(lssi_t *a, int *rev, int n){
 
 
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    int i;
-    for(i = 0; i < Q->n; ++i) {
-        r[i] = LSSI_MONT_MUL(a[i], b[i], Q->q, Q->qc);
+    int n, i;
+    int32_t q, qc;
+    
+    n = Q->n;
+    q = Q->q;
+    qc = Q->qc;
+    
+    for(i = 0; i < n; ++i) {
+        r[i] = LSSI_MONT_MUL(a[i], b[i], q, qc);
     }
 }
 
-void poly_scalar_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    int i;
-    for(i=0;i<Q->n;++i){
-        r[i] = LSSI_MONT_MUL(a[i], b[i], Q->q, Q->qc);
-    }
+void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
+  int32_t q, qc;
+  int i;
+  
+  q = Q->q;
+  qc = Q->qc;
+  
+  for(i=0;i<256;++i){
+    c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], q, qc);
+  }
 }
