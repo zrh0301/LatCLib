@@ -1,3 +1,6 @@
+#ifndef POLY_H
+#define POLY_H
+
 #include "../inc/types.h"
 #include <sys/random.h>
 #include <unistd.h>
@@ -6,23 +9,22 @@
 
 #define MAX_POLY_COEFS 256
 
-typedef enum{
-    NTT_FULL_MODE, // for Dilithium
-    NTT_INCOMPLETE_MODE // for Kyber
-} ntt_mode_t;
-
 typedef struct {
     lssi_t q; // mod number
     lssi_t qc; // montgomery const qc = -q^{-1} mod q
     int n; // poly coef num
     int logn;
-    ntt_mode_t mode;
-    
     lssi_t n_inv;
     lssi_t w[MAX_POLY_COEFS]; // origin root table
     lssi_t w_inv[MAX_POLY_COEFS];
     int rev_table[MAX_POLY_COEFS];
 } lp_ctx;
+
+#define MONTGOMERY_REDUCE(a, q, qc) ({ \
+    int32_t _t = (int64_t)(int32_t)(a) * (qc); \
+    _t = ((a) - (int64_t)_t * (q)) >> 32; \
+    _t; \
+})
 
 void rand_bytes(uint8_t* output, int len);
 void poly_zero(lssi_t* a, int coefs);
@@ -48,11 +50,7 @@ lssi_t lssi_mont_mul(const lssi_t x, const lssi_t y, const lssi_t q, lssi_t qc);
 void poly_mont_mul(lssi_t *r, const lssi_t *x, const lssi_t *y, const lssi_t q, lssi_t qc, int coefs);
 void poly_mont_rdc(lssi_t* r, const lssi_t* x, const lssi_t q, lssi_t qc, int coefs);
 
-lssi_t mod_exp(lssi_t base, lssi_t exp, lssi_t q);
-lssi_t mod_inv(lssi_t a, lssi_t q);
-lssi_t to_mont(lssi_t a, lssi_t q);
-void bit_reverse(lssi_t *a, int *rev, int n);
-void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode);
-void poly_ntt(lssi_t* a, lp_ctx* Q);
-void poly_invntt(lssi_t* a, lp_ctx* Q);
-void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+void poly_ntt(lssi_t* a,lp_ctx* Q);
+void poly_intt(lssi_t* a, lp_ctx* Q);
+
+#endif

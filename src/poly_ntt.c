@@ -1,271 +1,132 @@
 #include "../inc/poly.h"
-#include "../inc/dili_ntt_tables.h"
-#include "../inc/kyber_ntt_tables.h"
 
 typedef lssi_t poly[MAX_POLY_COEFS];
 
-lssi_t mod_exp(lssi_t base, lssi_t exp, lssi_t q){
-    lssi_t res = 1;
-    base %= q;
-    uint32_t e = (uint32_t)exp;
-    while(e > 0){
-        if(e & 1) res = (lsdi_t)res*base%q;
-        base = (lsdi_t)base*base%q;
-        e >>= 1;
-    }
-    return res;
-}
+static const lssi_t zetas[MAX_POLY_COEFS] = {
+         0,    25847, -2608894,  -518909,   237124,  -777960,  -876248,   466468,
+   1826347,  2353451,  -359251, -2091905,  3119733, -2884855,  3111497,  2680103,
+   2725464,  1024112, -1079900,  3585928,  -549488, -1119584,  2619752, -2108549,
+  -2118186, -3859737, -1399561, -3277672,  1757237,   -19422,  4010497,   280005,
+   2706023,    95776,  3077325,  3530437, -1661693, -3592148, -2537516,  3915439,
+  -3861115, -3043716,  3574422, -2867647,  3539968,  -300467,  2348700,  -539299,
+  -1699267, -1643818,  3505694, -3821735,  3507263, -2140649, -1600420,  3699596,
+    811944,   531354,   954230,  3881043,  3900724, -2556880,  2071892, -2797779,
+  -3930395, -1528703, -3677745, -3041255, -1452451,  3475950,  2176455, -1585221,
+  -1257611,  1939314, -4083598, -1000202, -3190144, -3157330, -3632928,   126922,
+   3412210,  -983419,  2147896,  2715295, -2967645, -3693493,  -411027, -2477047,
+   -671102, -1228525,   -22981, -1308169,  -381987,  1349076,  1852771, -1430430,
+  -3343383,   264944,   508951,  3097992,    44288, -1100098,   904516,  3958618,
+  -3724342,    -8578,  1653064, -3249728,  2389356,  -210977,   759969, -1316856,
+    189548, -3553272,  3159746, -1851402, -2409325,  -177440,  1315589,  1341330,
+   1285669, -1584928,  -812732, -1439742, -3019102, -3881060, -3628969,  3839961,
+   2091667,  3407706,  2316500,  3817976, -3342478,  2244091, -2446433, -3562462,
+    266997,  2434439, -1235728,  3513181, -3520352, -3759364, -1197226, -3193378,
+    900702,  1859098,   909542,   819034,   495491, -1613174,   -43260,  -522500,
+   -655327, -3122442,  2031748,  3207046, -3556995,  -525098,  -768622, -3595838,
+    342297,   286988, -2437823,  4108315,  3437287, -3342277,  1735879,   203044,
+   2842341,  2691481, -2590150,  1265009,  4055324,  1247620,  2486353,  1595974,
+  -3767016,  1250494,  2635921, -3548272, -2994039,  1869119,  1903435, -1050970,
+  -1333058,  1237275, -3318210, -1430225,  -451100,  1312455,  3306115, -1962642,
+  -1279661,  1917081, -2546312, -1374803,  1500165,   777191,  2235880,  3406031,
+   -542412, -2831860, -1671176, -1846953, -2584293, -3724270,   594136, -3776993,
+  -2013608,  2432395,  2454455,  -164721,  1957272,  3369112,   185531, -1207385,
+  -3183426,   162844,  1616392,  3014001,   810149,  1652634, -3694233, -1799107,
+  -3038916,  3523897,  3866901,   269760,  2213111,  -975884,  1717735,   472078,
+   -426683,  1723600, -1803090,  1910376, -1667432, -1104333,  -260646, -3833893,
+  -2939036, -2235985,  -420899, -2286327,   183443,  -976891,  1612842, -3545687,
+   -554416,  3919660,   -48306, -1362209,  3937738,  1400424,  -846154,  1976782
+};
 
-lssi_t mod_inv(lssi_t a, lssi_t q){
-    return mod_exp(a, q-2, q);
-}
+#define LAYER 8
 
-lssi_t to_mont(lssi_t a, lssi_t q){
-    return ((lsdi_t)a<<32)%q;
-}
+#ifdef PARTIAL_NTT
+#define LAYER 7
+#endif
 
-void bit_reverse_array(lssi_t *a, int *rev, int n){
-    for (int i=0;i<n;++i) {
-        if (i<rev[i]){
-            lssi_t temp = a[i];
-            a[i] = a[rev[i]];
-            a[rev[i]] = temp;
-        }
-    }
-}
+#if LAYER > 8
+  #error "INVALID NTT LAYER:MAX IS 8"
+#endif
 
-void init_ntt_kyber(lp_ctx* Q){
-    Q->n = 256;
-    Q->q = 3329;
-    Q->mode = NTT_INCOMPLETE_MODE;
-    Q->logn = 8;
-    
-    poly_mont_init(&Q->qc, Q->q);
-    
-    memcpy(Q->w, KYBER_NTT_W, sizeof(KYBER_NTT_W));
-    memcpy(Q->w_inv, KYBER_NTT_W_INV, sizeof(KYBER_NTT_W_INV));
-    memcpy(Q->rev_table, KYBER_NTT_REV_TABLE, sizeof(KYBER_NTT_REV_TABLE));
-    Q->n_inv = KYBER_NTT_N_INV;
-}
+#if LAYER < 0
+  #error "INVALID NTT LAYER:MIN IS 0"
+#endif
 
-void init_ntt_dili(lp_ctx* Q){
-    Q->n = 256;
-    Q->q = 8380417;
-    Q->mode = NTT_FULL_MODE;
-    Q->logn = 8;
-    
-    poly_mont_init(&Q->qc, Q->q);
-    
-    memcpy(Q->w, DILI_NTT_W, sizeof(DILI_NTT_W));
-    memcpy(Q->w_inv, DILI_NTT_W_INV, sizeof(DILI_NTT_W_INV));
-    memcpy(Q->rev_table, DILI_NTT_REV_TABLE, sizeof(DILI_NTT_REV_TABLE));
-    Q->n_inv = DILI_NTT_N_INV;
-}
+void poly_ntt(lssi_t* a,lp_ctx* Q){
+    int coefs, len, st, j, k;
+    lssi_t zeta, t;
+    coefs = Q->n;
 
-void init_ntt(lp_ctx* Q, int coefs, lssi_t root, ntt_mode_t mode){
-    if(coefs > MAX_POLY_COEFS) return; 
-    Q->n = coefs;
-    Q->q = (mode == NTT_FULL_MODE) ? 8380417 : 3329;
-    Q->mode = mode;
-    
-    
-    Q->logn = 0;
-    while(coefs > (1<<Q->logn)) ++Q->logn;
-
-    poly_mont_init(&(Q->qc), Q->q);
-
-    
-    int k;
-    for(int i=0; i<coefs; ++i){
-        k = 0;
-        for(int j=0; j<Q->logn; ++j){
-            if(i & (1<<j)) k |= (1<<(Q->logn-1-j));
-        }
-        Q->rev_table[i] = k;
-    }
-
-    
-    lssi_t inv_root = mod_inv(root, Q->q);
-
-    if (mode == NTT_FULL_MODE){
-        lssi_t w_cur = 1;
-        lssi_t w_inv_cur = 1;
-        for(int i=0;i<coefs;++i){
-            Q->w[i] = to_mont(w_cur, Q->q);
-            Q->w_inv[i] = to_mont(w_inv_cur, Q->q);
-            w_cur = (lsdi_t)w_cur * root % Q->q;
-            w_inv_cur = (lsdi_t)w_inv_cur * inv_root % Q->q;
-        }
-    } 
-    else{
-        for(int i=0;i<coefs;++i){
-            lssi_t w_pow = mod_exp(root, Q->rev_table[i], Q->q);
-            lssi_t w_inv_pow = mod_exp(inv_root, Q->rev_table[i], Q->q);
-            
-            Q->w[i] = to_mont(w_pow, Q->q);
-            Q->w_inv[i] = to_mont(w_inv_pow, Q->q);
-        }
-    }
-
-    int scale_div = (mode == NTT_FULL_MODE) ? coefs : (coefs >> 1);
-    lssi_t n_inv = mod_inv(scale_div, Q->q);
-    Q->n_inv = to_mont(n_inv, Q->q);
-}
-
-void poly_ntt(lssi_t* a, lp_ctx* Q){
-    lssi_t q = Q->q;
-    lssi_t qc = Q->qc;
-    int coefs = Q->n;
-    if (Q->mode == NTT_FULL_MODE){
-        bit_reverse_array(a, Q->rev_table, coefs);
-        for(int len=1;len<coefs;len<<=1){
-            int step = (coefs/len) >> 1;
-            for(int i=0;i<coefs;i+=(len<<1)){
-                int k = 0;
-                for(int j=0;j<len;++j){
-                    lssi_t zeta = Q->w[k*step];
-                    lssi_t u = a[i+j];
-                    lssi_t v = lssi_mont_mul(a[i+j+len], zeta, q, qc);
-                    
-                    lssi_t res_add = u + v;
-                    lssi_t res_sub = u - v;
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0)  res_sub += q;
-                    
-                    a[i+j] = res_add;
-                    a[i+j+len] = res_sub;
-                    ++k;
-                }
-            }
-        }
-    } 
-    else{
-        int len, start, j, k;
-        k = 1; 
-        for(int len = 128;len>=2;len>>=1){
-            for(int start=0;start<256;start+=2*len){
-                lssi_t zeta = Q->w[k++];
-                
-                for(j=start;j<start+len;++j) {
-                    lssi_t t = lssi_mont_mul(zeta, a[j + len], q, qc);
-                    lssi_t u = a[j];
-                    
-                    lssi_t res_add = u + t;
-                    lssi_t res_sub = u - t;
-                    
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0)  res_sub += q;
-                    
-                    a[j] = res_add;
-                    a[j + len] = res_sub;
-                }
+    k=0;
+    for(len=(coefs>>1);len>=(coefs>>LAYER);len>>=1){
+        for(st=0;st<coefs;st+=2*len){
+            zeta = zetas[++k];
+            for(j=st;j<st+len;++j){
+                t = MONTGOMERY_REDUCE((lsdi_t)a[j+len]*zeta, Q->q, Q->qc);
+                a[j+len] = a[j]-t;
+                a[j] = a[j]+t;
             }
         }
     }
 }
 
-void poly_invntt(lssi_t* a, lp_ctx* Q){
-    lssi_t q = Q->q;
-    lssi_t qc = Q->qc;
-    int coefs = Q->n;
+void poly_intt(lssi_t* a, lp_ctx* Q){
+  int coefs, st, len, j, k;
+  lssi_t t, zeta;
+  const lssi_t f = 41978<<(8-LAYER); // mont^(2layer)/256
 
-    if(Q->mode == NTT_FULL_MODE){
-        bit_reverse_array(a, Q->rev_table, coefs);
-        for(int len=1;len<coefs;len<<=1){
-            int step = (coefs/len)>>1;
-            for(int i=0;i<coefs;i+=2*len){
-                int k = 0;
-                for(int j=0;j<len;++j){
-                    lssi_t zeta = Q->w_inv[k*step];
-                    lssi_t u = a[i+j];
-                    lssi_t v = lssi_mont_mul(a[i+j+len], zeta, q, qc);
-
-                    lssi_t res_add = u+v;
-                    lssi_t res_sub = u-v;
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0) res_sub += q;
-                    
-                    a[i+j] = res_add;
-                    a[i+j+len] = res_sub;
-                    ++k;
-                }
-            }
-        }
-        for(int i=0;i<coefs;++i){
-            a[i] = lssi_mont_mul(a[i], Q->n_inv, q, qc);
-        }
+  coefs = Q->n;
+  k = coefs>>(8-LAYER);
+  for(len=(coefs>>LAYER);len<coefs;len<<=1){
+    for(st=0;st<coefs;st+=2*len){
+      zeta = -zetas[--k];
+      for(j=st;j<st+len;++j){
+        t = a[j];
+        a[j] = t + a[j + len];
+        a[j + len] = t - a[j + len];
+        a[j + len] = MONTGOMERY_REDUCE((lsdi_t)zeta*a[j+len], Q->q, Q->qc);
+      }
     }
-    else{
-        int k = 127;
-        for(int len=2;len<=128;len<<=1){
-            
-            int start_k = k - (256 / (2 * len)) + 1;
-            int current_k = start_k;
+  }
 
-            for(int start=0;start<256;start+=2*len){
-                lssi_t zeta = Q->w_inv[current_k++];
-                
-                for(int j=start;j<start+len;++j) {
-                    lssi_t u = a[j];
-                    lssi_t v = a[j + len];
-                    
-                    lssi_t res_add = u + v;
-                    lssi_t res_sub = u - v;
-                    
-                    if(res_add >= q) res_add -= q;
-                    if(res_sub < 0)  res_sub += q;
-                    
-                    a[j] = res_add;
-                    a[j + len] = lssi_mont_mul(res_sub, zeta, q, qc);
-                }
-            }
-            k = start_k - 1;
-        }
-        for(int i=0; i<coefs; ++i){
-            a[i] = lssi_mont_mul(a[i], Q->n_inv, q, qc);
-        }
-    }
+  for(j=0;j<coefs;++j){
+    a[j] = MONTGOMERY_REDUCE((lsdi_t)f*a[j], Q->q, Q->qc);
+  }
 }
 
-void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    lssi_t q = Q->q;
-    lssi_t qc = Q->qc;
+#if LAYER == 8
+void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
+  int i;
+  for(i=0;i<256;++i){
+    c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], Q->q, Q->qc);
+  }
+}
+#endif
+
+#if LAYER == 7
+void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
+  int i,coefs,index;
+  lssi_t r0, r1, t;
+  lssi_t zeta;
+  lssi_t a0, a1, b0, b1;
+  coefs = Q->n;
+
+  for(i=0;i<128;++i){
+    index = i+(coefs>>1);
+    zeta = zetas[index];
     
-    if (Q->mode == NTT_FULL_MODE){
-        for(int i=0; i<Q->n; ++i) {
-            r[i] = lssi_mont_mul(a[i], b[i], q, qc);
-        }
-    } 
-    else{
-        
-        for(int i=0;i<(Q->n>>1);++i){
-            lssi_t zeta = Q->w[64 + i]; 
-            
-            lssi_t a0 = a[2*i];
-            lssi_t a1 = a[2*i+1];
-            lssi_t b0 = b[2*i];
-            lssi_t b1 = b[2*i+1];
-            
-            lssi_t val0 = lssi_mont_mul(a0, b0, q, qc);
-            lssi_t val1 = lssi_mont_mul(a1, b1, q, qc);
-            val1 = lssi_mont_mul(val1, zeta, q, qc);
-            lssi_t res0 = val0 + val1;
+    a0 = a[2*i];
+    a1 = a[2*i+1];
+    b0 = b[2*i];
+    b1 = b[2*i+1];
 
-            lssi_t val2 = lssi_mont_mul(a0, b1, q, qc);
-            lssi_t val3 = lssi_mont_mul(a1, b0, q, qc);
-            lssi_t res1 = val2 + val3;
+    r0 = MONTGOMERY_REDUCE((lsdi_t)a0*b0, Q->q, Q->qc);
+    t = MONTGOMERY_REDUCE((lsdi_t)a1*b1, Q->q, Q->qc);
+    t = MONTGOMERY_REDUCE((lsdi_t)t*zeta, Q->q, Q->qc);
+    c[2*i] = r0+t;
 
-            if(res0 >= q) res0 -= q;
-            if(res1 >= q) res1 -= q;
-
-            r[2*i] = res0;
-            r[2*i+1] = res1;
-        }
-    }
+    r0 = MONTGOMERY_REDUCE((lsdi_t)a1*b0, Q->q, Q->qc);
+    r1 = MONTGOMERY_REDUCE((lsdi_t)a0*b1, Q->q, Q->qc);
+    c[2*i+1] = r0+r1;
+  }
 }
-
-void poly_scalar_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    for(int i=0;i<Q->n;++i){
-        r[i] = lssi_mont_mul(a[i], b[i], Q->q, Q->qc);
-    }
-}
+#endif
