@@ -18,7 +18,7 @@ void test_ntt_dilithium(){
     printf("============================================\n");
     lp_ctx ctx;
     int i;
-    init_ntt_dili(&ctx);
+    INIT_NTT_DILI(&ctx);
     lssi_t q = ctx.q;
     int n = ctx.n;
 
@@ -45,7 +45,7 @@ void test_ntt_dilithium(){
     printf("\n[Benchmark] Dilithium NTT Performance:\n");
 
     BENCH_START("INIT", 10) {
-        BENCH_ITEM(init_ntt_dili(&ctx), 10000);
+        BENCH_ITEM(INIT_NTT_DILI(&ctx), 10000);
     } BENCH_FINAL(10, 10000);
 
     BENCH_START("NTT (8-layer)", 10) {
@@ -89,7 +89,7 @@ void test_poly_mul_ntt_8() {
     
     lp_ctx ctx;
     int i;
-    init_ntt_dili(&ctx);
+    INIT_NTT_DILI(&ctx);
     lssi_t q = ctx.q;
     int n = ctx.n;
     
@@ -241,7 +241,7 @@ void test_poly_mul_ntt_7() {
     
     lp_ctx ctx;
     int i;
-    init_ntt_kyber(&ctx);
+    INIT_NTT_KYBER(&ctx);
     lssi_t q = ctx.q;
     int n = ctx.n;
     

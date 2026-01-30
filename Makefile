@@ -6,6 +6,8 @@ CC = gcc
 
 # 编译选项
 CFLAGS = -O3 -march=native -mtune=native -ffast-math -funroll-loops -Wall -Wextra -I./inc -I./test/inc
+# 启用 Dilithium 和 Kyber NTT
+CFLAGS += -DUSE_DILITHIUM_NTT -DUSE_KYBER_NTT
 
 # Windows 需要链接 advapi32 库
 LDFLAGS = -ladvapi32

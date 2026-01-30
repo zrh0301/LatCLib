@@ -1,30 +1,34 @@
 #include "../inc/poly.h"
+
+#ifdef USE_DILITHIUM_NTT
 #include "../inc/dili_ntt_tables.h"
+#define INIT_NTT_DILI(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 8380417; \
+    (Q)->mode = NTT_FULL_MODE; \
+    (Q)->layer = 8; \
+    (Q)->n_inv = DILI_NTT_N_INV; \
+    (Q)->qc = 58728449; \
+    (Q)->zetas = zetas_dili_256; \
+    //(Q)->rev_table = DILI_NTT_REV_TABLE; \
+} while(0)
+#endif
+
+#ifdef USE_KYBER_NTT
 #include "../inc/kyber_ntt_tables.h"
+#define INIT_NTT_KYBER(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 3329; \
+    (Q)->mode = NTT_INCOMPLETE_MODE; \
+    (Q)->layer = 7; \
+    (Q)->n_inv = KYBER_NTT_N_INV; \
+    (Q)->qc = 2285; \
+    (Q)->zetas = zetas_kyber_256; \
+    //(Q)->rev_table = NULL; \
+} while(0)
+#endif
 
 typedef lssi_t poly[MAX_POLY_COEFS];
-
-void init_ntt_dili(lp_ctx* Q){
-    Q->n = 256;
-    Q->q = 8380417;
-    Q->mode = NTT_FULL_MODE;
-    Q->layer = 8;
-    Q->n_inv = DILI_NTT_N_INV;
-    Q->qc = 58728449;
-    Q->zetas = zetas_dili_256;
-    Q->rev_table = DILI_NTT_REV_TABLE;
-}
-
-void init_ntt_kyber(lp_ctx* Q){
-    Q->n = 256;
-    Q->q = 3329;
-    Q->mode = NTT_INCOMPLETE_MODE;
-    Q->layer = 7;
-    Q->n_inv = KYBER_NTT_N_INV;
-    Q->qc = 2285;
-    Q->zetas = zetas_kyber_256;
-    Q->rev_table = NULL;
-}
 
 void poly_ntt(int32_t a[256], lp_ctx* Q) {
     int n, layer, min_len;
@@ -83,17 +87,6 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
     
     for(j = 0; j < n; ++j) {
         a[j] = MONTGOMERY_REDUCE((int64_t)f * a[j], q, qc);
-    }
-}
-
-static void bit_reverse_array(lssi_t *a, int *rev, int n){
-    int i;
-    for (i=0;i<n;++i) {
-        if (i<rev[i]){
-            lssi_t temp = a[i];
-            a[i] = a[rev[i]];
-            a[rev[i]] = temp;
-        }
     }
 }
 
