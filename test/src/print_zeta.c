@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define Q 8380417
-#define ROOT 1753
-#define MONT_R 4193792  // 2^32 mod Q
+#define Q 3329
+#define ROOT 17
+#define MONT_R 2285
 
 int64_t mod_exp(int64_t base, int64_t exp, int64_t mod) {
     int64_t result = 1;
@@ -36,7 +36,7 @@ int bit_reverse(int x) {
 }
 
 int main() {
-    printf("q = %d, root = %d, R = %d\n\n", Q, ROOT, MONT_R);
+    printf("Kyber q = %d, root = %d, R = %d\n\n", Q, ROOT, MONT_R);
     int64_t root_powers_mont[256];
     int64_t root_power = 1;
     for (int i = 0; i < 256; i++) {
@@ -44,14 +44,14 @@ int main() {
         root_power = (root_power * ROOT) % Q;
         if (root_power < 0) root_power += Q;
     }
-    
-    printf("static const int32_t zetas_dili_256[256] = {\n");
-    
+
+    printf("static const int16_t zetas_kyber_256[256] = {\n");
+
     for (int i = 0; i < 256; i++) {
         if (i % 8 == 0) {
             printf("    ");
         }
-        
+
         int64_t value;
         if (i == 0) {
             value = 0;
@@ -59,21 +59,21 @@ int main() {
             int br_index = bit_reverse(i);
             value = root_powers_mont[br_index];
         }
-        
-        printf("%9lld", value);
-        
+
+        printf("%5lld", value);
+
         if (i < 255) {
             printf(",");
             if (i % 8 != 7) {
                 printf(" ");
             }
         }
-        
+
         if (i % 8 == 7 || i == 255) {
             printf("\n");
         }
     }
-    
+
     printf("};\n");
     return 0;
 }

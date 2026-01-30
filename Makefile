@@ -5,7 +5,7 @@
 CC = gcc
 
 # 编译选项
-CFLAGS = -O3 -Wall -Wextra -I./inc -I./test/inc
+CFLAGS = -O3 -march=native -mtune=native -ffast-math -funroll-loops -Wall -Wextra -I./inc -I./test/inc
 
 # Windows 需要链接 advapi32 库
 LDFLAGS = -ladvapi32

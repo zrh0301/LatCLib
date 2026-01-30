@@ -117,6 +117,16 @@
     } \
 } while(0)
 
+#define BASEMUL(r, a, b, zeta, q, qc) do { \
+    lssi_t _r0, _t; \
+    _r0 = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[0], q, qc); \
+    _t = MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[1], q, qc); \
+    _t = MONTGOMERY_REDUCE((lsdi_t)_t * (zeta), q, qc); \
+    (r)[0] = _r0 + _t; \
+    (r)[1] = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[1], q, qc); \
+    (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
+} while(0)
+
 typedef enum{
     NTT_FULL_MODE, // for Dilithium
     NTT_INCOMPLETE_MODE // for Kyber
@@ -126,7 +136,7 @@ typedef struct {
     lssi_t q; // mod number
     lssi_t qc; // montgomery const qc = -q^{-1} mod q
     int n; // poly coef num
-    int logn;
+    int layer;
     ntt_mode_t mode;
     
     lssi_t n_inv;
@@ -145,6 +155,7 @@ void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits
 void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
 
 void init_ntt_dili(lp_ctx* Q);
+void init_ntt_kyber(lp_ctx* Q);
 
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);

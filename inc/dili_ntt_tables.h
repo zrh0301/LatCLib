@@ -38,7 +38,7 @@ static const int32_t zetas_dili_256[256] = {
    -554416,  3919660,   -48306, -1362209,  3937738,  1400424,  -846154,  1976782
 };
 
-static const lssi_t DILI_NTT_N_INV = 16382;
+static const lssi_t DILI_NTT_N_INV = 41978;
 
 static const int DILI_NTT_REV_TABLE[256] = {
       0, 128,  64, 192,  32, 160,  96, 224,  16, 144,  80, 208,  48, 176, 112, 240,

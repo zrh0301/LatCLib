@@ -8,33 +8,45 @@ void init_ntt_dili(lp_ctx* Q){
     Q->n = 256;
     Q->q = 8380417;
     Q->mode = NTT_FULL_MODE;
-    Q->logn = 8;
+    Q->layer = 8;
     Q->n_inv = DILI_NTT_N_INV;
     Q->qc = 58728449;
     Q->zetas = zetas_dili_256;
     Q->rev_table = DILI_NTT_REV_TABLE;
 }
 
+void init_ntt_kyber(lp_ctx* Q){
+    Q->n = 256;
+    Q->q = 3329;
+    Q->mode = NTT_INCOMPLETE_MODE;
+    Q->layer = 7;
+    Q->n_inv = KYBER_NTT_N_INV;
+    Q->qc = 2285;
+    Q->zetas = zetas_kyber_256;
+    Q->rev_table = NULL;
+}
+
 void poly_ntt(int32_t a[256], lp_ctx* Q) {
-    unsigned int n, len, start, j, k, jlen;
+    int n, layer, min_len;
     int32_t q, qc;
     const int32_t* zetas;
+    int len, start, j, k;
     int32_t zeta, t;
     
     n = Q->n;
     q = Q->q;
     qc = Q->qc;
     zetas = Q->zetas;
+    layer = Q->layer;
+    min_len = (n >> layer);
     k = 0;
-    len = n >> 1;
-
-    for(; len > 0; len >>= 1) {
-        for(start = 0; start < n; start = j + len) {
+    
+    for(len = (n >> 1); len >= min_len; len >>= 1) {
+        for(start = 0; start < n; start += (len << 1)) {
             zeta = zetas[++k];
             for(j = start; j < start + len; ++j) {
-                jlen = j + len;
-                t = MONTGOMERY_REDUCE((int64_t)zeta * a[jlen], q, qc);
-                a[jlen] = a[j] - t;
+                t = MONTGOMERY_REDUCE((int64_t)a[j + len] * zeta, q, qc);
+                a[j + len] = a[j] - t;
                 a[j] = a[j] + t;
             }
         }
@@ -42,27 +54,29 @@ void poly_ntt(int32_t a[256], lp_ctx* Q) {
 }
 
 void poly_invntt(int32_t a[256], lp_ctx* Q) {
-    unsigned int n, start, len, j, k, jlen;
+    int n, layer, step;
     int32_t q, qc, f;
     const int32_t* zetas;
+    int start, len, j, k;
     int32_t t, zeta;
     
     n = Q->n;
     q = Q->q;
     qc = Q->qc;
     zetas = Q->zetas;
-    f = 41978;
-    k = 256;
-
-    for(len = 1; len < n; len <<= 1) {
-        for(start = 0; start < n; start = j + len) {
+    layer = Q->layer;
+    f = Q->n_inv;
+    k = (n >> (8 - layer));
+    
+    for(len = (n >> layer); len < n; len <<= 1) {
+        step = len << 1;
+        for(start = 0; start < n; start += step) {
             zeta = -zetas[--k];
             for(j = start; j < start + len; ++j) {
-                jlen = j + len;
                 t = a[j];
-                a[j] = t + a[jlen];
-                a[jlen] = t - a[jlen];
-                a[jlen] = MONTGOMERY_REDUCE((int64_t)zeta * a[jlen], q, qc);
+                a[j] = t + a[j + len];
+                a[j + len] = t - a[j + len];
+                a[j + len] = MONTGOMERY_REDUCE((int64_t)zeta * a[j + len], q, qc);
             }
         }
     }
@@ -70,19 +84,6 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
     for(j = 0; j < n; ++j) {
         a[j] = MONTGOMERY_REDUCE((int64_t)f * a[j], q, qc);
     }
-}
-
-
-static lssi_t mod_exp(lssi_t base, lssi_t exp, lssi_t q){
-    lssi_t res = 1;
-    base %= q;
-    uint32_t e = (uint32_t)exp;
-    while(e > 0){
-        if(e & 1) res = (lsdi_t)res*base%q;
-        base = (lsdi_t)base*base%q;
-        e >>= 1;
-    }
-    return res;
 }
 
 static void bit_reverse_array(lssi_t *a, int *rev, int n){
@@ -96,28 +97,30 @@ static void bit_reverse_array(lssi_t *a, int *rev, int n){
     }
 }
 
-
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    int n, i;
-    int32_t q, qc;
+    int i, n;
+    lssi_t q, qc;
+    const lssi_t* zetas;
     
-    n = Q->n;
     q = Q->q;
     qc = Q->qc;
+    zetas = Q->zetas;
+    n = Q->n;
     
-    for(i = 0; i < n; ++i) {
-        r[i] = LSSI_MONT_MUL(a[i], b[i], q, qc);
+    for(i = 0; i < n; i+=2){
+        BASEMUL(&r[i], &a[i], &b[i], zetas[128 + (i>>1)], q, qc);
     }
 }
 
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-  int32_t q, qc;
-  int i;
-  
-  q = Q->q;
-  qc = Q->qc;
-  
-  for(i=0;i<256;++i){
-    c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], q, qc);
-  }
+    int32_t q, qc;
+    int i;
+    int n;
+    q = Q->q;
+    qc = Q->qc;
+    n = Q->n;
+
+    for(i=0;i<n;++i){
+        c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], q, qc);
+    }
 }
