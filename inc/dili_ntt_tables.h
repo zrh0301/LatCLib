@@ -40,9 +40,6 @@ static const int32_t zetas_dili_256[256] = {
 
 static const lssi_t DILI_NTT_N_INV = 41978;
 
-<<<<<<< HEAD
-static const int DILI_NTT_REV_TABLE[256] = {
-=======
 /*static const int DILI_NTT_REV_TABLE[256] = {
 >>>>>>> new_structure
       0, 128,  64, 192,  32, 160,  96, 224,  16, 144,  80, 208,  48, 176, 112, 240,
@@ -69,4 +66,3 @@ static const int DILI_NTT_REV_TABLE[256] = {
 };*/
 
 #endif
->>>>>>> new_structure

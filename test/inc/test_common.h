@@ -5,7 +5,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
-#include <intrin.h>
+#if defined(_WIN32)
+    #include <intrin.h>
+#else
+    #include <x86intrin.h>
+#endif
 #include "../../inc/types.h"
 #include "../../inc/poly.h"
 #include "../../inc/rand.h"

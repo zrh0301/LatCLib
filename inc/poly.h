@@ -11,8 +11,6 @@
 
 #define MAX_POLY_COEFS 256
 
-<<<<<<< HEAD
-=======
 #define MONTGOMERY_REDUCE(a, q, qc) ({ \
     int32_t _t = (int64_t)(int32_t)(a) * (qc); \
     _t = ((a) - (int64_t)_t * (q)) >> 32; \
@@ -156,25 +154,16 @@ typedef enum{
     NTT_INCOMPLETE_MODE // for Kyber
 } ntt_mode_t;
 
->>>>>>> new_structure
 typedef struct {
     lssi_t q; // mod number
     lssi_t qc; // montgomery const qc = -q^{-1} mod q
     int n; // poly coef num
-<<<<<<< HEAD
-    int logn;
-    int layer;
-    lssi_t n_inv;
-    lssi_t* zetas;    
-    int rev_table[MAX_POLY_COEFS];
-=======
     int layer;
     ntt_mode_t mode;
     
     lssi_t n_inv;
     const lssi_t* zetas; // origin root table
     const int* rev_table;
->>>>>>> new_structure
 } lp_ctx;
 
 #define MONTGOMERY_REDUCE(a, q, qc) ({ \
@@ -224,20 +213,9 @@ void poly_neg(lssi_t *c, const lssi_t *a, const lssi_t q, int qbits, int coefs);
 
 void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits, int coefs);
 void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
-
-
-<<<<<<< HEAD
-void poly_ntt(lssi_t* a,lp_ctx* Q);
-void poly_intt(lssi_t* a, lp_ctx* Q);
-void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
-void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
-
-#endif
-=======
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);
 
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 #endif // POLY_H
->>>>>>> new_structure
