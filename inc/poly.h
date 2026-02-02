@@ -2,22 +2,179 @@
 #define POLY_H
 
 #include "../inc/types.h"
-#include <sys/random.h>
+#include "../inc/rand.h"
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
+#include "../inc/dili_ntt_tables.h"
+#include "../inc/kyber_ntt_tables.h"
 
 #define MAX_POLY_COEFS 256
 
+<<<<<<< HEAD
+=======
+#define MONTGOMERY_REDUCE(a, q, qc) ({ \
+    int32_t _t = (int64_t)(int32_t)(a) * (qc); \
+    _t = ((a) - (int64_t)_t * (q)) >> 32; \
+    _t; \
+})
+
+#define FROM_MONTGOMERY(a, q, qc) MONTGOMERY_REDUCE((int64_t)(a), q, qc)
+
+#define MOD_INV(a, q) mod_exp(a, (q)-2, q)
+#define TO_MONT(a, q) (((lsdi_t)(a)<<32)%(q))
+
+#define POLY_ZERO(a, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (a)[_i] = 0; \
+} while(0)
+
+#define POLY_COPY(dst, src, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (dst)[_i] = (src)[_i]; \
+} while(0)
+
+#define POLY_ADD(c, a, b, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (c)[_i] = (a)[_i] + (b)[_i]; \
+} while(0)
+
+#define POLY_SUB(c, a, b, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (c)[_i] = (a)[_i] - (b)[_i]; \
+} while(0)
+
+#define POLY_LSH_LOW(c, a, b, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (c)[_i] = (a)[_i]<<(b); \
+} while(0)
+
+#define POLY_RSH_LOW(c, a, b, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) (c)[_i] = (a)[_i]>>(b); \
+} while(0)
+
+#define POLY_EQ(a, b, coefs) ({ \
+    int _i; \
+    int _result = 1; \
+    for(_i=0; _i<(coefs); ++_i) { \
+        if((a)[_i] != (b)[_i]) { \
+            _result = 0; \
+            break; \
+        } \
+    } \
+    _result; \
+})
+
+#define POLY_IS_ZERO(a, coefs) ({ \
+    int _i; \
+    int _result = 1; \
+    for(_i=0; _i<(coefs); ++_i) { \
+        if((a)[_i] != 0) { \
+            _result = 0; \
+            break; \
+        } \
+    } \
+    _result; \
+})
+
+#define POLY_MONT_INIT(qc, q) ({ \
+    int _ret = -1; \
+    if((q)&1) { \
+        dig_t _x = (q); \
+        dig_t _q1 = (dig_t)(q); \
+        _x = (((_q1+2)&4)<<1)+_q1; \
+        _x *= (2-_q1*_x); \
+        _x *= (2-_q1*_x); \
+        _x *= (2-_q1*_x); \
+        *(qc) = (lssi_t)(~_x+1); \
+        _ret = 0; \
+    } \
+    _ret; \
+})
+
+#define LSSI_MONT_MUL(x, y, q, qc) ({ \
+    lssi_t _r = 0; \
+    lsdi_t _a = 0; \
+    _a = (lsdi_t)(x)*(y); \
+    _r = (lssi_t)_a*(qc); \
+    _r = (lssi_t)((_a+(lsdi_t)_r*(q))>>LQBITS); \
+    if(_r >= (q)) _r -= (q); \
+    _r; \
+})
+
+#define POLY_MONT_MUL(r, x, y, q, qc, coefs) do { \
+    lsdi_t _a = 0; \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) { \
+        _a = (lsdi_t)(x)[_i]*(y)[_i]; \
+        (r)[_i] = (lssi_t)_a*(qc); \
+        (r)[_i] = (lssi_t)((_a+(lsdi_t)(r)[_i]*(q))>>LQBITS); \
+    } \
+} while(0)
+
+#define POLY_MONT_RDC(r, x, q, qc, coefs) do { \
+    int _i; \
+    for(_i=0; _i<(coefs); ++_i) { \
+        (r)[_i] = (x)[_i]*(qc); \
+        (r)[_i] = (lssi_t)(((lsdi_t)(x)[_i] + (lsdi_t)(r)[_i]*(q))>>LQBITS); \
+    } \
+} while(0)
+
+#define BASEMUL(r, a, b, zeta, q, qc) do { \
+    lssi_t _r0, _t; \
+    _r0 = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[0], q, qc); \
+    _t = MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[1], q, qc); \
+    _t = MONTGOMERY_REDUCE((lsdi_t)_t * (zeta), q, qc); \
+    (r)[0] = _r0 + _t; \
+    (r)[1] = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[1], q, qc); \
+    (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
+} while(0)
+
+#define INIT_NTT_DILI(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 8380417; \
+    (Q)->mode = NTT_FULL_MODE; \
+    (Q)->layer = 8; \
+    (Q)->n_inv = DILI_NTT_N_INV; \
+    (Q)->qc = 58728449; \
+    (Q)->zetas = zetas_dili_256; \
+} while(0)
+
+#define INIT_NTT_KYBER(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 3329; \
+    (Q)->mode = NTT_INCOMPLETE_MODE; \
+    (Q)->layer = 7; \
+    (Q)->n_inv = KYBER_NTT_N_INV; \
+    (Q)->qc = 2285; \
+    (Q)->zetas = zetas_kyber_256; \
+} while(0)
+
+typedef enum{
+    NTT_FULL_MODE, // for Dilithium
+    NTT_INCOMPLETE_MODE // for Kyber
+} ntt_mode_t;
+
+>>>>>>> new_structure
 typedef struct {
     lssi_t q; // mod number
     lssi_t qc; // montgomery const qc = -q^{-1} mod q
     int n; // poly coef num
+<<<<<<< HEAD
     int logn;
     int layer;
     lssi_t n_inv;
     lssi_t* zetas;    
     int rev_table[MAX_POLY_COEFS];
+=======
+    int layer;
+    ntt_mode_t mode;
+    
+    lssi_t n_inv;
+    const lssi_t* zetas; // origin root table
+    const int* rev_table;
+>>>>>>> new_structure
 } lp_ctx;
 
 #define MONTGOMERY_REDUCE(a, q, qc) ({ \
@@ -59,32 +216,28 @@ typedef struct {
 #endif
 
 void rand_bytes(uint8_t* output, int len);
-void poly_zero(lssi_t* a, int coefs);
+
 void poly_rand(lssi_t* a, int coefs);
-
-void poly_copy(lssi_t* dst, const lssi_t* src, int coefs);
-int poly_eq(const lssi_t* a, const lssi_t* b, int coefs);
-int poly_is_zero(const lssi_t* a, int coefs);
-
-void poly_add(lssi_t* c, const lssi_t* a, const lssi_t* b, int coefs);
-void poly_sub(lssi_t* c, const lssi_t* a, const lssi_t* b, int coefs);
-void poly_lsh_low(lssi_t* c, const lssi_t* a, int b, int coefs);
-void poly_rsh_low(lssi_t* c, const lssi_t* a, int b, int coefs);
-
-void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits, int coefs);
-void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
 int poly_mod_equal(const lssi_t *a, const lssi_t *b, const lssi_t q, int qbits, int coefs);
 int poly_mod_is_zero(const lssi_t *a, const lssi_t q, int qbits, int coefs);
 void poly_neg(lssi_t *c, const lssi_t *a, const lssi_t q, int qbits, int coefs);
 
-int poly_mont_init(lssi_t* qc, const lssi_t q);
-lssi_t lssi_mont_mul(const lssi_t x, const lssi_t y, const lssi_t q, lssi_t qc);
-void poly_mont_mul(lssi_t *r, const lssi_t *x, const lssi_t *y, const lssi_t q, lssi_t qc, int coefs);
-void poly_mont_rdc(lssi_t* r, const lssi_t* x, const lssi_t q, lssi_t qc, int coefs);
+void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits, int coefs);
+void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
 
+
+<<<<<<< HEAD
 void poly_ntt(lssi_t* a,lp_ctx* Q);
 void poly_intt(lssi_t* a, lp_ctx* Q);
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 
 #endif
+=======
+void poly_ntt(lssi_t* a, lp_ctx* Q);
+void poly_invntt(lssi_t* a, lp_ctx* Q);
+
+void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+#endif // POLY_H
+>>>>>>> new_structure
