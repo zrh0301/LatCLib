@@ -9,7 +9,7 @@
 //  WBIT = 32
 typedef uint32_t dig_t;
 typedef uint64_t udi_t;
-#define WMASK = 0xfffffff
+#define WMASK 0xfffffff
 
 //LQBIT = 32
 typedef int32_t lssi_t;//lattice signed single 

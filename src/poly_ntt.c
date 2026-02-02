@@ -1,35 +1,6 @@
 #include "../inc/poly.h"
 
-#ifdef USE_DILITHIUM_NTT
-#include "../inc/dili_ntt_tables.h"
-#define INIT_NTT_DILI(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 8380417; \
-    (Q)->mode = NTT_FULL_MODE; \
-    (Q)->layer = 8; \
-    (Q)->n_inv = DILI_NTT_N_INV; \
-    (Q)->qc = 58728449; \
-    (Q)->zetas = zetas_dili_256; \
-    //(Q)->rev_table = DILI_NTT_REV_TABLE; \
-} while(0)
-#endif
-
-#ifdef USE_KYBER_NTT
-#include "../inc/kyber_ntt_tables.h"
-#define INIT_NTT_KYBER(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 3329; \
-    (Q)->mode = NTT_INCOMPLETE_MODE; \
-    (Q)->layer = 7; \
-    (Q)->n_inv = KYBER_NTT_N_INV; \
-    (Q)->qc = 2285; \
-    (Q)->zetas = zetas_kyber_256; \
-    //(Q)->rev_table = NULL; \
-} while(0)
-#endif
-
 typedef lssi_t poly[MAX_POLY_COEFS];
-
 void poly_ntt(int32_t a[256], lp_ctx* Q) {
     int n, layer, min_len;
     int32_t q, qc;
@@ -69,7 +40,7 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
     qc = Q->qc;
     zetas = Q->zetas;
     layer = Q->layer;
-    f = Q->n_inv;
+    f = Q->n_inv * (1 << (8 - layer));
     k = (n >> (8 - layer));
     
     for(len = (n >> layer); len < n; len <<= 1) {
@@ -90,18 +61,33 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
     }
 }
 
-void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    int i, n;
-    lssi_t q, qc;
-    const lssi_t* zetas;
+void poly_base_pointwise(lssi_t * r, const lssi_t * a, const lssi_t * b, lp_ctx * Q){
+    unsigned int i, n, x, y;
+    const int32_t* zetas;
+    int32_t q, qc, zeta;
+    int32_t t0, t1, t2;
     
     q = Q->q;
     qc = Q->qc;
     zetas = Q->zetas;
-    n = Q->n;
-    
-    for(i = 0; i < n; i+=2){
-        BASEMUL(&r[i], &a[i], &b[i], zetas[128 + (i>>1)], q, qc);
+    n = Q->n / 4;
+
+    for(i=0; i<n; i++) {
+        x = 4*i;
+        y = x + 2;
+        zeta = zetas[64+i];
+        
+        t0 = MONTGOMERY_REDUCE((lsdi_t)a[x] * b[x], q, qc);
+        t1 = MONTGOMERY_REDUCE((lsdi_t)a[x+1] * b[x+1], q, qc);
+        t2 = MONTGOMERY_REDUCE((lsdi_t)(a[x] + a[x+1]) * (b[x] + b[x+1]), q, qc);
+        r[x] = MONTGOMERY_REDUCE((lsdi_t)t1 * zeta, q, qc) + t0;
+        r[x+1] = t2 - t0 - t1;
+        
+        t0 = MONTGOMERY_REDUCE((lsdi_t)a[y] * b[y], q, qc);
+        t1 = MONTGOMERY_REDUCE((lsdi_t)a[y+1] * b[y+1], q, qc);
+        t2 = MONTGOMERY_REDUCE((lsdi_t)(a[y] + a[y+1]) * (b[y] + b[y+1]), q, qc);
+        r[y] = MONTGOMERY_REDUCE((lsdi_t)t1 * (-zeta), q, qc) + t0;
+        r[y+1] = t2 - t0 - t1;
     }
 }
 

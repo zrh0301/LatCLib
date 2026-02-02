@@ -6,14 +6,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
-
-#ifdef USE_DILITHIUM_NTT
 #include "../inc/dili_ntt_tables.h"
-#endif
-
-#ifdef USE_KYBER_NTT
 #include "../inc/kyber_ntt_tables.h"
-#endif
 
 #define MAX_POLY_COEFS 256
 
@@ -135,6 +129,26 @@
     (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
 } while(0)
 
+#define INIT_NTT_DILI(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 8380417; \
+    (Q)->mode = NTT_FULL_MODE; \
+    (Q)->layer = 8; \
+    (Q)->n_inv = DILI_NTT_N_INV; \
+    (Q)->qc = 58728449; \
+    (Q)->zetas = zetas_dili_256; \
+} while(0)
+
+#define INIT_NTT_KYBER(Q) do { \
+    (Q)->n = 256; \
+    (Q)->q = 3329; \
+    (Q)->mode = NTT_INCOMPLETE_MODE; \
+    (Q)->layer = 7; \
+    (Q)->n_inv = KYBER_NTT_N_INV; \
+    (Q)->qc = 2285; \
+    (Q)->zetas = zetas_kyber_256; \
+} while(0)
+
 typedef enum{
     NTT_FULL_MODE, // for Dilithium
     NTT_INCOMPLETE_MODE // for Kyber
@@ -162,31 +176,6 @@ void poly_neg(lssi_t *c, const lssi_t *a, const lssi_t q, int qbits, int coefs);
 void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits, int coefs);
 void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
 
-#ifdef USE_DILITHIUM_NTT
-#define INIT_NTT_DILI(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 8380417; \
-    (Q)->mode = NTT_FULL_MODE; \
-    (Q)->layer = 8; \
-    (Q)->n_inv = DILI_NTT_N_INV; \
-    (Q)->qc = 58728449; \
-    (Q)->zetas = zetas_dili_256; \
-    (Q)->rev_table = DILI_NTT_REV_TABLE; \
-} while(0)
-#endif
-
-#ifdef USE_KYBER_NTT
-#define INIT_NTT_KYBER(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 3329; \
-    (Q)->mode = NTT_INCOMPLETE_MODE; \
-    (Q)->layer = 7; \
-    (Q)->n_inv = KYBER_NTT_N_INV; \
-    (Q)->qc = 2285; \
-    (Q)->zetas = zetas_kyber_256; \
-    (Q)->rev_table = NULL; \
-} while(0)
-#endif
 
 void poly_ntt(lssi_t* a, lp_ctx* Q);
 void poly_invntt(lssi_t* a, lp_ctx* Q);
