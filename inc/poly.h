@@ -196,4 +196,14 @@ void poly_invntt(lssi_t* a, lp_ctx* Q);
 
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+
+void poly_uniform(poly *a, lp_ctx *ctx);
+void poly_uniform_eta(poly *a, lp_ctx *ctx, int ETA);
+void poly_uniform_CBD(poly *a, lp_ctx* ctx);
+unsigned int sample_uniform(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx);
+unsigned int sample_eta(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx, int ETA);
+unsigned int sample_gamma1(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx);
+unsigned int sample_gamma2(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx);
+unsigned int sample_CBD(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx);
+
 #endif // POLY_H

@@ -28,25 +28,28 @@ CORE_OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(CORE_SRCS))
 # 测试源文件
 TEST_POLY_SRCS = $(TEST_SRC_DIR)/test_poly.c
 TEST_NTT_SRCS = $(TEST_SRC_DIR)/test_ntt.c
+TEST_SAMPLING_SRCS = $(TEST_SRC_DIR)/test_sampling.c
 
 # 测试对象文件 (映射 test/src/xxx.c -> obj/xxx.o)
 TEST_POLY_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_POLY_SRCS))
 TEST_NTT_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_NTT_SRCS))
+TEST_SAMPLING_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SAMPLING_SRCS))
 
 # 目标文件
 TARGET_POLY = $(BIN_DIR)/test_poly
 TARGET_NTT = $(BIN_DIR)/test_ntt
+TARGET_SAMPLING = $(BIN_DIR)/test_sampling
 
 # 头文件依赖 (用于检测更新)
 DEPS = inc/poly.h inc/types.h inc/rand.h test/inc/test_common.h
 
 # 默认目标
-all: prepare $(TARGET_POLY) $(TARGET_NTT)
+all: prepare $(TARGET_POLY) $(TARGET_NTT) $(TARGET_SAMPLING)
 
 # 创建目录
 prepare:
-	@mkdir -p $(OBJ_DIR)
-	@mkdir -p $(BIN_DIR)
+	@if not exist $(OBJ_DIR) mkdir $(OBJ_DIR)
+	@if not exist $(BIN_DIR) mkdir $(BIN_DIR)
 
 # 链接 test_poly
 $(TARGET_POLY): $(CORE_OBJS) $(TEST_POLY_OBJS)
@@ -57,6 +60,11 @@ $(TARGET_POLY): $(CORE_OBJS) $(TEST_POLY_OBJS)
 $(TARGET_NTT): $(CORE_OBJS) $(TEST_NTT_OBJS)
 	@echo "Linking $(TARGET_NTT)..."
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# 链接 test_sampling
+$(TARGET_SAMPLING): $(CORE_OBJS) $(TEST_SAMPLING_OBJS)
+	@echo "Linking $(TARGET_SAMPLING)..."
+	$(CC) $(CFLAGS) -o $@ $^ -lm $(LDFLAGS)
 
 # 编译 src 目录下的源文件
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
@@ -82,6 +90,12 @@ test: all
 	@echo "============================================="
 	@echo ""
 	./$(TARGET_NTT)
+	@echo ""
+	@echo "============================================="
+	@echo "   Running Sampling Tests"
+	@echo "============================================="
+	@echo ""
+	./$(TARGET_SAMPLING)
 
 # 清理
 clean:
