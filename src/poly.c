@@ -1,10 +1,7 @@
 #include "../inc/types.h"
 #include "../inc/rand.h"
 #include "../inc/poly.h"
-#include <stdio.h>
-#include <math.h>
 
-typedef lssi_t poly[MAX_POLY_COEFS];
 
 void poly_rand(lssi_t* a, int coefs){
     int tmp_size = MAX_POLY_COEFS * LQBYTS;

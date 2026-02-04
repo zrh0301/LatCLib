@@ -8,8 +8,12 @@
 #include <stdlib.h>
 #include "../inc/dili_ntt_tables.h"
 #include "../inc/kyber_ntt_tables.h"
+#include <stdio.h>
+#include <math.h>
 
 #define MAX_POLY_COEFS 256
+typedef lssi_t poly[MAX_POLY_COEFS];
+
 
 #define MONTGOMERY_REDUCE(a, q, qc) ({ \
     int32_t _t = (int64_t)(int32_t)(a) * (qc); \
