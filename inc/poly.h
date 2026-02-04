@@ -134,7 +134,7 @@
     (Q)->q = 8380417; \
     (Q)->mode = NTT_FULL_MODE; \
     (Q)->layer = 8; \
-    (Q)->n_inv = DILI_NTT_N_INV; \
+    (Q)->f = 41978; \
     (Q)->qc = 58728449; \
     (Q)->zetas = zetas_dili_256; \
 } while(0)
@@ -144,8 +144,8 @@
     (Q)->q = 3329; \
     (Q)->mode = NTT_INCOMPLETE_MODE; \
     (Q)->layer = 7; \
-    (Q)->n_inv = KYBER_NTT_N_INV; \
-    (Q)->qc = 2285; \
+    (Q)->f = 1104; \
+    (Q)->qc = 1806234369; \
     (Q)->zetas = zetas_kyber_256; \
 } while(0)
 
@@ -161,7 +161,7 @@ typedef struct {
     int layer;
     ntt_mode_t mode;
     
-    lssi_t n_inv;
+    lssi_t f;
     const lssi_t* zetas; // origin root table
     const int* rev_table;
 } lp_ctx;
@@ -181,28 +181,6 @@ typedef struct {
     (r)[1] = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[1], q, qc); \
     (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
 } while(0)
-
-#ifdef DILITHIUM
-#define INIT_NTT_DILI(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 8380417; \
-    (Q)->layer = 8; \
-    (Q)->n_inv = 41978; \
-    (Q)->qc = 58728449; \
-    /*(Q)->rev_table = DILI_NTT_REV_TABLE;*/ \
-} while(0)
-#endif
-
-#ifdef KYBER
-#define INIT_NTT_KYBER(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 3329; \
-    (Q)->layer = 7; \
-    (Q)->n_inv = KYBER_NTT_N_INV; \
-    (Q)->qc = 2285; \
-    /*(Q)->rev_table = NULL;*/ \
-} while(0)
-#endif
 
 void rand_bytes(uint8_t* output, int len);
 

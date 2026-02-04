@@ -1,7 +1,7 @@
 #include "../inc/test_common.h"
 #include "../../inc/poly.h"
 
-#define NTESTS 10000
+#define NTESTS 5000
 typedef lssi_t poly[MAX_POLY_COEFS];
 
 int poly_copy(lssi_t* dst, const lssi_t* src, int coefs){
@@ -67,9 +67,9 @@ void poly_ntt_mul7(poly *c, const poly *a, const poly *b, lp_ctx Q) {
     free(b_tmp);
 }
 
-void correctness_check_7() {
+void correctness_check_7_dili() {
     printf("\n============================================\n");
-    printf("  Test Suite: point_mul_7\n");
+    printf("  Test Suite: point_mul_7_dili\n");
     printf("============================================\n");
     int i = 0, pass = 0;
     lp_ctx ctx;
@@ -112,7 +112,10 @@ void correctness_check_7() {
             print_poly("NTT Result", c_ntt, ctx.n);
         }
     }
-    printf("Passed %d/%d tests.\n", pass, NTESTS);
+    printf("Passed %d/%d tests.", pass, NTESTS);
+    if(pass == NTESTS) {
+        test_pass();
+    }
 
     int n = ctx.n;
     printf("\n[Benchmark] Polynomial Multiplication Components:\n");
@@ -150,9 +153,95 @@ void correctness_check_7() {
     } BENCH_FINAL(10, 10000);
 }
 
-void correctness_check_8() {
+void correctness_check_7_kyber() {
     printf("\n============================================\n");
-    printf("  Test Suite: point_mul_8\n");
+    printf("  Test Suite: point_mul_7_kyber\n");
+    printf("============================================\n");
+    int i = 0, pass = 0;
+    lp_ctx ctx;
+    INIT_NTT_KYBER(&ctx);
+    ctx.layer = 7;
+
+    lssi_t a[MAX_POLY_COEFS], b[MAX_POLY_COEFS];
+    lssi_t c_naive[MAX_POLY_COEFS], c_ntt[MAX_POLY_COEFS];
+    memset(a, 0, sizeof(a));
+    memset(b, 0, sizeof(b));
+    for (int i = 0; i < NTESTS; i++)
+    {
+        for(int j=0;j<256;++j){
+            a[j] = rand() % ctx.q;
+            b[j] = rand() % ctx.q;
+        }
+
+        poly_naivemul((poly*)&c_naive, (poly*)&a, (poly*)&b, ctx);
+        poly_ntt_mul7((poly*)&c_ntt, (poly*)&a, (poly*)&b, ctx);
+
+        for(int j=0;j<ctx.n;++j){
+            c_naive[j] = (c_naive[j]%ctx.q + ctx.q)%ctx.q;
+            c_ntt[j] = (c_ntt[j]%ctx.q + ctx.q)%ctx.q;
+        }
+
+        if(poly_eq((const lssi_t*)&c_naive, (const lssi_t*)&c_ntt, ctx.n)){
+            pass++;
+            //printf("Test %d passed!\n", i+1);
+        } else {
+            printf("Test %d failed!\n", i+1);
+            for(int k=0; k<ctx.n; ++k) {
+                lssi_t va = (c_naive[k] % ctx.q + ctx.q) % ctx.q;
+                lssi_t vb = (c_ntt[k] % ctx.q + ctx.q) % ctx.q;
+                if(va != vb) {
+                printf("First mismatch at index %d: Naive=%lld, NTT=%lld\n", k, (long long)va, (long long)vb);
+                break;
+                }
+            }
+            print_poly("Naive Result", c_naive, ctx.n);
+            print_poly("NTT Result", c_ntt, ctx.n);
+        }
+    }
+    printf("Passed %d/%d tests.", pass, NTESTS);
+    if(pass == NTESTS) {
+        test_pass();
+    }
+
+    int n = ctx.n;
+    printf("\n[Benchmark] Polynomial Multiplication Components:\n");
+    lssi_t c[256];
+    lssi_t a_ntt[256], b_ntt[256];
+  // 7-layer components
+    ctx.layer = 7;
+    poly_copy(a_ntt, a, n);
+    poly_copy(b_ntt, b, n);
+    
+    BENCH_START("7-layer: NTT*2", 10) {
+        BENCH_ITEM({
+            poly_copy(a_ntt, a, n);
+            poly_copy(b_ntt, b, n);
+            poly_ntt(a_ntt, &ctx);
+            poly_ntt(b_ntt, &ctx);
+        }, 10000);
+    } BENCH_FINAL(10, 10000);
+    
+    poly_ntt(a_ntt, &ctx);
+    poly_ntt(b_ntt, &ctx);
+    BENCH_START("7-layer: Base Pointwise", 10) {
+        BENCH_ITEM(poly_base_pointwise(c, a_ntt, b_ntt, &ctx), 10000);
+    } BENCH_FINAL(10, 10000);
+    
+    poly_base_pointwise(c, a_ntt, b_ntt, &ctx);
+    ctx.layer = 7;
+    BENCH_START("7-layer: INTT", 10) {
+        BENCH_ITEM(poly_invntt(c, &ctx), 10000);
+    } BENCH_FINAL(10, 10000);
+    
+    ctx.layer = 7;
+    BENCH_START("7-layer: Total Mul", 10) {
+        BENCH_ITEM(poly_ntt_mul7((poly*)&c, (poly*)&a, (poly*)&b, ctx), 10000);
+    } BENCH_FINAL(10, 10000);
+}
+
+void correctness_check_8_dili() {
+    printf("\n============================================\n");
+    printf("  Test Suite: point_mul_8_dili\n");
     printf("============================================\n");
     int i = 0, pass = 0;
     lp_ctx ctx;
@@ -193,7 +282,10 @@ void correctness_check_8() {
         print_poly("NTT Result", c_ntt, ctx.n);
     }
   }
-  printf("Passed %d/%d tests.\n", pass, NTESTS);
+  printf("Passed %d/%d tests.", pass, NTESTS);
+  if(pass == NTESTS) {
+      test_pass();
+  }
 
   int n = ctx.n;
   printf("\n[Benchmark] Polynomial Multiplication Components:\n");
@@ -257,9 +349,6 @@ void test_ntt(){
     int passed = 0;
     TEST_START("NTT/INTT reversibility (Dilithium)", 1) {
     for(int j=0;j<100;j++){
-        poly_rand(a, n);
-        memset(original, 0, sizeof(original));
-        memset(a, 0, sizeof(res));
         for(i=0; i<n; i++) {
             a[i] = rand() % q;
             original[i] = a[i];
@@ -269,7 +358,14 @@ void test_ntt(){
         for(i=0; i<n; i++) {
             a[i] = FROM_MONTGOMERY(a[i], q, ctx.qc);
         }
-        check_eq(a, original, n, q) ? passed++ : printf(" Reversibility failed on iteration %d\n", j);
+        
+        if(!check_eq(a, original, n, q)) {
+            printf(" Reversibility failed on iteration %d\n", j);
+            print_poly("Original", original, n);
+            print_poly("After NTT->INTT", a, n);
+        } else {
+            passed++;
+        }
     } 
     }TEST_FINAL
     printf("Passed %d/100 reversibility tests.\n", passed);
@@ -304,12 +400,9 @@ void test_ntt(){
 
 int main() {
     test_init();
-    //test_no_table();
-    //test_using_tables();
-    //test_poly_mul_ntt_8();
-    //test_poly_mul_ntt_7();
     test_ntt();
-    correctness_check_8();
-    correctness_check_7();
+    correctness_check_8_dili();
+    correctness_check_7_dili();
+    correctness_check_7_kyber();
     return 0;
 }

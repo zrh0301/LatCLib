@@ -41,7 +41,7 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
     qc = Q->qc;
     zetas = Q->zetas;
     layer = Q->layer;
-    f = Q->n_inv * (1 << (8 - layer));
+    f = Q->f * (1 << (8 - layer));
     k = (n >> (8 - layer));
     
     for(len = (n >> layer); len < n; len <<= 1) {
