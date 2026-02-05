@@ -1,5 +1,6 @@
 #include "../inc/keccak.h"
 #include <assert.h>
+#include <stdio.h>
 
 /* ================= 配置与宏定义 ================= */
 

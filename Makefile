@@ -23,9 +23,9 @@ OBJ_DIR = obj
 BIN_DIR = bin
 
 # ==========================================
-# 1. 修改点：在核心库源文件中加入 keccak.c
+# 1. 修改点：在核心库源文件中加入 keccak.c 和 dili.c
 # ==========================================
-CORE_SRCS = $(SRC_DIR)/poly.c $(SRC_DIR)/poly_ntt.c $(SRC_DIR)/rand.c $(SRC_DIR)/keccak.c
+CORE_SRCS = $(SRC_DIR)/poly.c $(SRC_DIR)/poly_ntt.c $(SRC_DIR)/rand.c $(SRC_DIR)/keccak.c $(SRC_DIR)/dili.c
 # 将 src/xxx.c 映射为 obj/xxx.o
 CORE_OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(CORE_SRCS))
 
@@ -35,25 +35,28 @@ TEST_POLY_SRCS = $(TEST_SRC_DIR)/test_poly.c
 TEST_NTT_SRCS = $(TEST_SRC_DIR)/test_ntt.c
 TEST_SHA_SRCS = $(TEST_SRC_DIR)/test_sha3.c
 TEST_SAMPLING_SRCS = $(TEST_SRC_DIR)/test_sampling.c
+TEST_DILI_SRCS = $(TEST_SRC_DIR)/test_dili.c
 
 # 测试对象文件 (映射 test/src/xxx.c -> obj/xxx.o)
 TEST_POLY_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_POLY_SRCS))
 TEST_NTT_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_NTT_SRCS))
 TEST_SHA_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SHA_SRCS))
 TEST_SAMPLING_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SAMPLING_SRCS))
+TEST_DILI_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_DILI_SRCS))
 
 # 目标文件
 TARGET_POLY = $(BIN_DIR)/test_poly
 TARGET_NTT = $(BIN_DIR)/test_ntt
 TARGET_SHA = $(BIN_DIR)/test_sha3
 TARGET_SAMPLING = $(BIN_DIR)/test_sampling
+TARGET_DILI = $(BIN_DIR)/test_dili
 
 # 头文件依赖 (用于检测更新)
-DEPS = inc/poly.h inc/types.h inc/rand.h inc/keccak.h test/inc/test_common.h 
+DEPS = inc/poly.h inc/types.h inc/rand.h inc/keccak.h inc/dili.h test/inc/test_common.h 
 
 
 # 默认目标
-all: prepare $(TARGET_POLY) $(TARGET_NTT) $(TARGET_SAMPLING)
+all: prepare $(TARGET_POLY) $(TARGET_NTT) $(TARGET_SAMPLING) $(TARGET_DILI)
 
 # 创建目录
 prepare:
@@ -80,6 +83,10 @@ $(TARGET_SHA): $(CORE_OBJS) $(TEST_SHA_OBJS)
 
 $(TARGET_SAMPLING): $(CORE_OBJS) $(TEST_SAMPLING_OBJS)
 	@echo "Linking $(TARGET_SAMPLING)..."
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(TARGET_DILI): $(CORE_OBJS) $(TEST_DILI_OBJS)
+	@echo "Linking $(TARGET_DILI)..."
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # 编译 src 目录下的源文件

@@ -2,7 +2,6 @@
 #include "../inc/rand.h"
 #include "../inc/poly.h"
 
-
 void poly_rand(lssi_t* a, int coefs){
     int tmp_size = MAX_POLY_COEFS * LQBYTS;
     uint8_t tmp[tmp_size];
@@ -99,7 +98,6 @@ void poly_uniform_CBD(poly *a, lp_ctx *ctx) {
     rand_bytes(buf, sizeof(buf));
     sample_CBD((int32_t*)a, MAX_POLY_COEFS, buf, sizeof(buf), ctx);
 }
-
 
 unsigned int sample_uniform(int32_t *a,unsigned int len,const uint8_t *buf,unsigned int buflen,lp_ctx *ctx){
     const uint32_t Q = ctx->q;
