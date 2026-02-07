@@ -193,6 +193,8 @@ int poly_mod_equal(const lssi_t *a, const lssi_t *b, const lssi_t q, int qbits, 
 int poly_mod_is_zero(const lssi_t *a, const lssi_t q, int qbits, int coefs);
 void poly_neg(lssi_t *c, const lssi_t *a, const lssi_t q, int qbits, int coefs);
 
+void ntt_vector(poly* vec, int count, lp_ctx* Q);
+void ntt_matrix(poly* mat, int rows, int cols, lp_ctx* Q);
 void poly_mod_barrett_lssi(lssi_t* c, const lssi_t* a, const lssi_t q, int qbits, int coefs);
 void poly_mod_barrett_lsdi(lssi_t* c, const lsdi_t* a, const lssi_t q, int qbits, int coefs);
 void poly_ntt(lssi_t* a, lp_ctx* Q);

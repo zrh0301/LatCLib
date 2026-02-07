@@ -2,6 +2,20 @@
 
 typedef lssi_t poly[MAX_POLY_COEFS];
 
+void ntt_vector(poly* vec, int count, lp_ctx* Q) {
+    for(int i = 0; i < count; i++) {
+        poly_ntt(vec[i], Q);
+    }
+}
+
+void ntt_matrix(poly* mat, int rows, int cols, lp_ctx* Q) {
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            poly_ntt(mat[i * cols + j], Q);
+        }
+    }
+}
+
 void poly_ntt(int32_t a[256], lp_ctx* Q) {
     int n, layer, min_len;
     int32_t q, qc;

@@ -23,9 +23,9 @@ OBJ_DIR = obj
 BIN_DIR = bin
 
 # ==========================================
-# 1. 修改点：在核心库源文件中加入 keccak.c 和 dili.c
+# 1. 修改点：在核心库源文件中加入 keccak.c, dili.c, polyvec.c 和 pack.c
 # ==========================================
-CORE_SRCS = $(SRC_DIR)/poly.c $(SRC_DIR)/poly_ntt.c $(SRC_DIR)/rand.c $(SRC_DIR)/keccak.c $(SRC_DIR)/dili.c
+CORE_SRCS = $(SRC_DIR)/poly.c $(SRC_DIR)/poly_ntt.c $(SRC_DIR)/rand.c $(SRC_DIR)/keccak.c $(SRC_DIR)/dili.c $(SRC_DIR)/polyvec.c $(SRC_DIR)/pack.c
 # 将 src/xxx.c 映射为 obj/xxx.o
 CORE_OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(CORE_SRCS))
 

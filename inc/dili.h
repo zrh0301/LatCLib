@@ -2,9 +2,20 @@
 #define DILI_N 256
 #define DILI_Q 8380417
 #define DILI_QBITS 23
-#define DILI_D 14
-#define DILI_BETA 392
+#define DILI_D 13
+#define DILI_BETA 78
+#define DILITHIUM2
+
+#ifdef DILITHIUM2
 #define DILI_OMEGA 80
+#define DILI_TAU 39
+#define DILI_GAMMA1 (1<<17)
+#define DILI_GAMMA2 ((DILI_Q-1)/88)
+#define DILI_K 4
+#define DILI_L 4
+#define DILI_ALPHA (2*DILI_GAMMA2)
+#endif
+
 #include <stdint.h>
 #include "poly.h"
 #include "keccak.h"

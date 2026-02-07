@@ -3,6 +3,13 @@
 #include "../../inc/poly.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+
+// Dilithium2 constants for size checks
+#define SIG_SIZE_BYTES 2420 // Approx for Dili2 standard
+// Our implementation size: 
+// 32 (c_tilde) + 4*768 (z) + (80 + 4) (h + lengths) = 32 + 3072 + 84 = 3188 bytes approx
+// Let's use a safe buffer size.
 
 // Test key generation
 void test_keygen() {
@@ -10,6 +17,7 @@ void test_keygen() {
     printf("  Test: Dilithium Key Generation\n");
     printf("============================================\n");
     
+    // Param struct is just for legacy compat if keygen still uses it
     dili_param param;
     param.mode = 0;  // Dilithium2
     param.k = 4;
@@ -18,18 +26,28 @@ void test_keygen() {
     
     dili_keypair_t keypair;
     
-    printf("Generating keypair with params: k=%d, l=%d, eta=%d\n", 
-           param.k, param.l, param.eta);
+    printf("Generating keypair...\n");
     
     dili_keygen(&keypair, param);
     
-    printf("\n[PASS] Key generation completed successfully\n");
+    // Basic validity check
+    int zero_rho = 1;
+    for(int i=0; i<32; i++) if(keypair.pk.rho[i] != 0) zero_rho = 0;
+    
+    if(!zero_rho) {
+        printf("PK Rho: ");
+        for(int i=0; i<8; i++) printf("%02X", keypair.pk.rho[i]);
+        printf("...\n");
+        printf("\n[PASS] Key generation completed successfully (Rho is non-zero)\n");
+    } else {
+        printf("\n[FAIL] Key generation produced zero Rho\n");
+    }
 }
 
-// Test sign and verify (placeholder)
+// Test sign and verify
 void test_sign_verify() {
     printf("\n============================================\n");
-    printf("  Test: Dilithium Sign/Verify\n");
+    printf("  Test: Dilithium Sign & Verify\n");
     printf("============================================\n");
     
     dili_param param;
@@ -39,19 +57,60 @@ void test_sign_verify() {
     param.eta = 2;
     
     dili_keypair_t keypair;
+    printf("Generating keys...\n");
     dili_keygen(&keypair, param);
     
-    uint8_t message[] = "Hello, Dilithium!";
-    int message_len = strlen((char*)message);
-    uint8_t signature[4096];
+    uint8_t message[] = "Hello, Dilithium! This is a test message for signing.";
+    int message_len = (int)strlen((char*)message);
     
-    printf("Message: %s\n", message);
-    printf("Message length: %d bytes\n", message_len);
+    uint8_t signature[4096]; 
+    memset(signature, 0, sizeof(signature));
     
-    printf("\n[PENDING] Sign/Verify not yet implemented\n");
+    printf("Signing message: \"%s\" (%d bytes)\n", message, message_len);
+    printf("Computing signature...\n");
+    
+    dili_sign(signature, message, message_len, &keypair.sk);
+
+    printf("[INFO] Signature generated.\n");
+    
+    // Check if signature was written
+    int non_zero = 0;
+    for(int i=0; i<100; i++) {
+        if(signature[i] != 0) non_zero = 1;
+    }
+    
+    if(non_zero) {
+        printf("Signature (first 32 bytes): ");
+        for(int i=0; i<32; i++) printf("%02X", signature[i]);
+        printf("\n");
+        
+        // Test verification
+        printf("\nVerifying signature...\n");
+        int verify_result = dili_verify(signature, message, message_len, &keypair.pk);
+        
+        if(verify_result == 0) {
+            printf("[PASS] Signature verified successfully!\n");
+        } else {
+            printf("[FAIL] Signature verification failed (result=%d)\n", verify_result);
+        }
+        
+        // Test with modified message (should fail)
+        printf("\nTesting with modified message...\n");
+        uint8_t bad_message[] = "Hello, Dilithium! This is a WRONG message for signing.";
+        int bad_result = dili_verify(signature, bad_message, strlen((char*)bad_message), &keypair.pk);
+        
+        if(bad_result != 0) {
+            printf("[PASS] Modified message correctly rejected\n");
+        } else {
+            printf("[FAIL] Modified message incorrectly accepted\n");
+        }
+        
+    } else {
+        printf("\n[FAIL] Signature is all zeros\n");
+    }
 }
 
-// Test packing/unpacking
+// Test packing/unpacking (Keep existing logic)
 void test_packing() {
     printf("\n============================================\n");
     printf("  Test: Pack/Unpack Public Key\n");
@@ -68,27 +127,26 @@ void test_packing() {
     
     uint8_t pk_bytes[32 + 4 * 416];
     dili_pack_pk(pk_bytes, keypair1.pk.rho, keypair1.pk.t1, param.k);
-    printf("Public key packed: %d bytes\n", (int)sizeof(pk_bytes));
     
     dili_unpack_pk(keypair2.pk.rho, keypair2.pk.t1, pk_bytes, param.k);
-    printf("Public key unpacked\n");
     
     int rho_match = memcmp(keypair1.pk.rho, keypair2.pk.rho, 32) == 0;
-    printf("rho matches: %s\n", rho_match ? "YES" : "NO");
-    
     int t1_match = 1;
     for(int i = 0; i < 10; i++) {
-        if(keypair1.pk.t1[0][i] != keypair2.pk.t1[0][i]) {
-            t1_match = 0;
-            break;
+        // Just checking first poly
+        for(int j=0; j<256; j++) {
+             if(keypair1.pk.t1[0][j] != keypair2.pk.t1[0][j]) {
+                t1_match = 0;
+                break;
+            }
         }
     }
-    printf("t1[0] first 10 coefficients match: %s\n", t1_match ? "YES" : "NO");
     
     if(rho_match && t1_match) {
-        printf("\n[PASS] Pack/Unpack test successful\n");
+        printf("[PASS] Pack/Unpack test successful\n");
     } else {
-        printf("\n[FAIL] Pack/Unpack mismatch\n");
+        printf("[FAIL] Pack/Unpack mismatch\n");
+        printf("Rho match: %d, T1 match: %d\n", rho_match, t1_match);
     }
 }
 
@@ -99,8 +157,8 @@ int main() {
     printf("╚════════════════════════════════════════╝\n");
     
     test_keygen();
-    //test_packing();
-    //test_sign_verify();
+    // test_packing(); 
+    test_sign_verify(); // Test both sign and verify
     
     printf("\n============================================\n");
     printf("  All Tests Complete\n");

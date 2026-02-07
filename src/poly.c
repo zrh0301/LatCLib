@@ -156,7 +156,8 @@ unsigned int sample_gamma1(int32_t *a,unsigned int len,const uint8_t *buf,unsign
     unsigned int pos = 0;
     const int32_t GAMMA1_17 = (1 << 17);
     const int32_t GAMMA1_19 = (1 << 19);
-    int32_t GAMMA1 = GAMMA1_19;
+    // Use GAMMA1_17 for Dilithium2, GAMMA1_19 for Dilithium3/5
+    int32_t GAMMA1 = GAMMA1_17;
     
     if (GAMMA1 == GAMMA1_17) {
         while (ctr < len && pos + 8 <= buflen) {
