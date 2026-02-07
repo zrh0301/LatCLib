@@ -189,13 +189,13 @@ static void calc_t(poly *t, poly *A_mat, int k, int l, lp_ctx *ctx, poly *s1_ntt
 }
 
 // ExpandMask: expand seed into masking vector y
-static void expand_mask(lssi_t *y, const uint8_t *seed, int len, int gamma1) {
+static void expand_mask(lssi_t *y, const uint8_t *seed, int seed_len, int len, int gamma1) {
     // TODO: Sample y with coefficients in [-gamma1+1, gamma1]
     uint8_t buf[1024];
     
     KECCAK1600_CTX ctx;
     shake256_init(&ctx);
-    sha3_update(&ctx, seed, 64);
+    sha3_update(&ctx, seed, seed_len);
     shake_xof_final(&ctx);
     
     int ctr = 0;
@@ -303,20 +303,6 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 
 // Sign
 void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk) {
-    // TODO: Implement signing
-    // 1. Expand A from rho
-    // 2. Sample masking vector y
-    // 3. Compute w = A*y
-    // 4. Extract high bits w1 = HighBits(w, 2*gamma2)
-    // 5. Compute challenge c = H(mu || w1) where mu = H(tr || M)
-    // 6. Compute z = y + c*s1
-    // 7. Check ||z||_inf < gamma1 - beta
-    // 8. Compute r0 = LowBits(w - c*s2, 2*gamma2)
-    // 9. Check ||r0||_inf < gamma2 - beta
-    // 10. Compute hint h = MakeHint(-c*t0, w - c*s2 + c*t0, 2*gamma2)
-    // 11. Check ||c*t0||_inf < gamma2 and number of 1's in h <= omega
-    // 12. Output sigma = (c, z, h)
-    // Parameters & Context
     lp_ctx ctx;
     INIT_NTT_DILI(&ctx);
     
@@ -379,7 +365,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
             seed_with_nonce[65] = (nonce >> 8) & 0xFF;
             nonce++;
             
-            expand_mask(y[i], seed_with_nonce, DILI_N, DILI_GAMMA1);
+            expand_mask(y[i], seed_with_nonce, 66, DILI_N, DILI_GAMMA1);
         }
 
         // w = A * y
