@@ -181,11 +181,11 @@ static void expand_s(poly *s1, poly *s2, const uint8_t *rho_prime, int k, int l,
     }
 }
 
-static void calc_t(polyveck *t, polyvecl *A_mat, lp_ctx *ctx, polyvecl *s1_ntt, polyveck *s2) {
+static void calc_t(poly *t, poly *A_mat, int k, int l, lp_ctx *ctx, poly *s1_ntt, poly *s2) {
     // t = A*s1 + s2 (计算在NTT域)
-    polyvec_matrix_pointwise_montgomery(t, A_mat, s1_ntt, ctx);
-    polyveck_invntt_tomont(t, ctx);
-    polyveck_add(t, t, s2);
+    polyvec_matrix_pointwise_montgomery(t, A_mat, k, s1_ntt, l, ctx);
+    polyvec_invntt_tomont(t, k, ctx);
+    polyvec_add(t, t, s2, k);
 }
 
 // ExpandMask: expand seed into masking vector y
@@ -256,8 +256,6 @@ static void challenge(lssi_t *c, const uint8_t *hash, int tau) {
 //  Main Algorithm Functions
 // ============================================
 
-
-
 // Key Generation
 void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     lp_ctx ctx;
@@ -274,22 +272,22 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     memcpy(rho_prime, buf + 32, 32);
     memcpy(K, buf + 64, 32);
 
-    polyvecl matrix_A[DILI_K];
-    polyvec_matrix_expand(matrix_A, rho, &ctx);
+    poly matrix_A[DILI_K * DILI_L];
+    polyvec_matrix_expand(matrix_A, param.k, param.l, rho, &ctx);
     
     expand_s(keypair->sk.s1, keypair->sk.s2, rho_prime, param.k, param.l, param.eta, &ctx);
     
-    polyvecl s1_ntt;
-    polyvecl_copy_from_array(&s1_ntt, keypair->sk.s1);
-    polyvecl_ntt(&s1_ntt, &ctx);
+    poly s1_ntt[DILI_L];
+    polyvec_copy(s1_ntt, keypair->sk.s1, param.l);
+    polyvec_ntt(s1_ntt, param.l, &ctx);
 
-    polyveck t;
-    polyveck s2;
-    polyveck_copy_from_array(&s2, keypair->sk.s2);
-    calc_t(&t, matrix_A, &ctx, &s1_ntt, &s2);
+    poly t[DILI_K];
+    poly s2[DILI_K];
+    polyvec_copy(s2, keypair->sk.s2, param.k);
+    calc_t(t, matrix_A, param.k, param.l, &ctx, s1_ntt, s2);
     
     poly t_arr[param.k];
-    polyveck_copy_to_array(t_arr, &t);
+    polyvec_copy(t_arr, t, param.k);
     
     power2round(keypair->pk.t1, keypair->sk.t0, t_arr, param.k, ctx.n, DILI_D);
 
@@ -328,19 +326,19 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
     int retry = 1;
 
     //  Expand Matrix A
-    polyvecl matrix_A[DILI_K];
-    polyvec_matrix_expand(matrix_A, sk->rho, &ctx);
+    poly matrix_A[DILI_K * DILI_L];
+    polyvec_matrix_expand(matrix_A, DILI_K, DILI_L, sk->rho, &ctx);
     
     // Convert s1, s2, t0 to NTT domain (they are stored in normal domain)
-    polyvecl s1_ntt;
-    polyvecl_copy_from_array(&s1_ntt, sk->s1);
-    polyvecl_ntt(&s1_ntt, &ctx);
+    poly s1_ntt[DILI_L];
+    polyvec_copy(s1_ntt, sk->s1, DILI_L);
+    polyvec_ntt(s1_ntt, DILI_L, &ctx);
     
-    polyveck s2_ntt, t0_ntt;
-    polyveck_copy_from_array(&s2_ntt, sk->s2);
-    polyveck_copy_from_array(&t0_ntt, sk->t0);
-    polyveck_ntt(&s2_ntt, &ctx);
-    polyveck_ntt(&t0_ntt, &ctx);
+    poly s2_ntt[DILI_K], t0_ntt[DILI_K];
+    polyvec_copy(s2_ntt, sk->s2, DILI_K);
+    polyvec_copy(t0_ntt, sk->t0, DILI_K);
+    polyvec_ntt(s2_ntt, DILI_K, &ctx);
+    polyvec_ntt(t0_ntt, DILI_K, &ctx);
 
     // Compute mu = CRH(tr || M)
     KECCAK1600_CTX shake_ctx;
@@ -373,15 +371,15 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         }
 
         // w = A * y
-        polyvecl y_ntt_vec;
-        polyvecl_copy_from_array(&y_ntt_vec, y);
-        polyvecl_ntt(&y_ntt_vec, &ctx);
+        poly y_ntt_vec[DILI_L];
+        polyvec_copy(y_ntt_vec, y, DILI_L);
+        polyvec_ntt(y_ntt_vec, DILI_L, &ctx);
 
-        polyveck w_vec;
-        polyvec_matrix_pointwise_montgomery(&w_vec, matrix_A, &y_ntt_vec, &ctx);
-        polyveck_invntt_tomont(&w_vec, &ctx);
+        poly w_vec[DILI_K];
+        polyvec_matrix_pointwise_montgomery(w_vec, matrix_A, DILI_K, y_ntt_vec, DILI_L, &ctx);
+        polyvec_invntt_tomont(w_vec, DILI_K, &ctx);
         
-        polyveck_copy_to_array(w, &w_vec);
+        polyvec_copy(w, w_vec, DILI_K);
         
         for(int i=0; i<K; i++) {
             // Reduce and ensure positive (caddq)
@@ -412,7 +410,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         // z = y + c * s1
         int z_check_fail = 0;
         for(int i=0; i<L; i++) {
-            poly_pointwise(cs1[i], cp_ntt, s1_ntt.vec[i], &ctx);
+            poly_pointwise(cs1[i], cp_ntt, s1_ntt[i], &ctx);
             poly_invntt(cs1[i], &ctx);
             
             POLY_ADD(z[i], y[i], cs1[i], DILI_N);
@@ -428,7 +426,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         // Check LowBits(w - c*s2)
         int r0_check_fail = 0;
         for(int i=0; i<K; i++) {
-            poly_pointwise(cs2[i], cp_ntt, s2_ntt.vec[i], &ctx);
+            poly_pointwise(cs2[i], cp_ntt, s2_ntt[i], &ctx);
             poly_invntt(cs2[i], &ctx);
             
             poly diff;
@@ -448,7 +446,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         // Check ||c * t0||
         int ct0_check_fail = 0;
         for(int i=0; i<K; i++) {
-            poly_pointwise(ct0[i], cp_ntt, t0_ntt.vec[i], &ctx);
+            poly_pointwise(ct0[i], cp_ntt, t0_ntt[i], &ctx);
             poly_invntt(ct0[i], &ctx);
             
             // Check ||ct0|| < gamma2
@@ -557,23 +555,23 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
     
-    polyvecl A[DILI_K];
-    polyvec_matrix_expand(A, pk->rho, &ctx);
+    poly A[DILI_K * DILI_L];
+    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
 
     challenge(c, c_tilde, DILI_TAU);
     poly c_ntt;
     POLY_COPY(c_ntt, c, DILI_N);
     poly_ntt(c_ntt, &ctx);
     
-    polyvecl z_ntt;
-    polyvecl_copy_from_array(&z_ntt, z);
-    polyvecl_ntt(&z_ntt, &ctx);
+    poly z_ntt[DILI_L];
+    polyvec_copy(z_ntt, z, DILI_L);
+    polyvec_ntt(z_ntt, DILI_L, &ctx);
     
-    polyveck Az_ntt_vec;
-    polyvec_matrix_pointwise_montgomery(&Az_ntt_vec, A, &z_ntt, &ctx);
+    poly Az_ntt_vec[DILI_K];
+    polyvec_matrix_pointwise_montgomery(Az_ntt_vec, A, DILI_K, z_ntt, DILI_L, &ctx);
     
     poly Az_ntt[K];
-    polyveck_copy_to_array(Az_ntt, &Az_ntt_vec);
+    polyvec_copy(Az_ntt, Az_ntt_vec, DILI_K);
     
     poly t1_2d_ntt[K];
     for(int i = 0; i < K; i++) {

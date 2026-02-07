@@ -29,26 +29,19 @@ typedef struct {
     poly vec[DILI_K];
 } polyveck;
 
-void polyvec_matrix_expand(polyvecl mat[DILI_K], const uint8_t rho[32], lp_ctx *ctx);
-void polyvec_matrix_pointwise_montgomery(polyveck *t, const polyvecl mat[DILI_K], const polyvecl *v, lp_ctx *ctx);
+// Matrix operations
+void polyvec_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32], lp_ctx *ctx);
+void polyvec_matrix_pointwise_montgomery(poly *t, const poly *mat, int k, const poly *v, int l, lp_ctx *ctx);
 
-void polyvecl_ntt(polyvecl *v, lp_ctx *ctx);
-void polyvecl_invntt_tomont(polyvecl *v, lp_ctx *ctx);
-void polyvecl_pointwise_acc_montgomery(poly *w, const polyvecl *u, const polyvecl *v, lp_ctx *ctx);
-void polyvecl_add(polyvecl *w, const polyvecl *u, const polyvecl *v);
-void polyvecl_copy(polyvecl *dst, const polyvecl *src);
-void polyvecl_copy_from_array(polyvecl *dst, const poly *src);
-void polyvecl_copy_to_array(poly *dst, const polyvecl *src);
-
-void polyveck_ntt(polyveck *v, lp_ctx *ctx);
-void polyveck_invntt_tomont(polyveck *v, lp_ctx *ctx);
-void polyveck_caddq(polyveck *v);
-void polyveck_reduce(polyveck *v);
-void polyveck_add(polyveck *w, const polyveck *u, const polyveck *v);
-void polyveck_sub(polyveck *w, const polyveck *u, const polyveck *v);
-void polyveck_shiftl(polyveck *v);
-void polyveck_copy(polyveck *dst, const polyveck *src);
-void polyveck_copy_from_array(polyveck *dst, const poly *src);
-void polyveck_copy_to_array(poly *dst, const polyveck *src);
+// Vector operations (统一接口，通过size参数区分)
+void polyvec_ntt(poly *v, int len, lp_ctx *ctx);
+void polyvec_invntt_tomont(poly *v, int len, lp_ctx *ctx);
+void polyvec_pointwise_acc_montgomery(poly *w, const poly *u, const poly *v, int len, lp_ctx *ctx);
+void polyvec_add(poly *w, const poly *u, const poly *v, int len);
+void polyvec_sub(poly *w, const poly *u, const poly *v, int len);
+void polyvec_copy(poly *dst, const poly *src, int len);
+void polyvec_caddq(poly *v, int len);
+void polyvec_reduce(poly *v, int len);
+void polyvec_shiftl(poly *v, int len);
 
 #endif
