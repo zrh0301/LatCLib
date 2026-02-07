@@ -321,7 +321,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
     // Buffers
     uint8_t mu[64];
     uint8_t c_tilde[32];
-    uint8_t c_tilde_temp_buf[32 + K * DILI_N]; // Seed + w1 packed
+    uint8_t c_tilde_temp_buf[64 + K * DILI_N]; // Seed + w1 packed
     uint8_t rho_prime_nonce[64]; // For sampling y
     uint16_t nonce = 0;
     int retry = 1;
@@ -382,8 +382,8 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         }
 
         // c_tilde = H(mu || w1)
-        memcpy(c_tilde_temp_buf, mu, 32);
-        int offset = 32;
+        memcpy(c_tilde_temp_buf, mu, 64);
+        int offset = 64;
         for(int i=0; i<K; i++) {
             pack_w1(c_tilde_temp_buf + offset, w1[i]);
             offset += DILI_N; // 256 bytes per poly in simple packing
@@ -398,9 +398,14 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
 
         // z = y + c * s1
         // 先批量计算 cs1 = c * s1
+        poly s1_ntt[L];
+        polyvec_copy(s1_ntt, sk->s1, L);
+        polyvec_ntt(s1_ntt, L, &ctx);
+
         for(int i=0; i<L; i++) {
-            poly_pointwise(cs1[i], cp_ntt, sk->s1[i], &ctx);
+            poly_pointwise(cs1[i], cp_ntt, s1_ntt[i], &ctx);
         }
+
         polyvec_invntt_tomont(cs1, L, &ctx);
         
 #ifdef DEBUG
@@ -417,7 +422,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
         
         // z = y + cs1
         polyvec_add(z, y, cs1, L);
-        
+
 #ifdef DEBUG
         {
             lssi_t y_max = 0;
@@ -434,7 +439,20 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
             if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
                 z_check_fail = 1;
 #ifdef DEBUG  
-                printf("reject because of z check failed at %d\n", i);
+
+void poly_print(const char* name, const poly p, int n) {
+    printf("%s: ", name);
+    for(int i=0; i<n; i++) {
+        printf("%d ", p[i]);
+    }
+    printf("\n");
+}
+
+                printf("reject because of z(%d) check failed at %d\n", z[i][0], i);
+                //打印y cs1
+                poly_print("y", y[i], DILI_N);
+                poly_print("cs1", cs1[i], DILI_N);
+                poly_print("z", z[i], DILI_N);
 #endif
                 break;
             }
