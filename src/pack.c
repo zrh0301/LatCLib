@@ -4,23 +4,18 @@
 
 void dili_polyt1_pack(uint8_t *r, const poly p, int n, int d) {
     unsigned int i;
-    int bits = d - 1; // 13 bits for t1
-    
-    // Pack each coefficient as 2 bytes (simplified)
     for(i = 0; i < n; i++) {
-        uint32_t t = (1 << bits) - p[i];
+        uint32_t t = p[i];
         r[i*2] = t & 0xFF;
-        r[i*2+1] = (t >> 8) & 0x1F;
+        r[i*2+1] = (t >> 8) & 0xFF;
     }
 }
 
 void dili_polyt1_unpack(poly p, const uint8_t *a, int n, int d) {
     unsigned int i;
-    int bits = d - 1;
-    
     for(i = 0; i < n; i++) {
-        p[i] = a[i*2] | ((uint32_t)(a[i*2+1] & 0x1F) << 8);
-        p[i] = (1 << bits) - p[i];
+        p[i] = a[i*2] | ((uint32_t)a[i*2+1] << 8);
+        p[i] &= (1 << (d-1)) - 1;
     }
 }
 
@@ -33,7 +28,7 @@ void dili_pack_pk(uint8_t *pk_bytes, const uint8_t *rho, const poly *t1, int k) 
     
     for(i = 0; i < k; i++) {
         dili_polyt1_pack(pk_bytes, t1[i], DILI_N, DILI_D);
-        pk_bytes += (DILI_D - 1) * DILI_N / 8;
+        pk_bytes += 2 * DILI_N;
     }
 }
 
@@ -46,7 +41,7 @@ void dili_unpack_pk(uint8_t *rho, poly *t1, const uint8_t *pk_bytes, int k) {
     
     for(i = 0; i < k; i++) {
         dili_polyt1_unpack(t1[i], pk_bytes, DILI_N, DILI_D);
-        pk_bytes += (DILI_D - 1) * DILI_N / 8;
+        pk_bytes += 2 * DILI_N;
     }
 }
 
@@ -97,12 +92,12 @@ int pack_h(uint8_t* r, uint8_t h[][256], int k){
                 r[offset++] = (uint8_t)j;
             } 
         }
-        r[DILI_OMEGA+i] = (uint8_t)j;
+        r[DILI_OMEGA+i] = (uint8_t)offset;
     }
     return 0; // success
 }
 
-void unpack_h(poly* h, const uint8_t* r, int k){
+int unpack_h(uint8_t h[][256], const uint8_t* r, int k){
     int prev_limit, limit, idx, i, j;
     prev_limit = 0;
     for(i=0; i<k; ++i){
@@ -110,11 +105,17 @@ void unpack_h(poly* h, const uint8_t* r, int k){
             h[i][j] = 0;
         }
         limit = r[DILI_OMEGA+i];
-        if(limit < prev_limit || limit > DILI_OMEGA) continue;
+        if(limit < prev_limit || limit > DILI_OMEGA) {
+            return -1;
+        }
         for(j=prev_limit; j<limit; ++j){
             idx = r[j];
-            if(idx < DILI_N) h[i][idx] = 1;
+            if(idx >= DILI_N) {
+                return -1;
+            }
+            h[i][idx] = 1;
         }
         prev_limit = limit;
     }
+    return 0;  // 成功
 }

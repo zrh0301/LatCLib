@@ -11,7 +11,7 @@ CFLAGS = -O3 -march=native -mtune=native -ffast-math -funroll-loops -g -Wall -We
 CFLAGS += -Iinc -Itest/inc 
 
 # 宏定义：启用 Dilithium 和 Kyber NTT
-CFLAGS += -DUSE_DILITHIUM_NTT -DUSE_KYBER_NTT
+CFLAGS += -DUSE_DILITHIUM_NTT -DUSE_KYBER_NTT -DDEBUG
 
 # 链接选项 (如有需要可取消 -lm 注释)
 LDFLAGS = -lm -g

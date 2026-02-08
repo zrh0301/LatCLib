@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#define DEBUG
+
 // ============================================
 //  Helper Functions
 // ============================================
@@ -77,7 +79,7 @@ static void high_bits(lssi_t *r1, const lssi_t *r, int n, int alpha) {
         r1[i] = r1_val;
     }
 }
-
+/*
 static int check_norm(const poly p, int bound){
     int fail, i;
     lssi_t val, abs_val, diff;
@@ -90,7 +92,34 @@ static int check_norm(const poly p, int bound){
     }
     return (fail&1);
 }
+*/
+// [DEBUG VERSION] check_norm
+// 注意：这个版本会破坏恒定时间特性，仅用于调试！
+static int check_norm(const poly p, int bound) {
+    for (int i = 0; i < DILI_N; i++) {
+        // 1. 获取中心化数值
+        int32_t val = CMOD_Q(p[i]);
+        
+        // 2. 获取绝对值
+        int32_t abs_val = val;
+        // Branchless abs logic from macro (ABS_VAL) expanded for clarity or just use:
+        if (abs_val < 0) abs_val = -abs_val;
 
+        // 3. 检查边界
+        if (abs_val >= bound) {
+            // [DEBUG PRINT]
+            // 为了避免日志爆炸，我们只打印每个 check_norm 调用的第一个失败点
+            printf("[DEBUG] check_norm FAILED at index %d!\n", i);
+            printf("        Raw input p[i]: %d\n", p[i]);
+            printf("        After CMOD_Q  : %d\n", val);
+            printf("        Abs Value     : %d\n", abs_val);
+            printf("        Bound         : %d\n", bound);
+            printf("        Diff (Excess) : %d\n", abs_val - bound);
+            return 1; // Fail
+        }
+    }
+    return 0; // Pass
+}
 // LowBits: extract low bits
 static void low_bits(lssi_t *r0, const lssi_t *r, int n, int alpha) {
     int i;
@@ -302,7 +331,7 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 }
 
 // Sign
-void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk) {
+int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk) {
     lp_ctx ctx;
     INIT_NTT_DILI(&ctx);
     
@@ -341,13 +370,13 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
 #ifdef DEBUG
-    printf("entering rejection loop\n");
+    printf("mu in sign: %02x, %02x, %02x, %02x\n", mu[0], mu[1], mu[2], mu[3]);
 #endif
     // Rejection Sampling Loop
     do{
         ++loop;
 #ifdef DEBUG
-        printf("attempt %d\n", loop);
+        printf("-------------------\n attempt %d\n", loop);
 #endif
         // sample y
         // use sk->K and mu combined with nonce.
@@ -375,7 +404,10 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
 
         polyvec_matrix_pointwise_montgomery(w, matrix_A, K, y_ntt, L, &ctx);
         polyvec_invntt_tomont(w, K, &ctx);
-        
+#ifdef DEBUG
+        printf("[DEBUG Sign] w[0][0]: %d\n", w[0][0]);
+        printf("[DEBUG Sign] w[0][1]: %d\n", w[0][1]);
+#endif
         // Extract HighBits
         for(int i=0; i<K; i++) {
             high_bits(w1[i], w[i], DILI_N, DILI_ALPHA);
@@ -408,30 +440,8 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
 
         polyvec_invntt_tomont(cs1, L, &ctx);
         
-#ifdef DEBUG
-        {
-            lssi_t max_cs1 = 0;
-            for(int k=0;k<DILI_N;++k){
-                lssi_t val = CMOD_Q(cs1[0][k]);
-                if(abs(val) > max_cs1) max_cs1 = abs(val);
-            }
-            printf("max coeff: %d\n", max_cs1);
-            printf("raw cs1: %d %d %d %d\n",cs1[0][0], cs1[0][1], cs1[0][2], cs1[0][3]);
-        }
-#endif
-        
         // z = y + cs1
         polyvec_add(z, y, cs1, L);
-
-#ifdef DEBUG
-        {
-            lssi_t y_max = 0;
-            for(int k=0;k<DILI_N;++k){
-                if(abs(y[0][k] > y_max)) y_max = abs(y[0][k]);
-            }
-            printf("max y: %d\n", y_max);
-        }
-#endif
         
         // Check ||z|| < gamma1 - beta
         int z_check_fail = 0;
@@ -439,20 +449,7 @@ void dili_sign(uint8_t* signature, const uint8_t* message, int message_len, cons
             if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
                 z_check_fail = 1;
 #ifdef DEBUG  
-
-void poly_print(const char* name, const poly p, int n) {
-    printf("%s: ", name);
-    for(int i=0; i<n; i++) {
-        printf("%d ", p[i]);
-    }
-    printf("\n");
-}
-
-                printf("reject because of z(%d) check failed at %d\n", z[i][0], i);
-                //打印y cs1
-                poly_print("y", y[i], DILI_N);
-                poly_print("cs1", cs1[i], DILI_N);
-                poly_print("z", z[i], DILI_N);
+            printf("reject because of z check at %d\n", i);
 #endif
                 break;
             }
@@ -460,9 +457,16 @@ void poly_print(const char* name, const poly p, int n) {
         if(z_check_fail) continue; // Restart rejection loop
 
         // 批量计算 cs2 = c * s2 和 ct0 = c * t0
+        poly s2_ntt[L], t0_ntt[K];
+        for(int i=0;i<K;++i){
+            POLY_COPY(s2_ntt[i], sk->s2[i], DILI_N);
+            POLY_COPY(t0_ntt[i], sk->t0[i], DILI_N);
+        }
+        polyvec_ntt(s2_ntt, L, &ctx);
+        polyvec_ntt(t0_ntt, K, &ctx);
         for(int i=0; i<K; i++) {
-            poly_pointwise(cs2[i], cp_ntt, sk->s2[i], &ctx);
-            poly_pointwise(ct0[i], cp_ntt, sk->t0[i], &ctx);
+            poly_pointwise(cs2[i], cp_ntt, s2_ntt[i], &ctx);
+            poly_pointwise(ct0[i], cp_ntt, t0_ntt[i], &ctx);
         }
         polyvec_invntt_tomont(cs2, K, &ctx);
         polyvec_invntt_tomont(ct0, K, &ctx);
@@ -493,6 +497,9 @@ void poly_print(const char* name, const poly p, int n) {
             // Check ||ct0|| < gamma2
             if(check_norm(ct0[i], DILI_GAMMA2)) {
                 ct0_check_fail = 1;
+#ifdef DEBUG
+                printf("ct0 check failed at %d\n", i);
+#endif
                 break;
             }
         }
@@ -534,7 +541,15 @@ void poly_print(const char* name, const poly p, int n) {
         // If we reached here, all checks passed!
         retry = 0;
     } while(retry && loop < 50);
-    printf("Success at loop %d\n", loop);
+    
+    if(loop >= 50) {
+        printf("[FAIL] Failed to generate signature after %d attempts\n", loop);
+        return -1;  // 返回错误，不打包无效签名
+    }
+    
+#ifdef DEBUG
+    printf("[INFO] Signature generated successfully at attempt %d\n", loop);
+#endif
 
     // pack Signature c_tilde (32) || z (L polys) || h (K polys + omega)
     
@@ -553,11 +568,11 @@ void poly_print(const char* name, const poly p, int n) {
     // h
     if(pack_h(sig_ptr, h, K)) {
         // Should not happen if OMEGA check passed
-        // Handle error or do nothing
-#ifdef DEBUG
-        printf("error!");
-#endif
+        printf("[FAIL] pack_h failed\n");
+        return -1;
     }
+    
+    return 0;  // 签名成功
 }
 
 
@@ -569,41 +584,59 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     const int K = DILI_K;
     const int L = DILI_L;
     
+    const int SIGNATURE_SIZE = 32 + (L * 3 * DILI_N) + (DILI_OMEGA + K);
+    
     const uint8_t *c_tilde = signature;
     const uint8_t *z_bytes = signature + 32;
     const uint8_t *h_bytes = z_bytes + (L * 3 * DILI_N);
     
-    poly z[L];  
-    uint8_t h[K][DILI_N]; 
-    poly c; 
+    poly z[L];
+    uint8_t h[K][DILI_N];
+    poly c;
     
     for(int i = 0; i < L; i++) {
         unpack_z(z[i], z_bytes + i * 3 * DILI_N);
     }
-    unpack_h((poly*)h, h_bytes, K);
     
-    for(int i = 0; i < L; i++) {
-        if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
-            return -1;
+    if(unpack_h(h, h_bytes, K) != 0) {
+        printf("[FAIL] unpack_h: invalid hint format\n");
+        return -1;
+    }
+
+    int hint_count = 0;
+    for(int i = 0; i < K; i++) {
+        for(int j = 0; j < DILI_N; j++) {
+            if(h[i][j]) hint_count++;
         }
     }
+    if(hint_count > DILI_OMEGA) {
+        printf("[FAIL] hint weight check: count=%d exceeds OMEGA=%d\n", hint_count, DILI_OMEGA);
+        return -1;
+    }
+    
+    poly A[DILI_K * DILI_L];
+    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
     
     uint8_t tr[64];
-    uint8_t pk_packed[32 + K * 416];
-    dili_pack_pk(pk_packed, pk->rho, pk->t1, K);
-    shake256(tr, 64, pk_packed, sizeof(pk_packed));
+    KECCAK1600_CTX shake_ctx;
+    
+    shake256_init(&shake_ctx);
+    sha3_update(&shake_ctx, pk->rho, 32);
+    for(int i = 0; i < K; i++) {
+        uint8_t t1_packed[512];
+        dili_polyt1_pack(t1_packed, pk->t1[i], DILI_N, DILI_D);
+        sha3_update(&shake_ctx, t1_packed, 512);
+    }
+    shake_xof_final(&shake_ctx);
+    shake_squeeze(&shake_ctx, tr, 64);
     
     uint8_t mu[64];
-    KECCAK1600_CTX shake_ctx;
     shake256_init(&shake_ctx);
     sha3_update(&shake_ctx, tr, 64);
     sha3_update(&shake_ctx, message, message_len);
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
     
-    poly A[DILI_K * DILI_L];
-    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
-
     challenge(c, c_tilde, DILI_TAU);
     poly c_ntt;
     POLY_COPY(c_ntt, c, DILI_N);
@@ -613,42 +646,38 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     polyvec_copy(z_ntt, z, DILI_L);
     polyvec_ntt(z_ntt, DILI_L, &ctx);
     
-    poly Az_ntt_vec[DILI_K];
-    polyvec_matrix_pointwise_montgomery(Az_ntt_vec, A, DILI_K, z_ntt, DILI_L, &ctx);
+    poly Az_ntt[DILI_K];
+    polyvec_matrix_pointwise_montgomery(Az_ntt, A, DILI_K, z_ntt, DILI_L, &ctx);
     
-    poly Az_ntt[K];
-    polyvec_copy(Az_ntt, Az_ntt_vec, DILI_K);
-    
-    poly t1_2d_ntt[K];
+    poly ct1_2d_ntt[K];
     for(int i = 0; i < K; i++) {
         poly t1_shifted;
         for(int j = 0; j < DILI_N; j++) {
             t1_shifted[j] = pk->t1[i][j] << DILI_D;
         }
         poly_ntt(t1_shifted, &ctx);
-        POLY_COPY(t1_2d_ntt[i], t1_shifted, DILI_N);
+        poly_pointwise(ct1_2d_ntt[i], c_ntt, t1_shifted, &ctx);
     }
     
     poly w_prime_ntt[K];
     for(int i = 0; i < K; i++) {
-        poly ct1_ntt;
-        poly_pointwise(ct1_ntt, c_ntt, t1_2d_ntt[i], &ctx);
-        POLY_SUB(w_prime_ntt[i], Az_ntt[i], ct1_ntt, DILI_N);
+        POLY_SUB(w_prime_ntt[i], Az_ntt[i], ct1_2d_ntt[i], DILI_N);
     }
-    
+
     poly w_prime[K];
-    for(int i = 0; i < K; i++) {
-        POLY_COPY(w_prime[i], w_prime_ntt[i], DILI_N);
-        poly_invntt(w_prime[i], &ctx);
-        for(int j = 0; j < DILI_N; j++) {
-            w_prime[i][j] = REDUCE32(w_prime[i][j]);
-            if(w_prime[i][j] < 0) w_prime[i][j] += DILI_Q;
-        }
-    }
+    polyvec_copy(w_prime, w_prime_ntt, K);
+    polyvec_invntt_tomont(w_prime, K, &ctx);
     
     poly w1_prime[K];
     for(int i = 0; i < K; i++) {
         use_hint(w1_prime[i], h[i], w_prime[i], DILI_N, DILI_ALPHA);
+    }
+    
+    for(int i = 0; i < L; i++) {
+        if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
+            printf("[FAIL] z norm check: z[%d] exceeds bound (GAMMA1-BETA=%d)\n", i, DILI_GAMMA1 - DILI_BETA);
+            return -1;
+        }
     }
     
     uint8_t c_tilde_prime[32];
@@ -663,10 +692,14 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     
     for(int i = 0; i < 32; i++) {
         if(c_tilde[i] != c_tilde_prime[i]) {
-            printf("challenge fail!");
+            printf("[FAIL] challenge mismatch at byte %d: expected 0x%02x, got 0x%02x\n", 
+                   i, c_tilde_prime[i], c_tilde[i]);
             return -1;
         }
     }
     
+#ifdef DEBUG
+    printf("[PASS] Signature verification successful\n");
+#endif
     return 0;
 }

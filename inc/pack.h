@@ -16,6 +16,6 @@ void unpack_z(poly z, const uint8_t* r);
 void pack_w1(uint8_t* buf, const poly w1);
 
 int pack_h(uint8_t* r, uint8_t h[][256], int k);
-void unpack_h(poly* h, const uint8_t* r, int k);
+int unpack_h(uint8_t h[][256], const uint8_t* r, int k);
 
 #endif // PACK_H

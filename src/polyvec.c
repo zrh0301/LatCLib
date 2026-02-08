@@ -17,6 +17,7 @@ void polyvec_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32], lp_ct
     uint8_t seed[34];
     uint8_t buf[1024];
     
+    // 生成矩阵 A
     for(i = 0; i < k; i++) {
         for(j = 0; j < l; j++) {
             memcpy(seed, rho, 32);
@@ -25,6 +26,10 @@ void polyvec_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32], lp_ct
             shake128(buf, sizeof(buf), seed, 34);
             sample_uniform(mat[i * l + j], ctx->n, buf, sizeof(buf), ctx);
         }
+    }
+    
+    for(i = 0; i < k * l; i++) {
+        poly_ntt(mat[i], ctx);
     }
 }
 
@@ -78,9 +83,9 @@ void polyvec_caddq(poly *v, int len) {
     
     for(i = 0; i < len; i++) {
         for(j = 0; j < DILI_N; j++) {
-            v[i][j] = REDUCE32(v[i][j]);
-            if(v[i][j] < 0)
-                v[i][j] += DILI_Q;
+            int32_t t = v[i][j] % DILI_Q;
+            if(t < 0) t += DILI_Q;
+            v[i][j] = t;
         }
     }
 }

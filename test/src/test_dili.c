@@ -69,9 +69,14 @@ void test_sign_verify() {
     printf("Signing message: \"%s\" (%d bytes)\n", message, message_len);
     printf("Computing signature...\n");
     
-    dili_sign(signature, message, message_len, &keypair.sk);
+    int sign_result = dili_sign(signature, message, message_len, &keypair.sk);
+    
+    if(sign_result != 0) {
+        printf("[FAIL] Signature generation failed!\n");
+        return;
+    }
 
-    printf("[INFO] Signature generated.\n");
+    printf("[INFO] Signature generated successfully.\n");
     
     // Check if signature was written
     int non_zero = 0;
