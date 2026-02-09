@@ -5,11 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 
-// Dilithium2 constants for size checks
 #define SIG_SIZE_BYTES 2420 // Approx for Dili2 standard
-// Our implementation size: 
-// 32 (c_tilde) + 4*768 (z) + (80 + 4) (h + lengths) = 32 + 3072 + 84 = 3188 bytes approx
-// Let's use a safe buffer size.
 
 // Test key generation
 void test_keygen() {
@@ -83,15 +79,33 @@ void test_sign_verify() {
     for(int i=0; i<100; i++) {
         if(signature[i] != 0) non_zero = 1;
     }
-    
+    printf("Signature (first 32 bytes): ");
+    for(int i=0; i<32; i++) printf("%02X", signature[i]);
+    printf("\n");
+
     if(non_zero) {
-        printf("Signature (first 32 bytes): ");
-        for(int i=0; i<32; i++) printf("%02X", signature[i]);
-        printf("\n");
-        
+
+        printf("\nVerifying signature with right message...\n");
         // Test verification
         printf("\nVerifying signature...\n");
         int verify_result = dili_verify(signature, message, message_len, &keypair.pk);
+        
+        if(verify_result == 0) {
+            printf("[PASS] Signature verified successfully!\n");
+        } else {
+            printf("[FAIL] Signature verification failed (result=%d)\n", verify_result);
+        } 
+    } else {
+        printf("\n[FAIL] Signature is all zeros\n");
+    }
+
+    char message2[] = "hello, Dilithium! This is a test message for signing.";
+    printf("\nVerifying signature with wrong message...\n");
+    if(non_zero) {
+
+        // Test verification
+        printf("\nVerifying signature...\n");
+        int verify_result = dili_verify(signature, message2, (int)strlen(message2), &keypair.pk);
         
         if(verify_result == 0) {
             printf("[PASS] Signature verified successfully!\n");
@@ -150,8 +164,7 @@ int main() {
     printf("╚════════════════════════════════════════╝\n");
     
     test_keygen();
-    // test_packing(); 
-    test_sign_verify(); // Test both sign and verify
+    test_sign_verify();
     
     printf("\n============================================\n");
     printf("  All Tests Complete\n");
