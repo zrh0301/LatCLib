@@ -8,6 +8,8 @@
 
 #define DEBUG
 
+poly w_sign[DILI_K];
+poly w_before_hint[DILI_K]; // w - cs2 + ct0 from signing
 // ============================================
 //  Helper Functions
 // ============================================
@@ -39,11 +41,12 @@
 
 // Power2Round: decompose r into (r1, r0) where r = r1*2^d + r0
 static void power2round(poly *r1, poly *r0, poly *r, int k, int n, int d) {
-    lssi_t mask = (1 << d) - 1;
     for(int j = 0; j < k; j++) {
         for(int i = 0; i < n; i++) {
-            r0[j][i] = r[j][i] & mask;
+            // Standard rounding: r1 = round(r / 2^d)
             r1[j][i] = (r[j][i] + (1 << (d - 1))) >> d;
+            // r0 = r - r1 * 2^d
+            r0[j][i] = r[j][i] - (r1[j][i] << d);
         }
     }
 }
@@ -361,7 +364,11 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
     //  Expand Matrix A
     polyvec_matrix_expand(matrix_A, K, L, sk->rho, &ctx);
-
+#ifdef DEBUG
+    // [DEBUG] Sign Matrix A[0].vec[0].coeffs[0]
+    printf("Sign A[0][0][0]: %d\n", matrix_A[0][0]);
+    printf("Sign A[0][0][1]: %d\n", matrix_A[0][1]);
+#endif
     // Compute mu = CRH(tr || M)
     KECCAK1600_CTX shake_ctx;
     shake256_init(&shake_ctx);
@@ -401,18 +408,20 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         poly y_ntt[L];
         polyvec_copy(y_ntt, y, L);
         polyvec_ntt(y_ntt, L, &ctx);
+#ifdef DEBUG
+        printf("Sign y_ntt[0][0]: %d\n", y_ntt[0][0]);
+#endif
 
         polyvec_matrix_pointwise_montgomery(w, matrix_A, K, y_ntt, L, &ctx);
         polyvec_invntt_tomont(w, K, &ctx);
-#ifdef DEBUG
-        printf("[DEBUG Sign] w[0][0]: %d\n", w[0][0]);
-        printf("[DEBUG Sign] w[0][1]: %d\n", w[0][1]);
-#endif
+
         // Extract HighBits
         for(int i=0; i<K; i++) {
             high_bits(w1[i], w[i], DILI_N, DILI_ALPHA);
         }
-
+#ifdef DEBUG
+        polyvec_copy(w_sign, w1, K);
+#endif
         // c_tilde = H(mu || w1)
         memcpy(c_tilde_temp_buf, mu, 64);
         int offset = 64;
@@ -448,21 +457,19 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         for(int i=0; i<L; i++) {
             if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
                 z_check_fail = 1;
-#ifdef DEBUG  
-            printf("reject because of z check at %d\n", i);
-#endif
+
                 break;
             }
         }
         if(z_check_fail) continue; // Restart rejection loop
 
         // 批量计算 cs2 = c * s2 和 ct0 = c * t0
-        poly s2_ntt[L], t0_ntt[K];
+        poly s2_ntt[K], t0_ntt[K];
         for(int i=0;i<K;++i){
             POLY_COPY(s2_ntt[i], sk->s2[i], DILI_N);
             POLY_COPY(t0_ntt[i], sk->t0[i], DILI_N);
         }
-        polyvec_ntt(s2_ntt, L, &ctx);
+        polyvec_ntt(s2_ntt, K, &ctx);
         polyvec_ntt(t0_ntt, K, &ctx);
         for(int i=0; i<K; i++) {
             poly_pointwise(cs2[i], cp_ntt, s2_ntt[i], &ctx);
@@ -483,9 +490,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
             // Check ||r0|| < gamma2 - beta
             if(check_norm(r0, DILI_GAMMA2 - DILI_BETA)) {
                 r0_check_fail = 1;
-#ifdef DEBUG
-                printf("reject because of r0 check fail at %d\n", i);
-#endif                
+      
                 break;
             }
         }
@@ -497,9 +502,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
             // Check ||ct0|| < gamma2
             if(check_norm(ct0[i], DILI_GAMMA2)) {
                 ct0_check_fail = 1;
-#ifdef DEBUG
-                printf("ct0 check failed at %d\n", i);
-#endif
+
                 break;
             }
         }
@@ -524,6 +527,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
             POLY_SUB(diff, w[i], cs2[i], DILI_N); // w - cs2
             POLY_ADD(w_cs2_ct0, diff, ct0[i], DILI_N); // w - cs2 + ct0
             
+            // Store for debugging
+            POLY_COPY(w_before_hint[i], w_cs2_ct0, DILI_N);
+            
             poly neg_ct0;
             // Negate ct0: -ct0
             for(int j=0; j<DILI_N; j++) neg_ct0[j] = -ct0[i][j];
@@ -532,24 +538,17 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         }
 
         if(hint_ones > DILI_OMEGA) {
-#ifdef DEBUG
-            printf("hint check failed\n");
-#endif            
+
             continue; // Too many hints, restart
         }
 
         // If we reached here, all checks passed!
         retry = 0;
-    } while(retry && loop < 50);
-    
-    if(loop >= 50) {
-        printf("[FAIL] Failed to generate signature after %d attempts\n", loop);
-        return -1;  // 返回错误，不打包无效签名
+    } while(retry && loop < 300);
+    if(loop >= 150) {
+        return -1;
     }
-    
-#ifdef DEBUG
-    printf("[INFO] Signature generated successfully at attempt %d\n", loop);
-#endif
+    printf("Success at loop %d\n", loop);
 
     // pack Signature c_tilde (32) || z (L polys) || h (K polys + omega)
     
@@ -567,12 +566,10 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     
     // h
     if(pack_h(sig_ptr, h, K)) {
-        // Should not happen if OMEGA check passed
-        printf("[FAIL] pack_h failed\n");
+        printf("[ERROR] pack_h failed\n");
         return -1;
     }
-    
-    return 0;  // 签名成功
+    return 0;
 }
 
 
@@ -584,122 +581,158 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     const int K = DILI_K;
     const int L = DILI_L;
     
-    const int SIGNATURE_SIZE = 32 + (L * 3 * DILI_N) + (DILI_OMEGA + K);
-    
     const uint8_t *c_tilde = signature;
     const uint8_t *z_bytes = signature + 32;
     const uint8_t *h_bytes = z_bytes + (L * 3 * DILI_N);
     
-    poly z[L];
-    uint8_t h[K][DILI_N];
-    poly c;
+    poly z[L];  
+    uint8_t h[K][DILI_N]; 
+    poly c; 
     
     for(int i = 0; i < L; i++) {
         unpack_z(z[i], z_bytes + i * 3 * DILI_N);
     }
-    
-    if(unpack_h(h, h_bytes, K) != 0) {
-        printf("[FAIL] unpack_h: invalid hint format\n");
-        return -1;
-    }
 
-    int hint_count = 0;
-    for(int i = 0; i < K; i++) {
-        for(int j = 0; j < DILI_N; j++) {
-            if(h[i][j]) hint_count++;
+    
+    for(int i = 0; i < L; i++) {
+        if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
+            return -1;
         }
     }
-    if(hint_count > DILI_OMEGA) {
-        printf("[FAIL] hint weight check: count=%d exceeds OMEGA=%d\n", hint_count, DILI_OMEGA);
-        return -1;
-    }
-    
-    poly A[DILI_K * DILI_L];
-    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
     
     uint8_t tr[64];
-    KECCAK1600_CTX shake_ctx;
-    
-    shake256_init(&shake_ctx);
-    sha3_update(&shake_ctx, pk->rho, 32);
-    for(int i = 0; i < K; i++) {
-        uint8_t t1_packed[512];
-        dili_polyt1_pack(t1_packed, pk->t1[i], DILI_N, DILI_D);
-        sha3_update(&shake_ctx, t1_packed, 512);
-    }
-    shake_xof_final(&shake_ctx);
-    shake_squeeze(&shake_ctx, tr, 64);
+    uint8_t pk_packed[32 + K * 416];
+    dili_pack_pk(pk_packed, pk->rho, pk->t1, K);
+    shake256(tr, 64, pk_packed, sizeof(pk_packed));
     
     uint8_t mu[64];
+    KECCAK1600_CTX shake_ctx;
     shake256_init(&shake_ctx);
     sha3_update(&shake_ctx, tr, 64);
     sha3_update(&shake_ctx, message, message_len);
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
+#ifdef DEBUG
+    printf("mu in verify: %02x, %02x, %02x, %02x\n", mu[0], mu[1], mu[2], mu[3]);
+#endif
     
+    poly A[DILI_K * DILI_L];
+    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
+#ifdef DEBUG
+    // [DEBUG] Verify Matrix A[0].vec[0].coeffs[0]
+    printf("Verify A[0][0][0]: %d\n", A[0][0]);
+    printf("Verify A[0][0][1]: %d\n", A[0][1]);
+#endif
     challenge(c, c_tilde, DILI_TAU);
     poly c_ntt;
     POLY_COPY(c_ntt, c, DILI_N);
     poly_ntt(c_ntt, &ctx);
     
     poly z_ntt[DILI_L];
-    polyvec_copy(z_ntt, z, DILI_L);
+    // polyvec_copy(z_ntt, z, DILI_L);
+    for(int i=0;i<DILI_L;++i){
+        for(int j=0;j<DILI_N;++j) z_ntt[i][j] = z[i][j];
+    }
+
     polyvec_ntt(z_ntt, DILI_L, &ctx);
+#ifdef DEBUG
+    printf("Verify z_ntt[0][0]: %d\n", z_ntt[0][0]);
+#endif
     
-    poly Az_ntt[DILI_K];
-    polyvec_matrix_pointwise_montgomery(Az_ntt, A, DILI_K, z_ntt, DILI_L, &ctx);
+    poly Az_ntt_vec[DILI_K];
+    polyvec_matrix_pointwise_montgomery(Az_ntt_vec, A, DILI_K, z_ntt, DILI_L, &ctx);
     
-    poly ct1_2d_ntt[K];
+    poly Az_ntt[K];
+    polyvec_copy(Az_ntt, Az_ntt_vec, DILI_K);
+    
+    poly t1_2d_ntt[K];
     for(int i = 0; i < K; i++) {
         poly t1_shifted;
         for(int j = 0; j < DILI_N; j++) {
-            t1_shifted[j] = pk->t1[i][j] << DILI_D;
+            // Properly reduce t1 to [0, Q) before shifting
+            int32_t t1_val = pk->t1[i][j];
+#ifdef DEBUG
+            if(i == 0 && j < 2) {
+                printf("[DEBUG Verify] pk->t1[%d][%d] = %d\n", i, j, t1_val);
+            }
+#endif
+            t1_val = t1_val % DILI_Q;
+            if(t1_val < 0) t1_val += DILI_Q;
+            
+            // Now shift and reduce again
+            int64_t shifted = ((int64_t)t1_val << DILI_D);
+            t1_shifted[j] = (lssi_t)(shifted % DILI_Q);
+#ifdef DEBUG
+            if(i == 0 && j < 2) {
+                printf("[DEBUG Verify] t1_shifted[%d][%d] = %d\n", i, j, t1_shifted[j]);
+            }
+#endif
         }
         poly_ntt(t1_shifted, &ctx);
-        poly_pointwise(ct1_2d_ntt[i], c_ntt, t1_shifted, &ctx);
+        POLY_COPY(t1_2d_ntt[i], t1_shifted, DILI_N);
     }
     
     poly w_prime_ntt[K];
     for(int i = 0; i < K; i++) {
-        POLY_SUB(w_prime_ntt[i], Az_ntt[i], ct1_2d_ntt[i], DILI_N);
+        poly ct1_ntt;
+        poly_pointwise(ct1_ntt, c_ntt, t1_2d_ntt[i], &ctx);
+        POLY_SUB(w_prime_ntt[i], Az_ntt[i], ct1_ntt, DILI_N);
     }
 
+    
     poly w_prime[K];
     polyvec_copy(w_prime, w_prime_ntt, K);
     polyvec_invntt_tomont(w_prime, K, &ctx);
     
+#ifdef DEBUG
+    printf("[DEBUG Verify] Comparing w_prime with w_before_hint:\n");
+    for(int i = 0; i < 2; i++) {  // Just first 2 coefficients of first poly
+        printf("[DEBUG Verify] w_prime[0][%d]: %d, w_before_hint[0][%d]: %d\n", 
+               i, w_prime[0][i], i, w_before_hint[0][i]);
+    }
+#endif
+    
+    int rc_unpack = unpack_h(h, h_bytes, K);
+    if(rc_unpack != 0) {
+        printf("[FAIL] unpack_h: invalid hint format (rc=%d)\n", rc_unpack);
+        return -1;
+    }
+#ifdef DEBUG
+    printf("h test: ");
+    for(int i=0;i<K;++i) printf("%d ", h[i]);
+    printf("\n");
+#endif
     poly w1_prime[K];
     for(int i = 0; i < K; i++) {
         use_hint(w1_prime[i], h[i], w_prime[i], DILI_N, DILI_ALPHA);
     }
-    
-    for(int i = 0; i < L; i++) {
-        if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
-            printf("[FAIL] z norm check: z[%d] exceeds bound (GAMMA1-BETA=%d)\n", i, DILI_GAMMA1 - DILI_BETA);
-            return -1;
+#ifdef DEBUG
+    for(int i=0;i<K;++i) {
+        for(int j=0;j<DILI_N;++j) {
+            if(w1_prime[i][j] != w_sign[i][j]) {
+                printf("[DEBUG Verify] Mismatch at w1_prime[%d][%d]: %d vs w_sign[%d][%d]: %d\n", i, j, w1_prime[i][j], i, j, w_sign[i][j]);
+            }
         }
     }
-    
+#endif        
     uint8_t c_tilde_prime[32];
-    uint8_t w1_prime_packed[32 + K * DILI_N];
-    memcpy(w1_prime_packed, mu, 32);
-    int offset = 32;
+    uint8_t w1_prime_packed[64 + K * DILI_N];
+    memcpy(w1_prime_packed, mu, 64);
+    int offset = 64;
     for(int i = 0; i < K; i++) {
         pack_w1(w1_prime_packed + offset, w1_prime[i]);
         offset += DILI_N;
     }
+
+
     shake256(c_tilde_prime, 32, w1_prime_packed, offset);
     
     for(int i = 0; i < 32; i++) {
         if(c_tilde[i] != c_tilde_prime[i]) {
-            printf("[FAIL] challenge mismatch at byte %d: expected 0x%02x, got 0x%02x\n", 
-                   i, c_tilde_prime[i], c_tilde[i]);
+            printf("challenge fail!");
             return -1;
         }
     }
     
-#ifdef DEBUG
-    printf("[PASS] Signature verification successful\n");
-#endif
     return 0;
 }

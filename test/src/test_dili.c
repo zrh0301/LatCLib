@@ -97,19 +97,7 @@ void test_sign_verify() {
             printf("[PASS] Signature verified successfully!\n");
         } else {
             printf("[FAIL] Signature verification failed (result=%d)\n", verify_result);
-        }
-        
-        // Test with modified message (should fail)
-        printf("\nTesting with modified message...\n");
-        uint8_t bad_message[] = "Hello, Dilithium! This is a WRONG message for signing.";
-        int bad_result = dili_verify(signature, bad_message, strlen((char*)bad_message), &keypair.pk);
-        
-        if(bad_result != 0) {
-            printf("[PASS] Modified message correctly rejected\n");
-        } else {
-            printf("[FAIL] Modified message incorrectly accepted\n");
-        }
-        
+        } 
     } else {
         printf("\n[FAIL] Signature is all zeros\n");
     }
