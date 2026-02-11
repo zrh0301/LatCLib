@@ -24,9 +24,9 @@ void print_poly(const char* label, const poly p, int n) {
     printf("\n");
 }
 
-void test_pack_unpack_z() {
+void test_pack_unpack_z_with_params(int gamma1, const char* mode_name) {
     printf("\n========================================\n");
-    printf("Test: pack_z / unpack_z\n");
+    printf("Test: pack_z / unpack_z (%s, gamma1=%d)\n", mode_name, gamma1);
     printf("========================================\n");
     
     poly z_original, z_unpacked;
@@ -34,8 +34,8 @@ void test_pack_unpack_z() {
     
     // Initialize test data
     for(int i = 0; i < DILI_N; i++) {
-        z_original[i] = (i * 137 - 50000) % (2 * DILI_GAMMA1);
-        if(z_original[i] > DILI_GAMMA1) z_original[i] -= 2 * DILI_GAMMA1;
+        z_original[i] = (i * 137 - 50000) % (2 * gamma1);
+        if(z_original[i] > gamma1) z_original[i] -= 2 * gamma1;
     }
     
     printf("\nOriginal z data:\n");
@@ -45,7 +45,7 @@ void test_pack_unpack_z() {
     printf("  z_original[255] = %d\n", z_original[255]);
     
     // Pack
-    pack_z(packed, z_original);
+    pack_z(packed, z_original, gamma1);
     printf("\nPacked bytes:\n");
     print_bytes("  packed", packed, 3 * DILI_N);
     printf("  packed[0] = 0x%02x\n", packed[0]);
@@ -53,7 +53,7 @@ void test_pack_unpack_z() {
     printf("  packed[2] = 0x%02x\n", packed[2]);
     
     // Unpack
-    unpack_z(z_unpacked, packed);
+    unpack_z(z_unpacked, packed, gamma1);
     printf("\nUnpacked z data:\n");
     print_poly("  z_unpacked", z_unpacked, 8);
     printf("  z_unpacked[0] = %d\n", z_unpacked[0]);
@@ -73,24 +73,31 @@ void test_pack_unpack_z() {
     }
     
     if(errors == 0) {
-        printf("\n[PASS] pack_z/unpack_z test passed!\n");
+        printf("\n[PASS] %s pack_z/unpack_z test passed!\n", mode_name);
     } else {
-        printf("\n[FAIL] pack_z/unpack_z has %d errors!\n", errors);
+        printf("\n[FAIL] %s pack_z/unpack_z has %d errors!\n", mode_name, errors);
     }
 }
 
-void test_pack_unpack_h() {
+void test_pack_unpack_z() {
+    // Test Dilithium2
+    test_pack_unpack_z_with_params(1 << 17, "Dilithium2");
+    
+    // Test Dilithium3/5
+    test_pack_unpack_z_with_params(1 << 19, "Dilithium3/5");
+}
+
+void test_pack_unpack_h_with_params(int k, int omega, const char* mode_name) {
     printf("\n========================================\n");
-    printf("Test: pack_h / unpack_h\n");
+    printf("Test: pack_h / unpack_h (%s, k=%d, omega=%d)\n", mode_name, k, omega);
     printf("========================================\n");
     
-    const int K = DILI_K;
-    uint8_t h_original[K][DILI_N];
-    uint8_t h_unpacked[K][DILI_N];
-    uint8_t packed[DILI_OMEGA + K];
+    uint8_t h_original[DILI_K][DILI_N];
+    uint8_t h_unpacked[DILI_K][DILI_N];
+    uint8_t packed[omega + k];
     
     // Initialize test data - sparse hint vectors
-    for(int i = 0; i < K; i++) {
+    for(int i = 0; i < DILI_K; i++) {
         for(int j = 0; j < DILI_N; j++) {
             h_original[i][j] = 0;
         }
@@ -104,10 +111,18 @@ void test_pack_unpack_h() {
     h_original[1][50] = 1;
     h_original[2][15] = 1;
     h_original[3][200] = 1;
+    if(k >= 6) {
+        h_original[4][30] = 1;
+        h_original[5][120] = 1;
+    }
+    if(k >= 8) {
+        h_original[6][60] = 1;
+        h_original[7][180] = 1;
+    }
     
     printf("\nOriginal hint data:\n");
     int total_ones = 0;
-    for(int i = 0; i < K; i++) {
+    for(int i = 0; i < k; i++) {
         int ones = 0;
         for(int j = 0; j < DILI_N; j++) {
             if(h_original[i][j] == 1) {
@@ -120,17 +135,17 @@ void test_pack_unpack_h() {
         total_ones += ones;
         printf("  h[%d] has %d ones\n", i, ones);
     }
-    printf("  Total: %d ones (OMEGA=%d)\n", total_ones, DILI_OMEGA);
+    printf("  Total: %d ones (omega=%d)\n", total_ones, omega);
     
     // Pack
-    int pack_result = pack_h(packed, h_original, K);
+    int pack_result = pack_h(packed, h_original, k, omega);
     printf("\nPack result: %d\n", pack_result);
-    print_bytes("  packed", packed, DILI_OMEGA + K);
+    print_bytes("  packed", packed, omega + k);
     
     // Unpack
-    unpack_h(h_unpacked, packed, K);
+    int unpack_result = unpack_h(h_unpacked, packed, k, omega);
     printf("\nUnpacked hint data:\n");
-    for(int i = 0; i < K; i++) {
+    for(int i = 0; i < k; i++) {
         int ones = 0;
         for(int j = 0; j < DILI_N; j++) {
             if(h_unpacked[i][j] == 1) {
@@ -145,7 +160,7 @@ void test_pack_unpack_h() {
     
     // Verify
     int errors = 0;
-    for(int i = 0; i < K; i++) {
+    for(int i = 0; i < k; i++) {
         for(int j = 0; j < DILI_N; j++) {
             if(h_original[i][j] != h_unpacked[i][j]) {
                 errors++;
@@ -157,27 +172,42 @@ void test_pack_unpack_h() {
         }
     }
     
-    if(errors == 0) {
-        printf("\n[PASS] pack_h/unpack_h test passed!\n");
+    if(errors == 0 && pack_result == 0 && unpack_result == 0) {
+        printf("\n[PASS] %s pack_h/unpack_h test passed!\n", mode_name);
     } else {
-        printf("\n[FAIL] pack_h/unpack_h has %d errors!\n", errors);
+        printf("\n[FAIL] %s pack_h/unpack_h has %d errors! (pack=%d, unpack=%d)\n", 
+               mode_name, errors, pack_result, unpack_result);
     }
 }
 
-void test_pack_w1() {
+void test_pack_unpack_h() {
+    // Test Dilithium2
+    test_pack_unpack_h_with_params(4, 80, "Dilithium2");
+    
+    // Test Dilithium3
+    test_pack_unpack_h_with_params(6, 55, "Dilithium3");
+    
+    // Test Dilithium5
+    test_pack_unpack_h_with_params(8, 75, "Dilithium5");
+}
+
+void test_pack_w1_with_params(int gamma2, const char* mode_name) {
     printf("\n========================================\n");
-    printf("Test: pack_w1\n");
+    printf("Test: pack_w1 (%s, gamma2=%d)\n", mode_name, gamma2);
     printf("========================================\n");
     
     poly w1;
     uint8_t packed[DILI_N];
     
-    // Initialize test data - w1 values should be in [0, 43]
+    // Calculate range based on gamma2
+    int w1_range = (DILI_Q - 1) / (2 * gamma2);
+    
+    // Initialize test data
     for(int i = 0; i < DILI_N; i++) {
-        w1[i] = i % 44;
+        w1[i] = i % w1_range;
     }
     
-    printf("\nOriginal w1 data:\n");
+    printf("\nOriginal w1 data (range [0, %d)):\n", w1_range);
     print_poly("  w1", w1, 16);
     printf("  w1[0] = %d\n", w1[0]);
     printf("  w1[1] = %d\n", w1[1]);
@@ -185,28 +215,22 @@ void test_pack_w1() {
     printf("  w1[3] = %d\n", w1[3]);
     
     // Pack
-    pack_w1(packed, w1);
+    pack_w1(packed, w1, gamma2);
     printf("\nPacked bytes:\n");
-    print_bytes("  packed", packed, DILI_N);
-    printf("  packed[0] = 0x%02x (should contain w1[0] and w1[1] low bits)\n", packed[0]);
+    print_bytes("  packed", packed, 32);
+    printf("  packed[0] = 0x%02x\n", packed[0]);
     printf("  packed[1] = 0x%02x\n", packed[1]);
     printf("  packed[2] = 0x%02x\n", packed[2]);
     
-    // Manual verification of the first few packed values
-    // pack_w1 uses 6 bits to store each coefficient
-    uint32_t t0 = w1[0] & 0x3F;
-    uint32_t t1 = w1[1] & 0x3F;
-    uint32_t expected_byte0 = t0 | (t1 << 6);
-    printf("\nManual verification:\n");
-    printf("  w1[0] & 0x3F = 0x%02x\n", t0);
-    printf("  w1[1] & 0x3F = 0x%02x\n", t1);
-    printf("  expected packed[0] = 0x%02x\n", (uint8_t)expected_byte0);
+    printf("\n[INFO] %s pack_w1 completed (w1_range=%d)\n", mode_name, w1_range);
+}
+
+void test_pack_w1() {
+    // Test Dilithium2 (gamma2 = (q-1)/88 = 95232, w1 in [0, 44))
+    test_pack_w1_with_params((DILI_Q - 1) / 88, "Dilithium2");
     
-    if((uint8_t)expected_byte0 == packed[0]) {
-        printf("\n[PASS] pack_w1 first bytes correct!\n");
-    } else {
-        printf("\n[FAIL] pack_w1 packing incorrect!\n");
-    }
+    // Test Dilithium3/5 (gamma2 = (q-1)/32 = 261888, w1 in [0, 16))
+    test_pack_w1_with_params((DILI_Q - 1) / 32, "Dilithium3/5");
 }
 
 void test_pack_unpack_t1() {

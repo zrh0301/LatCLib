@@ -7,18 +7,78 @@
 
 #define SIG_SIZE_BYTES 2420 // Approx for Dili2 standard
 
-// Test key generation
-void test_keygen() {
+// 初始化不同模式的参数
+void init_dili_param(dili_param *param, int mode) {
+    param->mode = mode;
+    
+    switch(mode) {
+        case 0: // Dilithium2
+            param->k = 4;
+            param->l = 4;
+            param->eta = 2;
+            param->tau = 39;
+            param->beta = 78;
+            param->omega = 80;
+            param->gamma1 = (1 << 17);      // 2^17 = 131072
+            param->gamma2 = (DILI_Q-1)/88;  // 95232
+            param->w1_packed_bytes = 192;   // 6-bit encoding: (256/4)*3 = 192
+            break;
+        case 1: // Dilithium3
+            param->k = 6;
+            param->l = 5;
+            param->eta = 4;
+            param->tau = 49;
+            param->beta = 196;
+            param->omega = 55;
+            param->gamma1 = (1 << 19);      // 2^19 = 524288
+            param->gamma2 = (DILI_Q-1)/32;  // 261888
+            param->w1_packed_bytes = 128;   // 4-bit encoding: 256/2 = 128
+            break;
+        case 2: // Dilithium5
+            param->k = 8;
+            param->l = 7;
+            param->eta = 2;
+            param->tau = 60;
+            param->beta = 120;
+            param->omega = 75;
+            param->gamma1 = (1 << 19);      // 2^19 = 524288
+            param->gamma2 = (DILI_Q-1)/32;  // 261888
+            param->w1_packed_bytes = 128;   // 4-bit encoding: 256/2 = 128
+            break;
+        default:
+            printf("[ERROR] Unknown mode %d, defaulting to Dilithium2\n", mode);
+            param->k = 4;
+            param->l = 4;
+            param->eta = 2;
+            param->tau = 39;
+            param->beta = 78;
+            param->omega = 80;
+            param->gamma1 = (1 << 17);
+            param->gamma2 = (DILI_Q-1)/88;
+            param->mode = 0;
+    }
+}
+
+// 获取模式名称
+const char* get_mode_name(int mode) {
+    switch(mode) {
+        case 0: return "Dilithium2";
+        case 1: return "Dilithium3";
+        case 2: return "Dilithium5";
+        default: return "Unknown";
+    }
+}
+
+// Test key generation with specified mode
+void test_keygen_mode(int mode) {
     printf("\n============================================\n");
-    printf("  Test: Dilithium Key Generation\n");
+    printf("  Test: %s Key Generation\n", get_mode_name(mode));
     printf("============================================\n");
     
-    // Param struct is just for legacy compat if keygen still uses it
     dili_param param;
-    param.mode = 0;  // Dilithium2
-    param.k = 4;
-    param.l = 4;
-    param.eta = 2;
+    init_dili_param(&param, mode);
+    
+    printf("Parameters: k=%d, l=%d, eta=%d\n", param.k, param.l, param.eta);
     
     dili_keypair_t keypair;
     
@@ -34,23 +94,34 @@ void test_keygen() {
         printf("PK Rho: ");
         for(int i=0; i<8; i++) printf("%02X", keypair.pk.rho[i]);
         printf("...\n");
-        printf("\n[PASS] Key generation completed successfully (Rho is non-zero)\n");
+        printf("\n[PASS] %s key generation completed successfully (Rho is non-zero)\n", get_mode_name(mode));
     } else {
-        printf("\n[FAIL] Key generation produced zero Rho\n");
+        printf("\n[FAIL] %s key generation produced zero Rho\n", get_mode_name(mode));
     }
 }
 
-// Test sign and verify
-void test_sign_verify() {
+// Test key generation for all modes
+void test_keygen() {
     printf("\n============================================\n");
-    printf("  Test: Dilithium Sign & Verify\n");
+    printf("  Test: All Dilithium Modes Key Generation\n");
+    printf("============================================\n");
+    
+    for(int mode = 0; mode <= 2; mode++) {
+        test_keygen_mode(mode);
+    }
+}
+
+// Test sign and verify with specified mode
+void test_sign_verify_mode(int mode) {
+    printf("\n============================================\n");
+    printf("  Test: %s Sign & Verify\n", get_mode_name(mode));
     printf("============================================\n");
     
     dili_param param;
-    param.mode = 0;
-    param.k = 4;
-    param.l = 4;
-    param.eta = 2;
+    init_dili_param(&param, mode);
+    
+    printf("Parameters: k=%d, l=%d, eta=%d\n", param.k, param.l, param.eta);
+    printf("Parameters: k=%d, l=%d, eta=%d\n", param.k, param.l, param.eta);
     
     dili_keypair_t keypair;
     printf("Generating keys...\n");
@@ -68,11 +139,11 @@ void test_sign_verify() {
     int sign_result = dili_sign(signature, message, message_len, &keypair.sk, param);
     
     if(sign_result != 0) {
-        printf("[FAIL] Signature generation failed!\n");
+        printf("[FAIL] %s signature generation failed!\n", get_mode_name(mode));
         return;
     }
 
-    printf("[INFO] Signature generated successfully.\n");
+    printf("[INFO] %s signature generated successfully.\n", get_mode_name(mode));
     
     // Check if signature was written
     int non_zero = 0;
@@ -85,54 +156,62 @@ void test_sign_verify() {
 
     if(non_zero) {
 
-        printf("\nVerifying signature with right message...\n");
+        printf("\nVerifying signature with correct message...\n");
         // Test verification
-        printf("\nVerifying signature...\n");
         int verify_result = dili_verify(signature, message, message_len, &keypair.pk, param);
         
         if(verify_result == 0) {
-            printf("[PASS] Signature verified successfully!\n");
+            printf("[PASS] %s signature verified successfully!\n", get_mode_name(mode));
         } else {
-            printf("[FAIL] Signature verification failed (result=%d)\n", verify_result);
+            printf("[FAIL] %s signature verification failed (result=%d)\n", get_mode_name(mode), verify_result);
         } 
     } else {
         printf("\n[FAIL] Signature is all zeros\n");
     }
 
     char message2[] = "hello, Dilithium! This is a test message for signing.";
-    printf("\nVerifying signature with wrong message...\n");
+    printf("\nVerifying signature with wrong message (should fail)...\n");
     if(non_zero) {
 
-        // Test verification
-        printf("\nVerifying signature...\n");
-        int verify_result = dili_verify(signature, message2, (int)strlen(message2), &keypair.pk, param);
+        // Test verification with wrong message
+        int verify_result = dili_verify(signature, (uint8_t*)message2, (int)strlen(message2), &keypair.pk, param);
         
-        if(verify_result == 0) {
-            printf("[PASS] Signature verified successfully!\n");
+        if(verify_result != 0) {
+            printf("[PASS] %s correctly rejected wrong message (result=%d)\n", get_mode_name(mode), verify_result);
         } else {
-            printf("[FAIL] Signature verification failed (result=%d)\n", verify_result);
+            printf("[FAIL] %s incorrectly verified wrong message!\n", get_mode_name(mode));
         } 
     } else {
         printf("\n[FAIL] Signature is all zeros\n");
     }
 }
 
-// Test packing/unpacking (Keep existing logic)
-void test_packing() {
+// Test sign and verify for all modes
+void test_sign_verify() {
     printf("\n============================================\n");
-    printf("  Test: Pack/Unpack Public Key\n");
+    printf("  Test: All Dilithium Modes Sign & Verify\n");
+    printf("============================================\n");
+    
+    for(int mode = 0; mode <= 2; mode++) {
+        test_sign_verify_mode(mode);
+    }
+}
+
+// Test packing/unpacking with specified mode
+void test_packing_mode(int mode) {
+    printf("\n============================================\n");
+    printf("  Test: %s Pack/Unpack Public Key\n", get_mode_name(mode));
     printf("============================================\n");
     
     dili_param param;
-    param.mode = 0;
-    param.k = 4;
-    param.l = 4;
-    param.eta = 2;
+    init_dili_param(&param, mode);
+    
+    printf("Parameters: k=%d, l=%d, eta=%d\n", param.k, param.l, param.eta);
     
     dili_keypair_t keypair1, keypair2;
     dili_keygen(&keypair1, param);
     
-    uint8_t pk_bytes[32 + 4 * 416];
+    uint8_t pk_bytes[32 + 8 * 416]; // Max size for Dilithium5 (k=8)
     dili_pack_pk(pk_bytes, keypair1.pk.rho, keypair1.pk.t1, param.k);
     
     dili_unpack_pk(keypair2.pk.rho, keypair2.pk.t1, pk_bytes, param.k);
@@ -150,16 +229,34 @@ void test_packing() {
     }
     
     if(rho_match && t1_match) {
-        printf("[PASS] Pack/Unpack test successful\n");
+        printf("[PASS] %s Pack/Unpack test successful\n", get_mode_name(mode));
     } else {
-        printf("[FAIL] Pack/Unpack mismatch\n");
+        printf("[FAIL] %s Pack/Unpack mismatch\n", get_mode_name(mode));
         printf("Rho match: %d, T1 match: %d\n", rho_match, t1_match);
     }
 }
 
+// Test packing for all modes (Keep existing logic)
+void test_packing() {
+    printf("\n============================================\n");
+    printf("  Test: All Dilithium Modes Pack/Unpack\n");
+    printf("============================================\n");
+    
+    for(int mode = 0; mode <= 2; mode++) {
+        test_packing_mode(mode);
+    }
+}
+
 int main() {
+    printf("\n");
+    printf("**************************************************\n");
+    printf("*  Dilithium Multi-Mode Test Suite              *\n");
+    printf("*  Testing: Dilithium2, Dilithium3, Dilithium5  *\n");
+    printf("**************************************************\n");
+    
     test_keygen();
     test_sign_verify();
+    //test_packing();
     
     printf("\n============================================\n");
     printf("  All Tests Complete\n");

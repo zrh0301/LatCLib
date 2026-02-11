@@ -75,17 +75,19 @@ static void decompose(lssi_t *r1, lssi_t *r0, const lssi_t *r, int n, int alpha)
 static void high_bits(lssi_t *r1, const lssi_t *r, int n, int alpha) {
     int i;
     lssi_t a, r1_val;
+    int gamma2 = alpha / 2;
     
     for(i=0;i<n;++i){
         a = REDUCE32(r[i]);
         r1_val = (a + 127) >> 7;
-        #if DILI_GAMMA2 == ((DILI_Q-1)/88)
-        r1_val = (r1_val * 11275 + (1 << 23)) >> 24;
-        r1_val ^= ((43 - r1_val) >> 31) & r1_val;
-        #else
-        r1_val = (r1_val * 1025 + (1 << 21)) >> 22;
-        r1_val &= 15;
-        #endif
+        
+        if(gamma2 == ((DILI_Q-1)/88)) {  // Dilithium2: gamma2 = 95232
+            r1_val = (r1_val * 11275 + (1 << 23)) >> 24;
+            r1_val ^= ((43 - r1_val) >> 31) & r1_val;
+        } else {  // Dilithium3/5: gamma2 = 261888
+            r1_val = (r1_val * 1025 + (1 << 21)) >> 22;
+            r1_val &= 15;
+        }
         
         r1[i] = r1_val;
     }
@@ -103,6 +105,7 @@ static int check_norm(const poly p, int bound){
     }
     return (fail&1);
 }
+
 // LowBits: extract low bits
 static void low_bits(lssi_t *r0, const lssi_t *r, int n, int alpha) {
     int i;
@@ -119,29 +122,32 @@ static void low_bits(lssi_t *r0, const lssi_t *r, int n, int alpha) {
 static int make_hint(uint8_t *hint, const lssi_t *a, const lssi_t *b, int n, int alpha) {
     int weight = 0;
     int i;
-    (void)alpha;
+    int gamma2 = alpha / 2;
     
     for(i = 0; i < n; ++i) {
         lssi_t a_val = REDUCE32(a[i]);
         lssi_t b_val = REDUCE32(b[i]);
         lssi_t r1_b = (b_val + 127) >> 7;
-        #if DILI_GAMMA2 == ((DILI_Q-1)/88)
-        r1_b = (r1_b * 11275 + (1 << 23)) >> 24;
-        r1_b ^= ((43 - r1_b) >> 31) & r1_b;
-        #else
-        r1_b = (r1_b * 1025 + (1 << 21)) >> 22;
-        r1_b &= 15;
-        #endif
+        
+        if(gamma2 == ((DILI_Q-1)/88)) {  // Dilithium2
+            r1_b = (r1_b * 11275 + (1 << 23)) >> 24;
+            r1_b ^= ((43 - r1_b) >> 31) & r1_b;
+        } else {  // Dilithium3/5
+            r1_b = (r1_b * 1025 + (1 << 21)) >> 22;
+            r1_b &= 15;
+        }
         
         lssi_t sum = REDUCE32(a_val + b_val);
         lssi_t r1_sum = (sum + 127) >> 7;
-        #if DILI_GAMMA2 == ((DILI_Q-1)/88)
-        r1_sum = (r1_sum * 11275 + (1 << 23)) >> 24;
-        r1_sum ^= ((43 - r1_sum) >> 31) & r1_sum;
-        #else
-        r1_sum = (r1_sum * 1025 + (1 << 21)) >> 22;
-        r1_sum &= 15;
-        #endif
+        
+        if(gamma2 == ((DILI_Q-1)/88)) {  // Dilithium2
+            r1_sum = (r1_sum * 11275 + (1 << 23)) >> 24;
+            r1_sum ^= ((43 - r1_sum) >> 31) & r1_sum;
+        } else {  // Dilithium3/5
+            r1_sum = (r1_sum * 1025 + (1 << 21)) >> 22;
+            r1_sum &= 15;
+        }
+        
         if(r1_b != r1_sum) {
             hint[i] = 1;
             weight++;
@@ -155,38 +161,41 @@ static int make_hint(uint8_t *hint, const lssi_t *a, const lssi_t *b, int n, int
 
 static void use_hint(lssi_t *r1, const uint8_t *hint, const lssi_t *r, int n, int alpha) {
     int i;
+    int gamma2 = alpha / 2;
     
     for(i = 0; i < n; ++i) {
         lssi_t a = REDUCE32(r[i]);
         lssi_t r1_val = (a + 127) >> 7;
-        #if DILI_GAMMA2 == ((DILI_Q-1)/88)
-        r1_val = (r1_val * 11275 + (1 << 23)) >> 24;
-        r1_val ^= ((43 - r1_val) >> 31) & r1_val;
-        #else
-        r1_val = (r1_val * 1025 + (1 << 21)) >> 22;
-        r1_val &= 15;
-        #endif
+        
+        if(gamma2 == ((DILI_Q-1)/88)) {  // Dilithium2
+            r1_val = (r1_val * 11275 + (1 << 23)) >> 24;
+            r1_val ^= ((43 - r1_val) >> 31) & r1_val;
+        } else {  // Dilithium3/5
+            r1_val = (r1_val * 1025 + (1 << 21)) >> 22;
+            r1_val &= 15;
+        }
         
         if(hint[i] == 0) {
             r1[i] = r1_val;
             continue;
         }
         
-        lssi_t r0 = a - r1_val * 2 * DILI_GAMMA2;
+        lssi_t r0 = a - r1_val * 2 * gamma2;
         r0 -= (((DILI_Q-1)/2 - r0) >> 31) & DILI_Q;
-        #if DILI_GAMMA2 == ((DILI_Q-1)/88)
-        if(r0 > 0) {
-            r1_val = (r1_val == 43) ? 0 : (r1_val + 1);
-        } else {
-            r1_val = (r1_val == 0) ? 43 : (r1_val - 1);
+        
+        if(gamma2 == ((DILI_Q-1)/88)) {  // Dilithium2
+            if(r0 > 0) {
+                r1_val = (r1_val == 43) ? 0 : (r1_val + 1);
+            } else {
+                r1_val = (r1_val == 0) ? 43 : (r1_val - 1);
+            }
+        } else {  // Dilithium3/5
+            if(r0 > 0) {
+                r1_val = (r1_val + 1) & 15;
+            } else {
+                r1_val = (r1_val - 1) & 15;
+            }
         }
-        #else
-        if(r0 > 0) {
-            r1_val = (r1_val + 1) & 15;
-        } else {
-            r1_val = (r1_val - 1) & 15;
-        }
-        #endif
         
         r1[i] = r1_val;
     }
@@ -291,16 +300,18 @@ static void challenge(lssi_t *c, const uint8_t *hash, int tau) {
 
 // Key Generation
 void dili_keygen(dili_keypair_t* keypair, dili_param param) {
+    const int K_DILI = param.k;
+    const int L_DILI = param.l;
     lp_ctx ctx;
     uint8_t seed[32];
     uint8_t buf[96];
     uint8_t rho[32], rho_prime[32], K[32];
-    uint8_t pk_packed[32 + DILI_K * 512];
-    poly matrix_A[DILI_K * DILI_L];
-    poly s1_ntt[DILI_L];
-    poly t[DILI_K];
-    poly s2[DILI_K];
-    poly t_arr[DILI_K];
+    uint8_t pk_packed[32 + K_DILI * 512];
+    poly matrix_A[K_DILI * L_DILI];
+    poly s1_ntt[L_DILI];
+    poly t[K_DILI];
+    poly s2[K_DILI];
+    poly t_arr[K_DILI];
     
     INIT_NTT_DILI(&ctx);
     rand_bytes(seed, 32);
@@ -310,21 +321,21 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     memcpy(rho_prime, buf + 32, 32);
     memcpy(K, buf + 64, 32);
 
-    polyvec_matrix_expand(matrix_A, param.k, param.l, rho, &ctx);
+    polyvec_matrix_expand(matrix_A, K_DILI, L_DILI, rho, &ctx);
     
-    expand_s(keypair->sk.s1, keypair->sk.s2, rho_prime, param.k, param.l, param.eta, &ctx);
+    expand_s(keypair->sk.s1, keypair->sk.s2, rho_prime, K_DILI, L_DILI, param.eta, &ctx);
     
-    polyvec_copy(s1_ntt, keypair->sk.s1, param.l);
-    polyvec_ntt(s1_ntt, param.l, &ctx);
+    polyvec_copy(s1_ntt, keypair->sk.s1, L_DILI);
+    polyvec_ntt(s1_ntt, L_DILI, &ctx);
 
-    polyvec_copy(s2, keypair->sk.s2, param.k);
-    calc_t(t, matrix_A, param.k, param.l, &ctx, s1_ntt, s2);
+    polyvec_copy(s2, keypair->sk.s2, K_DILI);
+    calc_t(t, matrix_A, K_DILI, L_DILI, &ctx, s1_ntt, s2);
     
-    polyvec_copy(t_arr, t, param.k);
+    polyvec_copy(t_arr, t, K_DILI);
     
-    power2round(keypair->pk.t1, keypair->sk.t0, t_arr, param.k, ctx.n, DILI_D);
+    power2round(keypair->pk.t1, keypair->sk.t0, t_arr, K_DILI, ctx.n, DILI_D);
 
-    dili_pack_pk(pk_packed, rho, keypair->pk.t1, param.k);
+    dili_pack_pk(pk_packed, rho, keypair->pk.t1, K_DILI);
     
     shake256(keypair->sk.tr, 64, pk_packed, sizeof(pk_packed));
 
@@ -336,10 +347,9 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 // Sign
 int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param) {
     lp_ctx ctx;
-    const int K = DILI_K;
-    const int L = DILI_L;
+    const int K = param.k;
+    const int L = param.l;
     
-    /* All variable declarations at the beginning */
     poly matrix_A[K * L];
     poly y[L];
     poly w[K], w1[K];
@@ -381,7 +391,6 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
 
-    /* Rejection Sampling Loop */
     do{
         ++loop;
 
@@ -396,7 +405,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
             seed_with_nonce[65] = (nonce >> 8) & 0xFF;
             nonce++;
             
-            expand_mask(y[i], seed_with_nonce, 66, DILI_N, DILI_GAMMA1);
+            expand_mask(y[i], seed_with_nonce, 66, DILI_N, param.gamma1);
         }
 
         polyvec_copy(y_ntt, y, L);
@@ -406,18 +415,18 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         polyvec_invntt_tomont(w, K, &ctx);
 
         for(i=0; i<K; i++) {
-            high_bits(w1[i], w[i], DILI_N, DILI_ALPHA);
+            high_bits(w1[i], w[i], DILI_N, 2 * param.gamma2);
         }
 
         memcpy(c_tilde_temp_buf, mu, 64);
         offset = 64;
         for(i=0; i<K; i++) {
-            pack_w1(c_tilde_temp_buf + offset, w1[i]);
-            offset += (DILI_N / 4) * 3;
+            pack_w1(c_tilde_temp_buf + offset, w1[i], param.gamma2);
+            offset += param.w1_packed_bytes;
         }
         shake256(c_tilde, 32, c_tilde_temp_buf, offset);
 
-        challenge(cp, c_tilde, DILI_TAU);
+        challenge(cp, c_tilde, param.tau);
         POLY_COPY(cp_ntt, cp, DILI_N);
         poly_ntt(cp_ntt, &ctx);
 
@@ -433,7 +442,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         
         z_check_fail = 0;
         for(i=0; i<L; i++) {
-            if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
+            if(check_norm(z[i], param.gamma1 - param.beta)) {
                 z_check_fail = 1;
                 break;
             }
@@ -456,9 +465,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         r0_check_fail = 0;
         for(i=0; i<K; i++) {
             POLY_SUB(diff, w[i], cs2[i], DILI_N);
-            low_bits(r0, diff, DILI_N, DILI_ALPHA);
+            low_bits(r0, diff, DILI_N, 2 * param.gamma2);
             
-            if(check_norm(r0, DILI_GAMMA2 - DILI_BETA)) {
+            if(check_norm(r0, param.gamma2 - param.beta)) {
                 r0_check_fail = 1;
                 break;
             }
@@ -467,7 +476,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
         ct0_check_fail = 0;
         for(i=0; i<K; i++) {
-            if(check_norm(ct0[i], DILI_GAMMA2)) {
+            if(check_norm(ct0[i], param.gamma2)) {
                 ct0_check_fail = 1;
                 break;
             }
@@ -486,10 +495,10 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
             for(j=0; j<DILI_N; j++) 
                 neg_ct0[j] = -ct0[i][j];
 
-            hint_ones += make_hint(h[i], neg_ct0, w_cs2_ct0[i], DILI_N, DILI_ALPHA);
+            hint_ones += make_hint(h[i], neg_ct0, w_cs2_ct0[i], DILI_N, 2 * param.gamma2);
         }
 
-        if(hint_ones > DILI_OMEGA) {
+        if(hint_ones > param.omega) {
             continue;
         }
 
@@ -506,11 +515,11 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     sig_ptr += 32;
     
     for(i=0; i<L; i++) {
-        pack_z(sig_ptr, z[i]);
+        pack_z(sig_ptr, z[i], param.gamma1);
         sig_ptr += (3 * DILI_N);
     }
     
-    if(pack_h(sig_ptr, h, K)) {
+    if(pack_h(sig_ptr, h, K, param.omega)) {
         return -1;
     }
     return 0;
@@ -520,18 +529,17 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 // Verify
 int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk, dili_param param) {
     lp_ctx ctx;
-    const int K = DILI_K;
-    const int L = DILI_L;
+    const int K = param.k;
+    const int L = param.l;
     
-    /* All variable declarations at the beginning */
     const uint8_t *c_tilde;
     const uint8_t *z_bytes;
     const uint8_t *h_bytes;
     poly z[L];
     uint8_t h[K][DILI_N];
     poly c, c_ntt;
-    poly z_ntt[DILI_L];
-    poly Az_ntt_vec[DILI_K];
+    poly z_ntt[L];
+    poly Az_ntt_vec[K];
     poly Az_ntt[K];
     poly t1_2d_ntt[K];
     poly t1_shifted;
@@ -539,7 +547,7 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     poly ct1_ntt;
     poly w_prime[K];
     poly w1_prime[K];
-    poly A[DILI_K * DILI_L];
+    poly A[K * L];
     uint8_t tr[64];
     uint8_t pk_packed[32 + K * 512];
     uint8_t mu[64];
@@ -559,11 +567,11 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     h_bytes = z_bytes + (L * 3 * DILI_N);
     
     for(i = 0; i < L; i++) {
-        unpack_z(z[i], z_bytes + i * 3 * DILI_N);
+        unpack_z(z[i], z_bytes + i * 3 * DILI_N, param.gamma1);
     }
     
     for(i = 0; i < L; i++) {
-        if(check_norm(z[i], DILI_GAMMA1 - DILI_BETA)) {
+        if(check_norm(z[i], param.gamma1 - param.beta)) {
             return -1;
         }
     }
@@ -577,17 +585,17 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     shake_xof_final(&shake_ctx);
     shake_squeeze(&shake_ctx, mu, 64);
 
-    polyvec_matrix_expand(A, DILI_K, DILI_L, pk->rho, &ctx);
+    polyvec_matrix_expand(A, K, L, pk->rho, &ctx);
 
-    challenge(c, c_tilde, DILI_TAU);
+    challenge(c, c_tilde, param.tau);
     POLY_COPY(c_ntt, c, DILI_N);
     poly_ntt(c_ntt, &ctx);
     
-    polyvec_copy(z_ntt, z, DILI_L);
-    polyvec_ntt(z_ntt, DILI_L, &ctx);
+    polyvec_copy(z_ntt, z, L);
+    polyvec_ntt(z_ntt, L, &ctx);
     
-    polyvec_matrix_pointwise_montgomery(Az_ntt_vec, A, DILI_K, z_ntt, DILI_L, &ctx);
-    polyvec_copy(Az_ntt, Az_ntt_vec, DILI_K);
+    polyvec_matrix_pointwise_montgomery(Az_ntt_vec, A, K, z_ntt, L, &ctx);
+    polyvec_copy(Az_ntt, Az_ntt_vec, K);
     
     for(i = 0; i < K; i++) {
         for(j = 0; j < DILI_N; j++) {
@@ -611,20 +619,20 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     polyvec_invntt_tomont(w_prime, K, &ctx);
     polyvec_caddq(w_prime, K);
     
-    rc_unpack = unpack_h(h, h_bytes, K);
+    rc_unpack = unpack_h(h, h_bytes, K, param.omega);
     if(rc_unpack != 0) {
         return -1;
     }
 
     for(i = 0; i < K; i++) {
-        use_hint(w1_prime[i], h[i], w_prime[i], DILI_N, DILI_ALPHA);
+        use_hint(w1_prime[i], h[i], w_prime[i], DILI_N, 2 * param.gamma2);
     }
 
     memcpy(w1_prime_packed, mu, 64);
     offset = 64;
     for(i = 0; i < K; i++) {
-        pack_w1(w1_prime_packed + offset, w1_prime[i]);
-        offset += (DILI_N / 4) * 3;
+        pack_w1(w1_prime_packed + offset, w1_prime[i], param.gamma2);
+        offset += param.w1_packed_bytes;
     }
 
     shake256(c_tilde_prime, 32, w1_prime_packed, offset);

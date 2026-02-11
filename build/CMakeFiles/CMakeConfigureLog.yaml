@@ -1,0 +1,2022 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      The system is: Windows - 10.0.26100 - AMD64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeMinGWFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "mingw32-make.exe"
+    candidate_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+      - "/REGISTRY-NOTFOUND/bin/"
+      - "c:/MinGW/bin/"
+      - "/MinGW/bin/"
+      - "/REGISTRY-NOTFOUND/MinGW/bin/"
+    searched_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/mingw32-make.exe.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/mingw32-make.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/mingw32-make.exe.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/mingw32-make.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/mingw32-make.exe.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/mingw32-make.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/mingw32-make.exe.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/mingw32-make.exe"
+      - "D:/VMWARE_SM/VM/bin/mingw32-make.exe.com"
+      - "D:/VMWARE_SM/VM/bin/mingw32-make.exe"
+      - "C:/Windows/System32/mingw32-make.exe.com"
+      - "C:/Windows/System32/mingw32-make.exe"
+      - "C:/Windows/mingw32-make.exe.com"
+      - "C:/Windows/mingw32-make.exe"
+      - "C:/Windows/System32/wbem/mingw32-make.exe.com"
+      - "C:/Windows/System32/wbem/mingw32-make.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/mingw32-make.exe.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/mingw32-make.exe"
+      - "C:/Windows/System32/OpenSSH/mingw32-make.exe.com"
+      - "C:/Windows/System32/OpenSSH/mingw32-make.exe"
+      - "D:/dev_C/msys64/mingw64/bin/mingw32-make.exe.com"
+    found: "D:/dev_C/msys64/mingw64/bin/mingw32-make.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompiler.cmake:63 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:64 (_cmake_find_compiler)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER"
+    description: "C compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: false
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "cc"
+      - "gcc"
+      - "cl"
+      - "bcc"
+      - "xlc"
+      - "icx"
+      - "clang"
+    candidate_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cl.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cl.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/cl"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/bcc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/bcc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/bcc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/xlc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/xlc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/xlc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/icx.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/icx.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/icx"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/clang.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/clang.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/clang"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cl.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cl.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/cl"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/bcc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/bcc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/bcc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/xlc.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/xlc.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/xlc"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/icx.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/icx.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/icx"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/clang.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/clang.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/clang"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cl.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cl.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/cl"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/bcc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/bcc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/bcc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/xlc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/xlc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/xlc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/icx.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/icx.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/icx"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/clang.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/clang.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/clang"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cl.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cl.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/cl"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/bcc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/bcc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/bcc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/xlc.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/xlc.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/xlc"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/icx.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/icx.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/icx"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/clang.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/clang.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/clang"
+      - "D:/VMWARE_SM/VM/bin/cc.com"
+      - "D:/VMWARE_SM/VM/bin/cc.exe"
+      - "D:/VMWARE_SM/VM/bin/cc"
+      - "D:/VMWARE_SM/VM/bin/gcc.com"
+      - "D:/VMWARE_SM/VM/bin/gcc.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc"
+      - "D:/VMWARE_SM/VM/bin/cl.com"
+      - "D:/VMWARE_SM/VM/bin/cl.exe"
+      - "D:/VMWARE_SM/VM/bin/cl"
+      - "D:/VMWARE_SM/VM/bin/bcc.com"
+      - "D:/VMWARE_SM/VM/bin/bcc.exe"
+      - "D:/VMWARE_SM/VM/bin/bcc"
+      - "D:/VMWARE_SM/VM/bin/xlc.com"
+      - "D:/VMWARE_SM/VM/bin/xlc.exe"
+      - "D:/VMWARE_SM/VM/bin/xlc"
+      - "D:/VMWARE_SM/VM/bin/icx.com"
+      - "D:/VMWARE_SM/VM/bin/icx.exe"
+      - "D:/VMWARE_SM/VM/bin/icx"
+      - "D:/VMWARE_SM/VM/bin/clang.com"
+      - "D:/VMWARE_SM/VM/bin/clang.exe"
+      - "D:/VMWARE_SM/VM/bin/clang"
+      - "C:/Windows/System32/cc.com"
+      - "C:/Windows/System32/cc.exe"
+      - "C:/Windows/System32/cc"
+      - "C:/Windows/System32/gcc.com"
+      - "C:/Windows/System32/gcc.exe"
+      - "C:/Windows/System32/gcc"
+      - "C:/Windows/System32/cl.com"
+      - "C:/Windows/System32/cl.exe"
+      - "C:/Windows/System32/cl"
+      - "C:/Windows/System32/bcc.com"
+      - "C:/Windows/System32/bcc.exe"
+      - "C:/Windows/System32/bcc"
+      - "C:/Windows/System32/xlc.com"
+      - "C:/Windows/System32/xlc.exe"
+      - "C:/Windows/System32/xlc"
+      - "C:/Windows/System32/icx.com"
+      - "C:/Windows/System32/icx.exe"
+      - "C:/Windows/System32/icx"
+      - "C:/Windows/System32/clang.com"
+      - "C:/Windows/System32/clang.exe"
+      - "C:/Windows/System32/clang"
+      - "C:/Windows/cc.com"
+      - "C:/Windows/cc.exe"
+      - "C:/Windows/cc"
+      - "C:/Windows/gcc.com"
+      - "C:/Windows/gcc.exe"
+      - "C:/Windows/gcc"
+      - "C:/Windows/cl.com"
+      - "C:/Windows/cl.exe"
+      - "C:/Windows/cl"
+      - "C:/Windows/bcc.com"
+      - "C:/Windows/bcc.exe"
+      - "C:/Windows/bcc"
+      - "C:/Windows/xlc.com"
+      - "C:/Windows/xlc.exe"
+      - "C:/Windows/xlc"
+      - "C:/Windows/icx.com"
+      - "C:/Windows/icx.exe"
+      - "C:/Windows/icx"
+      - "C:/Windows/clang.com"
+      - "C:/Windows/clang.exe"
+      - "C:/Windows/clang"
+      - "C:/Windows/System32/wbem/cc.com"
+      - "C:/Windows/System32/wbem/cc.exe"
+      - "C:/Windows/System32/wbem/cc"
+      - "C:/Windows/System32/wbem/gcc.com"
+      - "C:/Windows/System32/wbem/gcc.exe"
+      - "C:/Windows/System32/wbem/gcc"
+      - "C:/Windows/System32/wbem/cl.com"
+      - "C:/Windows/System32/wbem/cl.exe"
+      - "C:/Windows/System32/wbem/cl"
+      - "C:/Windows/System32/wbem/bcc.com"
+      - "C:/Windows/System32/wbem/bcc.exe"
+      - "C:/Windows/System32/wbem/bcc"
+      - "C:/Windows/System32/wbem/xlc.com"
+      - "C:/Windows/System32/wbem/xlc.exe"
+      - "C:/Windows/System32/wbem/xlc"
+      - "C:/Windows/System32/wbem/icx.com"
+      - "C:/Windows/System32/wbem/icx.exe"
+      - "C:/Windows/System32/wbem/icx"
+      - "C:/Windows/System32/wbem/clang.com"
+      - "C:/Windows/System32/wbem/clang.exe"
+      - "C:/Windows/System32/wbem/clang"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cc.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cc.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cc"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cl.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cl.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/cl"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/bcc.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/bcc.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/bcc"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/xlc.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/xlc.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/xlc"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/icx.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/icx.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/icx"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/clang.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/clang.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/clang"
+      - "C:/Windows/System32/OpenSSH/cc.com"
+      - "C:/Windows/System32/OpenSSH/cc.exe"
+      - "C:/Windows/System32/OpenSSH/cc"
+      - "C:/Windows/System32/OpenSSH/gcc.com"
+      - "C:/Windows/System32/OpenSSH/gcc.exe"
+      - "C:/Windows/System32/OpenSSH/gcc"
+      - "C:/Windows/System32/OpenSSH/cl.com"
+      - "C:/Windows/System32/OpenSSH/cl.exe"
+      - "C:/Windows/System32/OpenSSH/cl"
+      - "C:/Windows/System32/OpenSSH/bcc.com"
+      - "C:/Windows/System32/OpenSSH/bcc.exe"
+      - "C:/Windows/System32/OpenSSH/bcc"
+      - "C:/Windows/System32/OpenSSH/xlc.com"
+      - "C:/Windows/System32/OpenSSH/xlc.exe"
+      - "C:/Windows/System32/OpenSSH/xlc"
+      - "C:/Windows/System32/OpenSSH/icx.com"
+      - "C:/Windows/System32/OpenSSH/icx.exe"
+      - "C:/Windows/System32/OpenSSH/icx"
+      - "C:/Windows/System32/OpenSSH/clang.com"
+      - "C:/Windows/System32/OpenSSH/clang.exe"
+      - "C:/Windows/System32/OpenSSH/clang"
+      - "D:/dev_C/msys64/mingw64/bin/cc.com"
+    found: "D:/dev_C/msys64/mingw64/bin/cc.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/"
+    found: "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: D:/dev_C/msys64/mingw64/bin/cc.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+      
+      The C compiler identification is GNU, found in:
+        C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/4.2.0/CompilerIdC/a.exe
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_AR"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ar"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/ar.com"
+    found: "D:/dev_C/msys64/mingw64/bin/ar.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_RANLIB"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ranlib"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/ranlib.com"
+    found: "D:/dev_C/msys64/mingw64/bin/ranlib.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_STRIP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "strip"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/strip.com"
+    found: "D:/dev_C/msys64/mingw64/bin/strip.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_LINKER"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ld"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/ld.com"
+    found: "D:/dev_C/msys64/mingw64/bin/ld.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "nm"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/nm.com"
+    found: "D:/dev_C/msys64/mingw64/bin/nm.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJDUMP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objdump"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/objdump.com"
+    found: "D:/dev_C/msys64/mingw64/bin/objdump.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJCOPY"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objcopy"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/objcopy.com"
+    found: "D:/dev_C/msys64/mingw64/bin/objcopy.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_READELF"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "readelf"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/readelf.com"
+    found: "D:/dev_C/msys64/mingw64/bin/readelf.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_DLLTOOL"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "dlltool"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/dlltool.com"
+    found: "D:/dev_C/msys64/mingw64/bin/dlltool.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_ADDR2LINE"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "addr2line"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/addr2line.com"
+    found: "D:/dev_C/msys64/mingw64/bin/addr2line.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_TAPI"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "tapi"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/tapi.com"
+      - "D:/dev_C/msys64/mingw64/bin/tapi.exe"
+      - "D:/dev_C/msys64/mingw64/bin/tapi"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/tapi.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/tapi.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/tapi"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi"
+      - "D:/VMWARE_SM/VM/bin/tapi.com"
+      - "D:/VMWARE_SM/VM/bin/tapi.exe"
+      - "D:/VMWARE_SM/VM/bin/tapi"
+      - "C:/Windows/System32/tapi.com"
+      - "C:/Windows/System32/tapi.exe"
+      - "C:/Windows/System32/tapi"
+      - "C:/Windows/tapi.com"
+      - "C:/Windows/tapi.exe"
+      - "C:/Windows/tapi"
+      - "C:/Windows/System32/wbem/tapi.com"
+      - "C:/Windows/System32/wbem/tapi.exe"
+      - "C:/Windows/System32/wbem/tapi"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/tapi.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/tapi.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/tapi"
+      - "C:/Windows/System32/OpenSSH/tapi.com"
+      - "C:/Windows/System32/OpenSSH/tapi.exe"
+      - "C:/Windows/System32/OpenSSH/tapi"
+      - "C:/Program Files/dotnet/tapi.com"
+      - "C:/Program Files/dotnet/tapi.exe"
+      - "C:/Program Files/dotnet/tapi"
+      - "C:/Program Files/CMake/bin/tapi.com"
+      - "C:/Program Files/CMake/bin/tapi.exe"
+      - "C:/Program Files/CMake/bin/tapi"
+      - "C:/Program Files/Git/cmd/tapi.com"
+      - "C:/Program Files/Git/cmd/tapi.exe"
+      - "C:/Program Files/Git/cmd/tapi"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/tapi.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/tapi.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/tapi"
+      - "D:/dev_C/Microsoft VS Code/bin/tapi.com"
+      - "D:/dev_C/Microsoft VS Code/bin/tapi.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/tapi"
+      - "D:/modelsim/win64/tapi.com"
+      - "D:/modelsim/win64/tapi.exe"
+      - "D:/modelsim/win64/tapi"
+      - "C:/bazel/tapi.com"
+      - "C:/bazel/tapi.exe"
+      - "C:/bazel/tapi"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-14.2"
+      - "gcc-ar-14"
+      - "gcc-ar14"
+      - "gcc-ar"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14.2.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14.2.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14.2"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14.2.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14.2.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14.2"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14.2.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14.2.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14.2"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14.2.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14.2.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14.2"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14.2.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14.2.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14.2"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14.2.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14.2.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14.2"
+      - "C:/Windows/System32/gcc-ar-14.2.com"
+      - "C:/Windows/System32/gcc-ar-14.2.exe"
+      - "C:/Windows/System32/gcc-ar-14.2"
+      - "C:/Windows/gcc-ar-14.2.com"
+      - "C:/Windows/gcc-ar-14.2.exe"
+      - "C:/Windows/gcc-ar-14.2"
+      - "C:/Windows/System32/wbem/gcc-ar-14.2.com"
+      - "C:/Windows/System32/wbem/gcc-ar-14.2.exe"
+      - "C:/Windows/System32/wbem/gcc-ar-14.2"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14.2.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14.2.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14.2"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14.2.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14.2.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14.2"
+      - "C:/Program Files/dotnet/gcc-ar-14.2.com"
+      - "C:/Program Files/dotnet/gcc-ar-14.2.exe"
+      - "C:/Program Files/dotnet/gcc-ar-14.2"
+      - "C:/Program Files/CMake/bin/gcc-ar-14.2.com"
+      - "C:/Program Files/CMake/bin/gcc-ar-14.2.exe"
+      - "C:/Program Files/CMake/bin/gcc-ar-14.2"
+      - "C:/Program Files/Git/cmd/gcc-ar-14.2.com"
+      - "C:/Program Files/Git/cmd/gcc-ar-14.2.exe"
+      - "C:/Program Files/Git/cmd/gcc-ar-14.2"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14.2.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14.2.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14.2"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14.2.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14.2.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14.2"
+      - "D:/modelsim/win64/gcc-ar-14.2.com"
+      - "D:/modelsim/win64/gcc-ar-14.2.exe"
+      - "D:/modelsim/win64/gcc-ar-14.2"
+      - "C:/bazel/gcc-ar-14.2.com"
+      - "C:/bazel/gcc-ar-14.2.exe"
+      - "C:/bazel/gcc-ar-14.2"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar-14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar-14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-14"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar-14"
+      - "C:/Windows/System32/gcc-ar-14.com"
+      - "C:/Windows/System32/gcc-ar-14.exe"
+      - "C:/Windows/System32/gcc-ar-14"
+      - "C:/Windows/gcc-ar-14.com"
+      - "C:/Windows/gcc-ar-14.exe"
+      - "C:/Windows/gcc-ar-14"
+      - "C:/Windows/System32/wbem/gcc-ar-14.com"
+      - "C:/Windows/System32/wbem/gcc-ar-14.exe"
+      - "C:/Windows/System32/wbem/gcc-ar-14"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar-14"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ar-14"
+      - "C:/Program Files/dotnet/gcc-ar-14.com"
+      - "C:/Program Files/dotnet/gcc-ar-14.exe"
+      - "C:/Program Files/dotnet/gcc-ar-14"
+      - "C:/Program Files/CMake/bin/gcc-ar-14.com"
+      - "C:/Program Files/CMake/bin/gcc-ar-14.exe"
+      - "C:/Program Files/CMake/bin/gcc-ar-14"
+      - "C:/Program Files/Git/cmd/gcc-ar-14.com"
+      - "C:/Program Files/Git/cmd/gcc-ar-14.exe"
+      - "C:/Program Files/Git/cmd/gcc-ar-14"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar-14"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar-14"
+      - "D:/modelsim/win64/gcc-ar-14.com"
+      - "D:/modelsim/win64/gcc-ar-14.exe"
+      - "D:/modelsim/win64/gcc-ar-14"
+      - "C:/bazel/gcc-ar-14.com"
+      - "C:/bazel/gcc-ar-14.exe"
+      - "C:/bazel/gcc-ar-14"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar14.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar14.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ar14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar14"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar14.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar14.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ar14"
+      - "C:/Windows/System32/gcc-ar14.com"
+      - "C:/Windows/System32/gcc-ar14.exe"
+      - "C:/Windows/System32/gcc-ar14"
+      - "C:/Windows/gcc-ar14.com"
+      - "C:/Windows/gcc-ar14.exe"
+      - "C:/Windows/gcc-ar14"
+      - "C:/Windows/System32/wbem/gcc-ar14.com"
+      - "C:/Windows/System32/wbem/gcc-ar14.exe"
+      - "C:/Windows/System32/wbem/gcc-ar14"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar14.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar14.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ar14"
+      - "C:/Windows/System32/OpenSSH/gcc-ar14.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ar14.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ar14"
+      - "C:/Program Files/dotnet/gcc-ar14.com"
+      - "C:/Program Files/dotnet/gcc-ar14.exe"
+      - "C:/Program Files/dotnet/gcc-ar14"
+      - "C:/Program Files/CMake/bin/gcc-ar14.com"
+      - "C:/Program Files/CMake/bin/gcc-ar14.exe"
+      - "C:/Program Files/CMake/bin/gcc-ar14"
+      - "C:/Program Files/Git/cmd/gcc-ar14.com"
+      - "C:/Program Files/Git/cmd/gcc-ar14.exe"
+      - "C:/Program Files/Git/cmd/gcc-ar14"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar14.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar14.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ar14"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar14.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar14.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ar14"
+      - "D:/modelsim/win64/gcc-ar14.com"
+      - "D:/modelsim/win64/gcc-ar14.exe"
+      - "D:/modelsim/win64/gcc-ar14"
+      - "C:/bazel/gcc-ar14.com"
+      - "C:/bazel/gcc-ar14.exe"
+      - "C:/bazel/gcc-ar14"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ar.com"
+    found: "D:/dev_C/msys64/mingw64/bin/gcc-ar.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-14.2"
+      - "gcc-ranlib-14"
+      - "gcc-ranlib14"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+    searched_directories:
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14.2.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14.2.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14.2"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14.2.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14.2.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14.2"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14.2.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14.2.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14.2"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14.2.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14.2.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14.2"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14.2.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14.2.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14.2"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14.2.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14.2.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14.2"
+      - "C:/Windows/System32/gcc-ranlib-14.2.com"
+      - "C:/Windows/System32/gcc-ranlib-14.2.exe"
+      - "C:/Windows/System32/gcc-ranlib-14.2"
+      - "C:/Windows/gcc-ranlib-14.2.com"
+      - "C:/Windows/gcc-ranlib-14.2.exe"
+      - "C:/Windows/gcc-ranlib-14.2"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14.2.com"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14.2.exe"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14.2"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14.2.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14.2.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14.2"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14.2.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14.2.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14.2"
+      - "C:/Program Files/dotnet/gcc-ranlib-14.2.com"
+      - "C:/Program Files/dotnet/gcc-ranlib-14.2.exe"
+      - "C:/Program Files/dotnet/gcc-ranlib-14.2"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14.2.com"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14.2.exe"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14.2"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14.2.com"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14.2.exe"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14.2"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14.2.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14.2.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14.2"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14.2.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14.2.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14.2"
+      - "D:/modelsim/win64/gcc-ranlib-14.2.com"
+      - "D:/modelsim/win64/gcc-ranlib-14.2.exe"
+      - "D:/modelsim/win64/gcc-ranlib-14.2"
+      - "C:/bazel/gcc-ranlib-14.2.com"
+      - "C:/bazel/gcc-ranlib-14.2.exe"
+      - "C:/bazel/gcc-ranlib-14.2"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib-14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib-14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-14"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib-14"
+      - "C:/Windows/System32/gcc-ranlib-14.com"
+      - "C:/Windows/System32/gcc-ranlib-14.exe"
+      - "C:/Windows/System32/gcc-ranlib-14"
+      - "C:/Windows/gcc-ranlib-14.com"
+      - "C:/Windows/gcc-ranlib-14.exe"
+      - "C:/Windows/gcc-ranlib-14"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14.com"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14.exe"
+      - "C:/Windows/System32/wbem/gcc-ranlib-14"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib-14"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib-14"
+      - "C:/Program Files/dotnet/gcc-ranlib-14.com"
+      - "C:/Program Files/dotnet/gcc-ranlib-14.exe"
+      - "C:/Program Files/dotnet/gcc-ranlib-14"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14.com"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14.exe"
+      - "C:/Program Files/CMake/bin/gcc-ranlib-14"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14.com"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14.exe"
+      - "C:/Program Files/Git/cmd/gcc-ranlib-14"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-14"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib-14"
+      - "D:/modelsim/win64/gcc-ranlib-14.com"
+      - "D:/modelsim/win64/gcc-ranlib-14.exe"
+      - "D:/modelsim/win64/gcc-ranlib-14"
+      - "C:/bazel/gcc-ranlib-14.com"
+      - "C:/bazel/gcc-ranlib-14.exe"
+      - "C:/bazel/gcc-ranlib-14"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib14.com"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib14.exe"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib14"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib14.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib14.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/gcc-ranlib14"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib14.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib14.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib14"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib14.com"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib14.exe"
+      - "D:/VMWARE_SM/VM/bin/gcc-ranlib14"
+      - "C:/Windows/System32/gcc-ranlib14.com"
+      - "C:/Windows/System32/gcc-ranlib14.exe"
+      - "C:/Windows/System32/gcc-ranlib14"
+      - "C:/Windows/gcc-ranlib14.com"
+      - "C:/Windows/gcc-ranlib14.exe"
+      - "C:/Windows/gcc-ranlib14"
+      - "C:/Windows/System32/wbem/gcc-ranlib14.com"
+      - "C:/Windows/System32/wbem/gcc-ranlib14.exe"
+      - "C:/Windows/System32/wbem/gcc-ranlib14"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib14.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib14.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/gcc-ranlib14"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib14.com"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib14.exe"
+      - "C:/Windows/System32/OpenSSH/gcc-ranlib14"
+      - "C:/Program Files/dotnet/gcc-ranlib14.com"
+      - "C:/Program Files/dotnet/gcc-ranlib14.exe"
+      - "C:/Program Files/dotnet/gcc-ranlib14"
+      - "C:/Program Files/CMake/bin/gcc-ranlib14.com"
+      - "C:/Program Files/CMake/bin/gcc-ranlib14.exe"
+      - "C:/Program Files/CMake/bin/gcc-ranlib14"
+      - "C:/Program Files/Git/cmd/gcc-ranlib14.com"
+      - "C:/Program Files/Git/cmd/gcc-ranlib14.exe"
+      - "C:/Program Files/Git/cmd/gcc-ranlib14"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib14.com"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib14.exe"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/gcc-ranlib14"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib14.com"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib14.exe"
+      - "D:/dev_C/Microsoft VS Code/bin/gcc-ranlib14"
+      - "D:/modelsim/win64/gcc-ranlib14.com"
+      - "D:/modelsim/win64/gcc-ranlib14.exe"
+      - "D:/modelsim/win64/gcc-ranlib14"
+      - "C:/bazel/gcc-ranlib14.com"
+      - "C:/bazel/gcc-ranlib14.exe"
+      - "C:/bazel/gcc-ranlib14"
+      - "D:/dev_C/msys64/mingw64/bin/gcc-ranlib.com"
+    found: "D:/dev_C/msys64/mingw64/bin/gcc-ranlib.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineRCCompiler.cmake:40 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU.cmake:167 (enable_language)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU-C.cmake:2 (__windows_compiler_gnu)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCInformation.cmake:48 (include)"
+      - "CMakeLists.txt:4 (project)"
+    mode: "program"
+    variable: "CMAKE_RC_COMPILER"
+    description: "RC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "windres"
+      - "windres"
+    candidate_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/VMWARE_SM/VM/bin/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "D:/dev_C/msys64/mingw64/bin/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Users/34621/Desktop/new/My_PQC/build/%USERPROFILE%/AppData/Local/Microsoft/WindowsApps/"
+      - "D:/dev_C/Microsoft VS Code/bin/"
+      - "D:/modelsim/win64/"
+      - "C:/bazel/"
+      - "C:/Program Files/bin/"
+      - "C:/Program Files/sbin/"
+      - "C:/Program Files/"
+      - "C:/Program Files (x86)/bin/"
+      - "C:/Program Files (x86)/sbin/"
+      - "C:/Program Files (x86)/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/CMake/sbin/"
+      - "C:/Program Files/CMake/"
+      - "C:/Program Files (x86)/DilithiumProject/bin/"
+      - "C:/Program Files (x86)/DilithiumProject/sbin/"
+      - "C:/Program Files (x86)/DilithiumProject/"
+    searched_directories:
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/windres.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/windres.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/windres"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/windres.com"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/windres.exe"
+      - "C:/Users/34621/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli/windres"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/windres.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/windres.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/java8path/windres"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/windres.com"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/windres.exe"
+      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/windres"
+      - "D:/VMWARE_SM/VM/bin/windres.com"
+      - "D:/VMWARE_SM/VM/bin/windres.exe"
+      - "D:/VMWARE_SM/VM/bin/windres"
+      - "C:/Windows/System32/windres.com"
+      - "C:/Windows/System32/windres.exe"
+      - "C:/Windows/System32/windres"
+      - "C:/Windows/windres.com"
+      - "C:/Windows/windres.exe"
+      - "C:/Windows/windres"
+      - "C:/Windows/System32/wbem/windres.com"
+      - "C:/Windows/System32/wbem/windres.exe"
+      - "C:/Windows/System32/wbem/windres"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/windres.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/windres.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/windres"
+      - "C:/Windows/System32/OpenSSH/windres.com"
+      - "C:/Windows/System32/OpenSSH/windres.exe"
+      - "C:/Windows/System32/OpenSSH/windres"
+      - "D:/dev_C/msys64/mingw64/bin/windres.com"
+    found: "D:/dev_C/msys64/mingw64/bin/windres.exe"
+    search_context:
+      ENV{PATH}:
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
+        - "c:\\Users\\34621\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\copilotCli"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path"
+        - "C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath"
+        - "D:\\VMWARE_SM\\VM\\bin\\"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "D:\\dev_C\\msys64\\mingw64\\bin"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files\\Git\\cmd"
+        - "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "D:\\dev_C\\Microsoft VS Code\\bin"
+        - "D:\\modelsim\\win64"
+        - "C:\\bazel"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/DilithiumProject"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/DilithiumProject"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv"
+      binary: "C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 D:/dev_C/msys64/mingw64/bin/mingw32-make.exe -f Makefile cmTC_3321b/fast
+        D:/dev_C/msys64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_3321b.dir\\build.make CMakeFiles/cmTC_3321b.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv'
+        Building C object CMakeFiles/cmTC_3321b.dir/CMakeCCompilerABI.c.obj
+        D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe   -v -o CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj -c "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"
+        Using built-in specs.
+        COLLECT_GCC=D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe
+        Target: x86_64-w64-mingw32
+        Configured with: ../gcc-14.2.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/include --libexecdir=/mingw64/lib --enable-bootstrap --enable-checking=release --with-arch=nocona --with-tune=generic --enable-mingw-wildcard --enable-languages=c,lto,c++,fortran,ada,objc,obj-c++,rust,jit --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts --enable-libstdcxx-time --disable-libstdcxx-pch --enable-lto --enable-libgomp --disable-libssp --disable-multilib --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev3, Built by MSYS2 project' --with-bugurl=https://github.com/msys2/MINGW-packages/issues --with-gnu-as --with-gnu-ld --disable-libstdcxx-debug --enable-plugin --with-boot-ldflags=-static-libstdc++ --with-stage1-ldflags=-static-libstdc++
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.2.0 (Rev3, Built by MSYS2 project) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\'
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/cc1.exe -quiet -v -iprefix D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/ -D_REENTRANT C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles\\cmTC_3321b.dir\\ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=nocona -version -o C:\\Users\\34621\\AppData\\Local\\Temp\\ccqUf78a.s
+        GNU C17 (Rev3, Built by MSYS2 project) version 14.2.0 (x86_64-w64-mingw32)
+        	compiled by GNU C version 14.2.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.27-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"
+        ignoring duplicate directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/include"
+        ignoring nonexistent directory "D:/a/msys64/mingw64/include"
+        ignoring nonexistent directory "/mingw64/include"
+        ignoring duplicate directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed"
+        ignoring nonexistent directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"
+        ignoring nonexistent directory "D:/a/msys64/mingw64/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed
+        End of search list.
+        Compiler executable checksum: 044dc7e786fef208387ba8a79ebebc21
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\'
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj C:\\Users\\34621\\AppData\\Local\\Temp\\ccqUf78a.s
+        GNU assembler version 2.44 (x86_64-w64-mingw32) using BFD version (GNU Binutils) 2.44
+        COMPILER_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/
+        LIBRARY_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.'
+        Linking C executable cmTC_3321b.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_3321b.dir\\link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe
+        COLLECT_LTO_WRAPPER=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe
+        Target: x86_64-w64-mingw32
+        Configured with: ../gcc-14.2.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/include --libexecdir=/mingw64/lib --enable-bootstrap --enable-checking=release --with-arch=nocona --with-tune=generic --enable-mingw-wildcard --enable-languages=c,lto,c++,fortran,ada,objc,obj-c++,rust,jit --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts --enable-libstdcxx-time --disable-libstdcxx-pch --enable-lto --enable-libgomp --disable-libssp --disable-multilib --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev3, Built by MSYS2 project' --with-bugurl=https://github.com/msys2/MINGW-packages/issues --with-gnu-as --with-gnu-ld --disable-libstdcxx-debug --enable-plugin --with-boot-ldflags=-static-libstdc++ --with-stage1-ldflags=-static-libstdc++
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.2.0 (Rev3, Built by MSYS2 project) 
+        COMPILER_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/
+        LIBRARY_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/;D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3321b.exe' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_3321b.'
+         D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/collect2.exe -plugin D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/liblto_plugin.dll -plugin-opt=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\34621\\AppData\\Local\\Temp\\ccfYkDSl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_3321b.exe D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0 -LD:/dev_C/msys64/mingw64/bin/../lib/gcc -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../.. -v --whole-archive CMakeFiles\\cmTC_3321b.dir/objects.a --no-whole-archive --out-implib libcmTC_3321b.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o
+        collect2 version 14.2.0
+        D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/liblto_plugin.dll -plugin-opt=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\34621\\AppData\\Local\\Temp\\ccfYkDSl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_3321b.exe D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0 -LD:/dev_C/msys64/mingw64/bin/../lib/gcc -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../.. -v --whole-archive CMakeFiles\\cmTC_3321b.dir/objects.a --no-whole-archive --out-implib libcmTC_3321b.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o
+        GNU ld (GNU Binutils) 2.44
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3321b.exe' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_3321b.'
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_3321b.dir/objects.a
+        D:\\dev_C\\msys64\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_3321b.dir/objects.a @CMakeFiles\\cmTC_3321b.dir\\objects1.rsp
+        D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe  -v -Wl,-v -Wl,--whole-archive CMakeFiles\\cmTC_3321b.dir/objects.a -Wl,--no-whole-archive -o cmTC_3321b.exe -Wl,--out-implib,libcmTC_3321b.dll.a -Wl,--major-image-version,0,--minor-image-version,0
+        mingw32-make[1]: Leaving directory 'C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include]
+          add: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include]
+          add: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed]
+        end of search list found
+        collapse include dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include] ==> [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include]
+        collapse include dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include] ==> [D:/dev_C/msys64/mingw64/include]
+        collapse include dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed] ==> [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed]
+        implicit include dirs: [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include;D:/dev_C/msys64/mingw64/include;D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: 'C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv']
+        ignore line: []
+        ignore line: [Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 D:/dev_C/msys64/mingw64/bin/mingw32-make.exe -f Makefile cmTC_3321b/fast]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_3321b.dir\\build.make CMakeFiles/cmTC_3321b.dir/build]
+        ignore line: [mingw32-make[1]: Entering directory 'C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/CMakeScratch/TryCompile-we9xyv']
+        ignore line: [Building C object CMakeFiles/cmTC_3321b.dir/CMakeCCompilerABI.c.obj]
+        ignore line: [D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe   -v -o CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj -c "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe]
+        ignore line: [Target: x86_64-w64-mingw32]
+        ignore line: [Configured with: ../gcc-14.2.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/include --libexecdir=/mingw64/lib --enable-bootstrap --enable-checking=release --with-arch=nocona --with-tune=generic --enable-mingw-wildcard --enable-languages=c,lto,c++,fortran,ada,objc,obj-c++,rust,jit --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts --enable-libstdcxx-time --disable-libstdcxx-pch --enable-lto --enable-libgomp --disable-libssp --disable-multilib --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev3, Built by MSYS2 project' --with-bugurl=https://github.com/msys2/MINGW-packages/issues --with-gnu-as --with-gnu-ld --disable-libstdcxx-debug --enable-plugin --with-boot-ldflags=-static-libstdc++ --with-stage1-ldflags=-static-libstdc++]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.2.0 (Rev3  Built by MSYS2 project) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\']
+        ignore line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/cc1.exe -quiet -v -iprefix D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/ -D_REENTRANT C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles\\cmTC_3321b.dir\\ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=nocona -version -o C:\\Users\\34621\\AppData\\Local\\Temp\\ccqUf78a.s]
+        ignore line: [GNU C17 (Rev3  Built by MSYS2 project) version 14.2.0 (x86_64-w64-mingw32)]
+        ignore line: [	compiled by GNU C version 14.2.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"]
+        ignore line: [ignoring duplicate directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/include"]
+        ignore line: [ignoring nonexistent directory "D:/a/msys64/mingw64/include"]
+        ignore line: [ignoring nonexistent directory "/mingw64/include"]
+        ignore line: [ignoring duplicate directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed"]
+        ignore line: [ignoring nonexistent directory "D:/dev_C/msys64/mingw64/lib/gcc/../../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/include"]
+        ignore line: [ignoring nonexistent directory "D:/a/msys64/mingw64/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include]
+        ignore line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../include]
+        ignore line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/include-fixed]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 044dc7e786fef208387ba8a79ebebc21]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\']
+        ignore line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj C:\\Users\\34621\\AppData\\Local\\Temp\\ccqUf78a.s]
+        ignore line: [GNU assembler version 2.44 (x86_64-w64-mingw32) using BFD version (GNU Binutils) 2.44]
+        ignore line: [COMPILER_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/]
+        ignore line: [LIBRARY_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles\\cmTC_3321b.dir\\CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_3321b.exe]
+        ignore line: ["C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_3321b.dir\\link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=D:\\dev_C\\msys64\\mingw64\\bin\\cc.exe]
+        ignore line: [COLLECT_LTO_WRAPPER=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe]
+        ignore line: [Target: x86_64-w64-mingw32]
+        ignore line: [Configured with: ../gcc-14.2.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/include --libexecdir=/mingw64/lib --enable-bootstrap --enable-checking=release --with-arch=nocona --with-tune=generic --enable-mingw-wildcard --enable-languages=c,lto,c++,fortran,ada,objc,obj-c++,rust,jit --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts --enable-libstdcxx-time --disable-libstdcxx-pch --enable-lto --enable-libgomp --disable-libssp --disable-multilib --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev3, Built by MSYS2 project' --with-bugurl=https://github.com/msys2/MINGW-packages/issues --with-gnu-as --with-gnu-ld --disable-libstdcxx-debug --enable-plugin --with-boot-ldflags=-static-libstdc++ --with-stage1-ldflags=-static-libstdc++]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.2.0 (Rev3  Built by MSYS2 project) ]
+        ignore line: [COMPILER_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/]
+        ignore line: [LIBRARY_PATH=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3321b.exe' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_3321b.']
+        link line: [ D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/collect2.exe -plugin D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/liblto_plugin.dll -plugin-opt=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\34621\\AppData\\Local\\Temp\\ccfYkDSl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_3321b.exe D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0 -LD:/dev_C/msys64/mingw64/bin/../lib/gcc -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../.. -v --whole-archive CMakeFiles\\cmTC_3321b.dir/objects.a --no-whole-archive --out-implib libcmTC_3321b.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o]
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/collect2.exe] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/liblto_plugin.dll] ==> ignore
+          arg [-plugin-opt=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe] ==> ignore
+          arg [-plugin-opt=-fresolution=C:\\Users\\34621\\AppData\\Local\\Temp\\ccfYkDSl.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+          arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+          arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+          arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+          arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+          arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+          arg [-m] ==> ignore
+          arg [i386pep] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [-o] ==> ignore
+          arg [cmTC_3321b.exe] ==> ignore
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o] ==> obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o]
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o] ==> obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib]
+          arg [-LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../..] ==> dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../..]
+          arg [-v] ==> ignore
+          arg [--whole-archive] ==> ignore
+          arg [CMakeFiles\\cmTC_3321b.dir/objects.a] ==> ignore
+          arg [--no-whole-archive] ==> ignore
+          arg [--out-implib] ==> ignore
+          arg [libcmTC_3321b.dll.a] ==> ignore
+          arg [--major-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [--minor-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lgcc_eh] ==> lib [gcc_eh]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [-lpthread] ==> lib [pthread]
+          arg [-ladvapi32] ==> lib [advapi32]
+          arg [-lshell32] ==> lib [shell32]
+          arg [-luser32] ==> lib [user32]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lgcc_eh] ==> lib [gcc_eh]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o] ==> obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o]
+          arg [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o] ==> obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o]
+        ignore line: [collect2 version 14.2.0]
+        ignore line: [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/liblto_plugin.dll -plugin-opt=D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\34621\\AppData\\Local\\Temp\\ccfYkDSl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_3321b.exe D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0 -LD:/dev_C/msys64/mingw64/bin/../lib/gcc -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib -LD:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../.. -v --whole-archive CMakeFiles\\cmTC_3321b.dir/objects.a --no-whole-archive --out-implib libcmTC_3321b.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmingwex -lmsvcrt -lkernel32 D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o]
+        linker tool for 'C': D:/dev_C/msys64/mingw64/x86_64-w64-mingw32/bin/ld.exe
+        remove lib [gcc_eh]
+        remove lib [msvcrt]
+        remove lib [gcc_eh]
+        remove lib [msvcrt]
+        collapse obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/crt2.o] ==> [D:/dev_C/msys64/mingw64/lib/crt2.o]
+        collapse obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o] ==> [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o]
+        collapse obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib/default-manifest.o] ==> [D:/dev_C/msys64/mingw64/lib/default-manifest.o]
+        collapse obj [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o] ==> [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0] ==> [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc] ==> [D:/dev_C/msys64/mingw64/lib/gcc]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib/../lib] ==> [D:/dev_C/msys64/mingw64/x86_64-w64-mingw32/lib]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../lib] ==> [D:/dev_C/msys64/mingw64/lib]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/lib] ==> [D:/dev_C/msys64/mingw64/x86_64-w64-mingw32/lib]
+        collapse library dir [D:/dev_C/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../..] ==> [D:/dev_C/msys64/mingw64/lib]
+        implicit libs: [mingw32;gcc;mingwex;kernel32;pthread;advapi32;shell32;user32;kernel32;mingw32;gcc;mingwex;kernel32]
+        implicit objs: [D:/dev_C/msys64/mingw64/lib/crt2.o;D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/crtbegin.o;D:/dev_C/msys64/mingw64/lib/default-manifest.o;D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/crtend.o]
+        implicit dirs: [D:/dev_C/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0;D:/dev_C/msys64/mingw64/lib/gcc;D:/dev_C/msys64/mingw64/x86_64-w64-mingw32/lib;D:/dev_C/msys64/mingw64/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Running the C compiler's linker: "D:/dev_C/msys64/mingw64/x86_64-w64-mingw32/bin/ld.exe" "-v"
+      GNU ld (GNU Binutils) 2.44
+...

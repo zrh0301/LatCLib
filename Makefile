@@ -36,6 +36,7 @@ TEST_NTT_SRCS = $(TEST_SRC_DIR)/test_ntt.c
 TEST_SHA_SRCS = $(TEST_SRC_DIR)/test_sha3.c
 TEST_SAMPLING_SRCS = $(TEST_SRC_DIR)/test_sampling.c
 TEST_DILI_SRCS = $(TEST_SRC_DIR)/test_dili.c
+TEST_PACK_SRCS = $(TEST_SRC_DIR)/test_pack.c
 
 # 测试对象文件 (映射 test/src/xxx.c -> obj/xxx.o)
 TEST_POLY_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_POLY_SRCS))
@@ -43,6 +44,7 @@ TEST_NTT_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_NTT_SRCS)
 TEST_SHA_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SHA_SRCS))
 TEST_SAMPLING_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SAMPLING_SRCS))
 TEST_DILI_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_DILI_SRCS))
+TEST_PACK_OBJS = $(patsubst $(TEST_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_PACK_SRCS))
 
 # 目标文件
 TARGET_POLY = $(BIN_DIR)/test_poly
@@ -50,6 +52,7 @@ TARGET_NTT = $(BIN_DIR)/test_ntt
 TARGET_SHA = $(BIN_DIR)/test_sha3
 TARGET_SAMPLING = $(BIN_DIR)/test_sampling
 TARGET_DILI = $(BIN_DIR)/test_dili
+TARGET_PACK = $(BIN_DIR)/test_pack
 
 # 头文件依赖 (用于检测更新)
 DEPS = inc/poly.h inc/types.h inc/rand.h inc/keccak.h inc/dili.h test/inc/test_common.h 
@@ -87,6 +90,10 @@ $(TARGET_SAMPLING): $(CORE_OBJS) $(TEST_SAMPLING_OBJS)
 
 $(TARGET_DILI): $(CORE_OBJS) $(TEST_DILI_OBJS)
 	@echo "Linking $(TARGET_DILI)..."
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(TARGET_PACK): $(CORE_OBJS) $(TEST_PACK_OBJS)
+	@echo "Linking $(TARGET_PACK)..."
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # 编译 src 目录下的源文件

@@ -5,12 +5,6 @@
 #include "poly.h"
 
 // Forward declarations for Dilithium parameters
-#ifndef DILI_K
-#define DILI_K 4
-#endif
-#ifndef DILI_L
-#define DILI_L 4
-#endif
 #ifndef DILI_N
 #define DILI_N 256
 #endif
@@ -21,13 +15,6 @@
 #define DILI_Q 8380417
 #endif
 
-typedef struct {
-    poly vec[DILI_L];
-} polyvecl;
-
-typedef struct {
-    poly vec[DILI_K];
-} polyveck;
 
 // Matrix operations
 void polyvec_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32], lp_ctx *ctx);
