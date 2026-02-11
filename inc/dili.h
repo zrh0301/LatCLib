@@ -46,8 +46,8 @@ typedef struct {
 } dili_param;
 
 void dili_keygen(dili_keypair_t* keypair, dili_param param);
-int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk);
-int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk);
+int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param);
+int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk, dili_param param);
 
 // Packing/Unpacking functions
 void dili_pack_pk(uint8_t *pk_bytes, const uint8_t *rho, const poly *t1, int k);

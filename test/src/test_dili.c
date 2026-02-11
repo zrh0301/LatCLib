@@ -65,7 +65,7 @@ void test_sign_verify() {
     printf("Signing message: \"%s\" (%d bytes)\n", message, message_len);
     printf("Computing signature...\n");
     
-    int sign_result = dili_sign(signature, message, message_len, &keypair.sk);
+    int sign_result = dili_sign(signature, message, message_len, &keypair.sk, param);
     
     if(sign_result != 0) {
         printf("[FAIL] Signature generation failed!\n");
@@ -88,7 +88,7 @@ void test_sign_verify() {
         printf("\nVerifying signature with right message...\n");
         // Test verification
         printf("\nVerifying signature...\n");
-        int verify_result = dili_verify(signature, message, message_len, &keypair.pk);
+        int verify_result = dili_verify(signature, message, message_len, &keypair.pk, param);
         
         if(verify_result == 0) {
             printf("[PASS] Signature verified successfully!\n");
@@ -105,7 +105,7 @@ void test_sign_verify() {
 
         // Test verification
         printf("\nVerifying signature...\n");
-        int verify_result = dili_verify(signature, message2, (int)strlen(message2), &keypair.pk);
+        int verify_result = dili_verify(signature, message2, (int)strlen(message2), &keypair.pk, param);
         
         if(verify_result == 0) {
             printf("[PASS] Signature verified successfully!\n");
@@ -158,11 +158,6 @@ void test_packing() {
 }
 
 int main() {
-    printf("\n");
-    printf("╔════════════════════════════════════════╗\n");
-    printf("║   Dilithium Test Suite                 ║\n");
-    printf("╚════════════════════════════════════════╝\n");
-    
     test_keygen();
     test_sign_verify();
     

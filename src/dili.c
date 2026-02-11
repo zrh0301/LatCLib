@@ -295,7 +295,7 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     uint8_t seed[32];
     uint8_t buf[96];
     uint8_t rho[32], rho_prime[32], K[32];
-    uint8_t pk_packed[32 + DILI_K * 416];
+    uint8_t pk_packed[32 + DILI_K * 512];
     poly matrix_A[DILI_K * DILI_L];
     poly s1_ntt[DILI_L];
     poly t[DILI_K];
@@ -326,7 +326,7 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 
     dili_pack_pk(pk_packed, rho, keypair->pk.t1, param.k);
     
-    shake256(keypair->sk.tr, 64, pk_packed, 32 + param.k * 416);
+    shake256(keypair->sk.tr, 64, pk_packed, sizeof(pk_packed));
 
     memcpy(keypair->pk.rho, rho, 32);
     memcpy(keypair->sk.rho, rho, 32);
@@ -334,7 +334,7 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 }
 
 // Sign
-int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk) {
+int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param) {
     lp_ctx ctx;
     const int K = DILI_K;
     const int L = DILI_L;
@@ -518,7 +518,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
 
 // Verify
-int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk) {
+int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk, dili_param param) {
     lp_ctx ctx;
     const int K = DILI_K;
     const int L = DILI_L;
@@ -541,7 +541,7 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     poly w1_prime[K];
     poly A[DILI_K * DILI_L];
     uint8_t tr[64];
-    uint8_t pk_packed[32 + K * 416];
+    uint8_t pk_packed[32 + K * 512];
     uint8_t mu[64];
     uint8_t c_tilde_prime[32];
     uint8_t w1_prime_packed[64 + K * ((DILI_N / 4) * 3)];
