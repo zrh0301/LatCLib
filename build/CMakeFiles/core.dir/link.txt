@@ -1,2 +1,0 @@
-D:\dev_C\msys64\mingw64\bin\ar.exe qc libcore.a CMakeFiles/core.dir/src/poly.c.obj CMakeFiles/core.dir/src/poly_ntt.c.obj CMakeFiles/core.dir/src/rand.c.obj CMakeFiles/core.dir/src/keccak.c.obj CMakeFiles/core.dir/src/dili.c.obj CMakeFiles/core.dir/src/polyvec.c.obj CMakeFiles/core.dir/src/pack.c.obj
-D:\dev_C\msys64\mingw64\bin\ranlib.exe libcore.a

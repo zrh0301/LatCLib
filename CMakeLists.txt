@@ -14,6 +14,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # 【修改点】设置输出目录为当前构建目录 (即 build 文件夹)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+# 开启 AddressSanitizer (ASan) 和调试信息 (-g)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+
 # 添加头文件路径
 include_directories(inc test/inc)
 

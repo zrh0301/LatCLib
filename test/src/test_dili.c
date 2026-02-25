@@ -130,7 +130,7 @@ void test_sign_verify_mode(int mode) {
     uint8_t message[] = "Hello, Dilithium! This is a test message for signing.";
     int message_len = (int)strlen((char*)message);
     
-    uint8_t signature[4096]; 
+    uint8_t signature[8192]; 
     memset(signature, 0, sizeof(signature));
     
     printf("Signing message: \"%s\" (%d bytes)\n", message, message_len);

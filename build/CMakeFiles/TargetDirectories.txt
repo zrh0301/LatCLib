@@ -1,8 +1,0 @@
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/core.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/test_poly.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/test_ntt.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/test_sampling.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/test_dili.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/run_test.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/edit_cache.dir
-C:/Users/34621/Desktop/new/My_PQC/build/CMakeFiles/rebuild_cache.dir
