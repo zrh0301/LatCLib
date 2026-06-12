@@ -1,0 +1,1 @@
+/usr/bin/cc  -fsanitize=address -g  -fsanitize=address CMakeFiles/test_poly.dir/test/src/test_poly.c.o -o test_poly  libcore.a -lm 

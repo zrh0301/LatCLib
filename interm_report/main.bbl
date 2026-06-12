@@ -1,0 +1,182 @@
+\begin{thebibliography}{22}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax\else
+  \urlstyle{same}\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \DeclareUrlCommand\doi{\urlstyle{rm}}
+  \def\eprint#1#2{#2}
+\else
+  \def\doi#1{\href{https://doi.org/#1}{\nolinkurl{#1}}}
+  \let\eprint\href
+\fi
+
+\bibitem[Stallings(2017)]{stallings2017cryptography}
+STALLINGS W.
+\newblock Cryptography and network security: Principles and
+  practice\allowbreak[M].
+\newblock Pearson Education, 2017.
+
+\bibitem[Shor(1994)]{shor1994algorithms}
+SHOR P~W.
+\newblock Algorithms for quantum computation: Discrete logarithms and
+  factoring\allowbreak[C]//\allowbreak
+Proceedings 35th annual symposium on foundations of computer science.
+\newblock Ieee, 1994: 124-134.
+
+\bibitem[{National Institute of Standards and Technology}(2024)]{nist2024pqc}
+{National Institute of Standards and Technology}.
+\newblock Nist releases first 3 finalized post-quantum encryption
+  standards\allowbreak[EB/OL].
+\newblock 2024.
+\newblock
+  \url{https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards}.
+
+\bibitem[{National Institute of Standards and Technology}(2024)]{fips203}
+{National Institute of Standards and Technology}.
+\newblock {Module-Lattice-Based Key-Encapsulation Mechanism Standard}:
+  203\allowbreak[R/OL].
+\newblock Washington, D.C.: U.S. Department of Commerce, 2024.
+\newblock DOI: \doi{10.6028/NIST.FIPS.203}.
+
+\bibitem[{National Institute of Standards and Technology}(2024)]{fips204}
+{National Institute of Standards and Technology}.
+\newblock {Module-Lattice-Based Digital Signature Standard}:
+  204\allowbreak[R/OL].
+\newblock Washington, D.C.: U.S. Department of Commerce, 2024.
+\newblock DOI: \doi{10.6028/NIST.FIPS.204}.
+
+\bibitem[{National Institute of Standards and Technology}(2024)]{fips205}
+{National Institute of Standards and Technology}.
+\newblock {Stateless Hash-Based Digital Signature Standard}:
+  205\allowbreak[R/OL].
+\newblock Washington, D.C.: U.S. Department of Commerce, 2024.
+\newblock DOI: \doi{10.6028/NIST.FIPS.205}.
+
+\bibitem[国家密码管理局(2025)]{ngcc2025}
+国家密码管理局.
+\newblock 关于征集新一代商用密码算法的通知\allowbreak[EB/OL].
+\newblock 2025.
+\newblock
+  \url{https://www.niccs.org.cn/symmbzyjy/tzgg/pc/content/1976155884915003392/content_1976155884915003392.html}.
+
+\bibitem[Longa et~al.(2016)Longa and Naehrig]{cryptoeprint:2016/504}
+LONGA P, NAEHRIG M.
+\newblock Speeding up the number theoretic transform for faster ideal
+  lattice-based cryptography\allowbreak[EB/OL].
+\newblock 2016.
+\newblock \url{https://eprint.iacr.org/2016/504}.
+
+\bibitem[Seiler(2018)]{cryptoeprint:2018/039}
+SEILER G.
+\newblock Faster {AVX2} optimized {NTT} multiplication for ring-{LWE} lattice
+  cryptography\allowbreak[EB/OL].
+\newblock 2018.
+\newblock \url{https://eprint.iacr.org/2018/039}.
+
+\bibitem[Filho et~al.(2024)Filho, Brandão, and López]{cryptoeprint:2024/002}
+FILHO D~L~G, BRANDãO G, LóPEZ J.
+\newblock Fast polynomial multiplication using matrix multiplication
+  accelerators with applications to {NTRU} on apple m1/m3
+  {SoCs}\allowbreak[EB/OL].
+\newblock 2024.
+\newblock \url{https://eprint.iacr.org/2024/002}.
+\newblock DOI: \doi{10.62056/a3txommol}.
+
+\bibitem[Becker et~al.(2022)Becker, Hwang, Kannwischer, Panny, and
+  Yang]{cryptoeprint:2022/439}
+BECKER H, HWANG V, KANNWISCHER M~J, et~al.
+\newblock Efficient multiplication of somewhat small integers using
+  number-theoretic transforms\allowbreak[EB/OL].
+\newblock 2022.
+\newblock \url{https://eprint.iacr.org/2022/439}.
+
+\bibitem[Zheng et~al.(2024)Zheng, Zhang, Tian, Zhang, Wei, Chu, Yang, and
+  Zhao]{zheng2024espmdefficientsparsepolynomial}
+ZHENG J, ZHANG H, TIAN L, et~al.
+\newblock Espm-d: Efficient sparse polynomial multiplication for dilithium on
+  arm cortex-m4 and apple m2\allowbreak[A/OL].
+\newblock 2024.
+\newblock arXiv: \eprint{https://arxiv.org/abs/2404.12675}{2404.12675}.
+\newblock \url{https://arxiv.org/abs/2404.12675}.
+
+\bibitem[Lei et~al.(2023)Lei, He, Peng, Luo, Liu, and Huang]{10.1145/3609223}
+LEI D, HE D, PENG C, et~al.
+\newblock Faster implementation of ideal lattice-based cryptography using
+  avx512\allowbreak[J/OL].
+\newblock ACM Trans. Embed. Comput. Syst., 2023, 22\allowbreak (5).
+\newblock \url{https://doi.org/10.1145/3609223}.
+
+\bibitem[Miteloudi et~al.(2023)Miteloudi, Bos, Bronchain, Fay, and
+  Renes]{cryptoeprint:2023/1505}
+MITELOUDI K, BOS J, BRONCHAIN O, et~al.
+\newblock {PQ}.v.{ALU}.e: Post-quantum {RISC}-v custom {ALU} extensions on
+  dilithium and kyber\allowbreak[EB/OL].
+\newblock 2023.
+\newblock \url{https://eprint.iacr.org/2023/1505}.
+
+\bibitem[Zhou et~al.(2021)Zhou, He, Liu, Luo, and Choo]{10.1145/3447812}
+ZHOU Z, HE D, LIU Z, et~al.
+\newblock A software/hardware co-design of crystals-dilithium signature
+  scheme\allowbreak[J/OL].
+\newblock ACM Trans. Reconfigurable Technol. Syst., 2021, 14\allowbreak (2).
+\newblock \url{https://doi.org/10.1145/3447812}.
+
+\bibitem[Regev(2005)]{Regev2005}
+REGEV O.
+\newblock On lattices, learning with errors, random linear codes, and
+  cryptography\allowbreak[C/OL]//\allowbreak
+Symposium on the Theory of Computing.
+\newblock 2005.
+\newblock \url{https://api.semanticscholar.org/CorpusID:53223958}.
+
+\bibitem[Peikert(2008)]{cryptoeprint:2008/481}
+PEIKERT C.
+\newblock Public-key cryptosystems from the worst-case shortest vector
+  problem\allowbreak[EB/OL].
+\newblock 2008.
+\newblock \url{https://eprint.iacr.org/2008/481}.
+
+\bibitem[Lyubashevsky et~al.(2010)Lyubashevsky, Peikert, and
+  Regev]{10.1007/978-3-642-13190-5_1}
+LYUBASHEVSKY V, PEIKERT C, REGEV O.
+\newblock On ideal lattices and learning with errors over
+  rings\allowbreak[C/OL]//\allowbreak
+EUROCRYPT'10: Proceedings of the 29th Annual International Conference on Theory
+  and Applications of Cryptographic Techniques.
+\newblock Berlin, Heidelberg: Springer-Verlag, 2010: 1–23.
+\newblock \url{https://doi.org/10.1007/978-3-642-13190-5_1}.
+
+\bibitem[Langlois et~al.(2012)Langlois and Stehle]{cryptoeprint:2012/090}
+LANGLOIS A, STEHLE D.
+\newblock Worst-case to average-case reductions for module
+  lattices\allowbreak[EB/OL].
+\newblock 2012.
+\newblock \url{https://eprint.iacr.org/2012/090}.
+
+\bibitem[Ajtai(1996)]{Ajtai1996}
+AJTAI M.
+\newblock Generating hard instances of lattice
+  problems\allowbreak[C/OL]//\allowbreak
+STOC '96: Proceedings of the Twenty-Eighth Annual ACM Symposium on Theory of
+  Computing.
+\newblock Association for Computing Machinery, 1996: 99-108.
+\newblock DOI: \doi{10.1145/237814.237838}.
+
+\bibitem[Langlois et~al.(2015)Langlois and Stehl{\'e}]{LangloisStehle2015}
+LANGLOIS A, STEHL{\'E} D.
+\newblock Worst-case to average-case reductions for module
+  lattices\allowbreak[J/OL].
+\newblock Designs, Codes and Cryptography, 2015, 75\allowbreak (3): 565-599.
+\newblock DOI: \doi{10.1007/s10623-014-9938-4}.
+
+\bibitem[Fiat et~al.(1987)Fiat and Shamir]{FiatShamir1986}
+FIAT A, SHAMIR A.
+\newblock How to prove yourself: Practical solutions to identification and
+  signature problems\allowbreak[C/OL]//\allowbreak
+Lecture Notes in Computer Science: Vol. 263\quad Advances in Cryptology ---
+  CRYPTO '86.
+\newblock Springer, 1987: 186-194.
+\newblock DOI: \doi{10.1007/3-540-47721-7_12}.
+
+\end{thebibliography}

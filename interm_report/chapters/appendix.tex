@@ -1,0 +1,203 @@
+\section*{附录A\quad 部分核心代码}
+
+\subsection*{A.1 通用多项式乘法（NTT加速）模块}
+\textbf{用途}：为ML-KEM和ML-DSA算法提供底层多项式乘法支持，基于NTT（数论变换）实现加速，解决不同算法间代码冗余问题。
+\begin{lstlisting}[language=C, caption=通用Poly\_Mul\_NTT模块实现]
+#include "ntt.h"
+#include "poly.h"
+
+// 模q多项式乘法（NTT加速版）
+void Poly_Mul_NTT(poly *r, const poly *a, const poly *b) {
+    int i;
+    poly t;
+
+    // 对输入多项式执行NTT变换
+    ntt(a->coeffs);
+    ntt(b->coeffs);
+
+    // 逐元素模乘
+    for (i = 0; i < 256; i++) {
+        t.coeffs[i] = montgomery_mult(a->coeffs[i], b->coeffs[i]);
+    }
+
+    // 逆NTT变换得到结果
+    invntt(t.coeffs);
+    poly_reduce(&t);
+    *r = t;
+}
+
+// 多项式归约（防止溢出）
+void poly_reduce(poly *a) {
+    int i;
+    for (i = 0; i < 256; i++) {
+        a->coeffs[i] = reduce32(a->coeffs[i]);
+    }
+}
+\end{lstlisting}
+
+\subsection*{A.2 ML-KEM密钥封装/解封装核心接口}
+\textbf{用途}：实现后量子密钥封装机制（ML-KEM-768），为PQ-Aliro和PQ-PACE协议提供密钥协商核心功能。
+\begin{lstlisting}[language=C, caption=ML-KEM核心接口实现]
+#include "ml_kem.h"
+#include "randombytes.h"
+
+// 生成ML-KEM密钥对
+void ML_KEM_KeyGen(uint8_t *pk, uint8_t *sk) {
+    poly sk_poly, pk_poly;
+    uint8_t seed[32];
+    
+    // 生成真随机种子
+    randombytes(seed, 32);
+    
+    // 多项式采样生成私钥
+    poly_from_seed(&sk_poly, seed);
+    // 生成公钥（pk = H(sk) mod q）
+    poly_to_pk(&pk_poly, &sk_poly);
+    
+    // 序列化密钥
+    poly_serialize_sk(sk, &sk_poly);
+    poly_serialize_pk(pk, &pk_poly);
+}
+
+// 密钥封装（Encaps）
+int ML_KEM_Encaps(uint8_t *ct, uint8_t *ss, const uint8_t *pk) {
+    poly pk_poly, ct_poly;
+    uint8_t seed[32];
+    int ret;
+
+    // 解析公钥
+    poly_deserialize_pk(&pk_poly, pk);
+    // 生成随机种子
+    randombytes(seed, 32);
+    
+    // 生成密文和共享秘密
+    ret = poly_encaps(&ct_poly, ss, &pk_poly, seed);
+    if (ret != 0) return -1;
+    
+    // 序列化密文
+    poly_serialize_ct(ct, &ct_poly);
+    return 0;
+}
+
+// 密钥解封装（Decaps）
+int ML_KEM_Decaps(uint8_t *ss, const uint8_t *ct, const uint8_t *sk) {
+    poly sk_poly, ct_poly;
+    
+    // 解析私钥和密文
+    poly_deserialize_sk(&sk_poly, sk);
+    poly_deserialize_ct(&ct_poly, ct);
+    
+    // 解封装得到共享秘密
+    poly_decaps(ss, &ct_poly, &sk_poly);
+    return 0;
+}
+\end{lstlisting}
+
+\subsection*{A.3 ML-DSA签名/验签核心接口}
+\textbf{用途}：实现后量子数字签名机制（ML-DSA-44），为PQ-Aliro双向认证、PQ-AA芯片防克隆提供签名验证支持。
+\begin{lstlisting}[language=C, caption=ML-DSA核心接口实现]
+#include "ml_dsa.h"
+#include "shake256.h"
+
+// ML-DSA签名生成
+void ML_DSA_Sign(uint8_t *sig, size_t *sig_len, 
+                 const uint8_t *msg, size_t msg_len, 
+                 const uint8_t *sk) {
+    poly sk_poly;
+    shake256ctx ctx;
+    
+    // 解析私钥
+    poly_deserialize_sk(&sk_poly, sk);
+    
+    // 初始化SHAKE256上下文（绑定消息）
+    shake256_init(&ctx);
+    shake256_absorb(&ctx, msg, msg_len);
+    
+    // 生成签名
+    poly_sign(sig, sig_len, &ctx, &sk_poly);
+    
+    // 清理上下文
+    shake256_free(&ctx);
+}
+
+// ML-DSA签名验证
+int ML_DSA_Verify(const uint8_t *sig, size_t sig_len, 
+                   const uint8_t *msg, size_t msg_len, 
+                   const uint8_t *pk) {
+    poly pk_poly;
+    shake256ctx ctx;
+    int ret;
+    
+    // 解析公钥
+    poly_deserialize_pk(&pk_poly, pk);
+    
+    // 初始化SHAKE256上下文（绑定消息）
+    shake256_init(&ctx);
+    shake256_absorb(&ctx, msg, msg_len);
+    
+    // 验证签名
+    ret = poly_verify(sig, sig_len, &ctx, &pk_poly);
+    
+    // 清理上下文
+    shake256_free(&ctx);
+    return ret; // 0=验证通过，-1=验证失败
+}
+\end{lstlisting}
+
+\subsection*{A.4 Keccak哈希流式处理接口}
+\textbf{用途}：为会话摘要计算、密钥派生提供流式哈希功能，解决嵌入式设备RAM不足导致的大消息处理问题。
+\begin{lstlisting}[language=C, caption=Keccak\_State流式接口实现]
+#include "keccak.h"
+
+// 初始化Keccak状态
+void Keccak_State_Init(keccak_state *state) {
+    keccak_init(state, 256); // SHAKE256
+}
+
+// 流式更新哈希（增量处理）
+void Keccak_State_Update(keccak_state *state, const uint8_t *data, size_t len) {
+    keccak_absorb(state, data, len);
+}
+
+// 最终化哈希并输出结果
+void Keccak_State_Final(keccak_state *state, uint8_t *out, size_t out_len) {
+    keccak_squeeze(state, out, out_len);
+}
+
+// 计算会话摘要（Transcript Hash）
+void calc_transcript_hash(uint8_t *trans_hash, 
+                          const uint8_t *auth0_cmd, size_t cmd_len,
+                          const uint8_t *auth0_resp, size_t resp_len) {
+    keccak_state state;
+    
+    Keccak_State_Init(&state);
+    Keccak_State_Update(&state, auth0_cmd, cmd_len);
+    Keccak_State_Update(&state, auth0_resp, resp_len);
+    Keccak_State_Final(&state, trans_hash, 32); // 输出32字节摘要
+}
+\end{lstlisting}
+
+
+% ==========================================
+% 封底 (Back Cover)
+% ==========================================
+\cleardoublepage % 另起一页
+\thispagestyle{empty} % 清除这一页的页眉和页脚，保持纯净
+
+\vspace*{\fill} % 开启顶部弹性空白，实现绝对垂直居中
+
+\begin{center}
+	% 前半句使用黑体小2号，彰显气势
+	{\heiti\xiaoer 在历史性的密码换代浪潮面前} \\ 
+	\vspace{0.8cm}
+	{\heiti\xiaoer 技术是最锋利的矛，团队是最坚固的盾。} \\ 
+	
+	\vspace{2.5cm} % 增加段落呼吸感
+	
+	% 后半句使用宋体3号，娓娓道来，发出邀请
+	{\songti\sanhao 我们已做好全面准备，} \\ 
+	\vspace{0.5cm}
+	{\songti\sanhao 诚邀顶尖资本共赴这趟重塑未来物理安全边界的伟大征程！}
+\end{center}
+
+\vspace*{\fill} % 开启底部弹性空白

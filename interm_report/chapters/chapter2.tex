@@ -1,0 +1,61 @@
+% ==========================================
+% 第二章
+% ==========================================
+\chapter{一场无法回避的风暴——量子计算威胁与全球响应}
+
+\section{CPU卡：今天安全，明天过时}
+
+很多人认为，换成CPU卡就安全了。但残酷的现实是：\textbf{CPU卡只能解决当下的安全问题，在即将到来的量子计算时代，它和M1卡一样不堪一击。}
+
+目前主流的国密CPU卡，安全核心依赖SM2（ECC-256）公钥密码算法。而量子计算机的\textbf{Shor算法}，仅需约1500个逻辑量子比特，就能\textbf{彻底攻破 ECC-256 算法}；\textbf{Grover算法}则会让对称加密的安全强度直接减半（如SM1/SM7直接降至64bit）。
+
+只要门禁的核心仍建立在ECC一类算法之上，它就只是\textbf{“在量子时代到来前暂时安全”}。现在花大价钱升级传统CPU卡，不过是从一个已经破了的洞，跳进了一个几年后一定会破的洞。
+
+\begin{table}[htbp]
+	\centering
+	\caption{全代际门禁卡量子安全评估}
+	\label{tab:quantum_assessment}
+	\renewcommand{\arraystretch}{1.2} % 稍微增加行高，使表格更美观
+	\begin{tabular}{llccr}
+		\toprule
+		\textbf{卡类型} & \textbf{加密算法} & \textbf{当前安全性} & \textbf{量子计算下} & \textbf{单卡成本} \\
+		\midrule
+		ID卡 & 无 & $\times$ 零安全 & $\times$ 不安全 & $\sim$0.2元 \\
+		M1卡 & Crypto-1 (48bit) & $\times$ 已全面破解 & $\times$ 不安全 & $\sim$0.5-1元 \\
+		MIFARE Plus & AES-128 & $\checkmark$ 相对安全 & $\triangle$ 降级至64bit & $\sim$2-5元 \\
+		MIFARE DESFire & 3DES/AES + ECC & $\checkmark$ EAL4+ & \textbf{$\times$ ECC被破解} & $\sim$5-15元 \\
+		MIFARE DUOX & AES-256 + ECC-256 & $\checkmark\checkmark$ 当前最强 & \textbf{$\times$ ECC被破解} & $\sim$10-20元 \\
+		CPU卡(国密) & SM1/SM7 + SM2(ECC) & $\checkmark\checkmark$ 金融级 & \textbf{$\times$ SM2被破解} & $\sim$5-15元 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\section{Q-Day不是“如果”，而是“何时”}
+
+量子计算机破解经典密码体系的那一天被称为 \textbf{Q-Day}。Gartner预测，ECC算法在\textbf{2029年就会变得不安全}。破解ECC所需的量子比特预估，从2012年的10亿个降至2025年的100万个，六年下降95\%！中国科学家也已对主流加密方法发起了世界上第一个有效的量子攻击。
+
+更可怕的是，量子威胁不是等Q-Day到来才出现。目前，国家级对手和黑客组织正在大规模执行\textbf{“先收集，后解密”（Store Now, Decrypt Later）}策略。门禁出入记录包含人员、时间、区域活动模式，是极高价值的情报。对政府、军工、金融等关键基础设施而言，今天的门禁数据，已经在为明天的量子攻击备货。
+
+\section{全球已拉响警报}
+
+后量子密码（PQC）迁移已成为全球共识：
+\begin{itemize}
+	\item \textbf{美国NIST}：2024年8月发布首批后量子密码标准，明确2030年全面弃用、\textbf{2035年完全禁用RSA与ECC算法}。
+	\item \textbf{美国国防部CNSA 2.0}：要求\textbf{2025年起}，后量子密码必须作为默认加密算法。
+	\item \textbf{科技巨头入局}：IBM、微软成立联盟，谷歌Chrome已集成抗量子加密。
+	\item \textbf{中国产业动态}：2025年2月，国家商用密码标准研究院全面启动抗量子商用密码算法征集；第三代“本源悟空”装备国内首个后量子密码护盾。
+\end{itemize}
+
+资本市场同样反应热烈：2024年全球后量子密码市场估值1.79亿美元，预计2031年将达22亿美元（CAGR 43.1\%），其中\textbf{量子安全认证解决方案是增速最快的子领域}。
+
+\section{等不起——Mosca定理与迁移窗口}
+
+历史经验表明，一项密码算法从标准化到完全融入系统完成落地，普遍需要10到20年。密码学界著名的 \textbf{Mosca定理（莫斯卡定理）} 为我们划下了红线：
+
+\begin{center}
+	\textbf{数据保护年限 (X) + 系统迁移时间 (Y) > 量子计算机建成时间 (Z) $\Longrightarrow$ 必须立刻行动！}
+\end{center}
+
+我们的门禁系统需要保障未来10年的安全，全行业完成PQC迁移至少需要5-10年，而量子计算机预计10年内就会攻破现有体系。正如Gartner副总裁警告：“等到接近2030年才采取行动的组织，将没有足够的时间完成安全替换。”
+
+如果现在不启动迁移，当Q-Day到来时我们将毫无还手之力。而我们自主研发的 \textbf{基于 PQ-Aliro 协议的后量子门禁系统}，正是解决这一痛点的终极解：\textbf{一步到位完成量子安全升级，守住当下的门，更守住未来的安全。}
