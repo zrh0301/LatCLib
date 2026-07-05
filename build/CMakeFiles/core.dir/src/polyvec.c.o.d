@@ -1,6 +1,7 @@
 CMakeFiles/core.dir/src/polyvec.c.o: \
- /home/zrheng/Documents/My_PQC/src/polyvec.c /usr/include/stdc-predef.h \
- /home/zrheng/Documents/My_PQC/inc/polyvec.h \
+ /home/zrheng/Documents/PQC/My_PQC/src/polyvec.c \
+ /usr/include/stdc-predef.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/polyvec.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -17,16 +18,17 @@ CMakeFiles/core.dir/src/polyvec.c.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /home/zrheng/Documents/My_PQC/inc/poly.h \
- /home/zrheng/Documents/My_PQC/inc/../inc/types.h /usr/include/memory.h \
- /usr/include/string.h /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/poly.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/../inc/types.h \
+ /usr/include/memory.h /usr/include/string.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/strings.h \
  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
- /home/zrheng/Documents/My_PQC/inc/../inc/rand.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/../inc/rand.h \
+ /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
@@ -67,9 +69,9 @@ CMakeFiles/core.dir/src/polyvec.c.o: \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
- /home/zrheng/Documents/My_PQC/inc/../inc/dili_ntt_tables.h \
- /home/zrheng/Documents/My_PQC/inc/../inc/types.h \
- /home/zrheng/Documents/My_PQC/inc/../inc/kyber_ntt_tables.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/../inc/dili_ntt_tables.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/../inc/types.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/../inc/kyber_ntt_tables.h \
  /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
@@ -89,5 +91,5 @@ CMakeFiles/core.dir/src/polyvec.c.o: \
  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /home/zrheng/Documents/My_PQC/inc/poly.h \
- /home/zrheng/Documents/My_PQC/inc/keccak.h
+ /home/zrheng/Documents/PQC/My_PQC/inc/poly.h \
+ /home/zrheng/Documents/PQC/My_PQC/inc/keccak.h

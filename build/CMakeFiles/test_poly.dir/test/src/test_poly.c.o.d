@@ -1,7 +1,7 @@
 CMakeFiles/test_poly.dir/test/src/test_poly.c.o: \
- /home/zrheng/Documents/My_PQC/test/src/test_poly.c \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c \
  /usr/include/stdc-predef.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/test_common.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/test_common.h \
  /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -169,11 +169,11 @@ CMakeFiles/test_poly.dir/test/src/test_poly.c.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/fma4intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/ammintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/xopintrin.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/types.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/types.h \
  /usr/include/memory.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/poly.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/../inc/types.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/../inc/rand.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/poly.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/../inc/types.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/../inc/rand.h \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
@@ -185,9 +185,9 @@ CMakeFiles/test_poly.dir/test/src/test_poly.c.o: \
  /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/../inc/dili_ntt_tables.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/../inc/types.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/../inc/kyber_ntt_tables.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/../inc/dili_ntt_tables.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/../inc/types.h \
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/../inc/kyber_ntt_tables.h \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
@@ -195,4 +195,4 @@ CMakeFiles/test_poly.dir/test/src/test_poly.c.o: \
  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /home/zrheng/Documents/My_PQC/test/src/../inc/../../inc/rand.h
+ /home/zrheng/Documents/PQC/My_PQC/test/src/../inc/../../inc/rand.h

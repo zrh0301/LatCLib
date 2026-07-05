@@ -4,8 +4,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <time.h>
 
 #define SIG_SIZE_BYTES 2420 // Approx for Dili2 standard
+#define PERF_ITERATIONS 10000
+
+// 获取当前时间（毫秒），用于性能测试
+static inline double now_ms(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * 1000.0 + ts.tv_nsec / 1e6;
+}
 
 // 初始化不同模式的参数
 void init_dili_param(dili_param *param, int mode) {
@@ -247,6 +256,75 @@ void test_packing() {
     }
 }
 
+// Performance test (CPU cycles + ms) with specified mode, looping PERF_ITERATIONS times
+void test_perf_mode(int mode) {
+    printf("\n============================================\n");
+    printf("  Test: %s Performance (%d iterations)\n", get_mode_name(mode), PERF_ITERATIONS);
+    printf("============================================\n");
+
+    dili_param param;
+    init_dili_param(&param, mode);
+
+    dili_keypair_t keypair;
+    uint8_t message[] = "Hello, Dilithium! This is a performance test message.";
+    int message_len = (int)strlen((char*)message);
+    uint8_t signature[8192];
+    memset(signature, 0, sizeof(signature));
+
+    uint64_t cyc_start, cyc_end;
+    double ms_start, ms_end;
+
+    // ---- KeyGen ----
+    cyc_start = __rdtsc();
+    ms_start = now_ms();
+    for (int i = 0; i < PERF_ITERATIONS; i++) {
+        dili_keygen(&keypair, param);
+    }
+    cyc_end = __rdtsc();
+    ms_end = now_ms();
+    printf("  KeyGen : %12llu cycles/op | %10.4f ms/op  (total %10.2f ms)\n",
+           (unsigned long long)((cyc_end - cyc_start) / PERF_ITERATIONS),
+           (ms_end - ms_start) / PERF_ITERATIONS,
+           ms_end - ms_start);
+
+    // ---- Sign (uses the last generated keypair) ----
+    cyc_start = __rdtsc();
+    ms_start = now_ms();
+    for (int i = 0; i < PERF_ITERATIONS; i++) {
+        dili_sign(signature, message, message_len, &keypair.sk, param);
+    }
+    cyc_end = __rdtsc();
+    ms_end = now_ms();
+    printf("  Sign   : %12llu cycles/op | %10.4f ms/op  (total %10.2f ms)\n",
+           (unsigned long long)((cyc_end - cyc_start) / PERF_ITERATIONS),
+           (ms_end - ms_start) / PERF_ITERATIONS,
+           ms_end - ms_start);
+
+    // ---- Verify (uses the last generated signature) ----
+    cyc_start = __rdtsc();
+    ms_start = now_ms();
+    for (int i = 0; i < PERF_ITERATIONS; i++) {
+        dili_verify(signature, message, message_len, &keypair.pk, param);
+    }
+    cyc_end = __rdtsc();
+    ms_end = now_ms();
+    printf("  Verify : %12llu cycles/op | %10.4f ms/op  (total %10.2f ms)\n",
+           (unsigned long long)((cyc_end - cyc_start) / PERF_ITERATIONS),
+           (ms_end - ms_start) / PERF_ITERATIONS,
+           ms_end - ms_start);
+}
+
+// Performance test for all modes
+void test_perf() {
+    printf("\n============================================\n");
+    printf("  Test: All Dilithium Modes Performance\n");
+    printf("============================================\n");
+
+    for (int mode = 0; mode <= 2; mode++) {
+        test_perf_mode(mode);
+    }
+}
+
 int main() {
     printf("\n");
     printf("**************************************************\n");
@@ -257,6 +335,7 @@ int main() {
     test_keygen();
     test_sign_verify();
     //test_packing();
+    test_perf();
     
     printf("\n============================================\n");
     printf("  All Tests Complete\n");

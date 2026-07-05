@@ -1,61 +1,101 @@
 % ==========================================
 % 第二章
 % ==========================================
-\chapter{一场无法回避的风暴——量子计算威胁与全球响应}
+\chapter{高兼容与高性能PQC算法库工程}
 
-\section{CPU卡：今天安全，明天过时}
+\section{PQC算法概述与工程挑战}
 
-很多人认为，换成CPU卡就安全了。但残酷的现实是：\textbf{CPU卡只能解决当下的安全问题，在即将到来的量子计算时代，它和M1卡一样不堪一击。}
+\subsection{格密码：为量子时代而生的新数学基石}
 
-目前主流的国密CPU卡，安全核心依赖SM2（ECC-256）公钥密码算法。而量子计算机的\textbf{Shor算法}，仅需约1500个逻辑量子比特，就能\textbf{彻底攻破 ECC-256 算法}；\textbf{Grover算法}则会让对称加密的安全强度直接减半（如SM1/SM7直接降至64bit）。
+后量子密码（Post-Quantum Cryptography, PQC）是指在经典计算机上运行，却能同时抵御经典攻击与量子计算机Shor/Grover算法攻击的新型密码体系。在NIST最终标准化的三类PQC算法中，\textbf{基于模格（Module-Lattice）的密码学方案}最受产业界青睐——它兼顾了密钥尺寸小、运算快、安全性归约强等工程优势，已成为全球PQC迁移的事实首选。
 
-只要门禁的核心仍建立在ECC一类算法之上，它就只是\textbf{“在量子时代到来前暂时安全”}。现在花大价钱升级传统CPU卡，不过是从一个已经破了的洞，跳进了一个几年后一定会破的洞。
+本算法库核心支持的两大类NIST标准化格密码算法为：
+
+\begin{enumerate}
+	\item \textbf{ML-KEM（Module-Lattice-based Key Encapsulation Mechanism，FIPS 203）}：用于两方在不安全信道上协商共享会话密钥，是传统ECDH/SM2密钥协商的量子安全替代方案。ML-KEM基于模\textbf{容错学习问题（MLWE）}的困难性构造，通信双方无需传输完整密钥，而是通过密文封装机制安全派生会话密钥。
+	
+	\item \textbf{ML-DSA（Module-Lattice-based Digital Signature Algorithm，FIPS 204）}：用于身份认证与消息完整性验证，是传统ECDSA/SM2数字签名的量子安全替代方案。ML-DSA继承了CRYSTALS-Dilithium的``Fiat-Shamir with Aborts''构造，基于模-\textbf{SIS与MLWE}双重困难问题。
+\end{enumerate}
+
+两种算法共享相同的\textbf{代数结构根基}——多项式商环 $\mathcal{R}_q = \mathbb{Z}_q[X]/(X^n + 1)$（其中 $q$ 为素数模数，$n=256$ 为多项式次数），均依赖数论变换（NTT）作为核心计算引擎。这一天然同构性使得底层的多项式运算、哈希与采样模块可被两者\textbf{完全复用}，为后续章节阐述的紧凑工程架构铺平了道路。
+
+\subsection{NIST标准化参数集与安全强度}
+
+NIST为ML-KEM与ML-DSA各定义了三个参数集，分别对应不同安全级别，以适应从轻量级IoT到高安全金融等多样化场景需求：
 
 \begin{table}[htbp]
 	\centering
-	\caption{全代际门禁卡量子安全评估}
-	\label{tab:quantum_assessment}
-	\renewcommand{\arraystretch}{1.2} % 稍微增加行高，使表格更美观
-	\begin{tabular}{llccr}
+	\caption{NIST标准化PQC格密码算法参数集总览}
+	\label{tab:pqc_params}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{llcc}
 		\toprule
-		\textbf{卡类型} & \textbf{加密算法} & \textbf{当前安全性} & \textbf{量子计算下} & \textbf{单卡成本} \\
+		\textbf{算法} & \textbf{参数集} & \textbf{NIST安全级别} & \textbf{等价经典强度} \\
 		\midrule
-		ID卡 & 无 & $\times$ 零安全 & $\times$ 不安全 & $\sim$0.2元 \\
-		M1卡 & Crypto-1 (48bit) & $\times$ 已全面破解 & $\times$ 不安全 & $\sim$0.5-1元 \\
-		MIFARE Plus & AES-128 & $\checkmark$ 相对安全 & $\triangle$ 降级至64bit & $\sim$2-5元 \\
-		MIFARE DESFire & 3DES/AES + ECC & $\checkmark$ EAL4+ & \textbf{$\times$ ECC被破解} & $\sim$5-15元 \\
-		MIFARE DUOX & AES-256 + ECC-256 & $\checkmark\checkmark$ 当前最强 & \textbf{$\times$ ECC被破解} & $\sim$10-20元 \\
-		CPU卡(国密) & SM1/SM7 + SM2(ECC) & $\checkmark\checkmark$ 金融级 & \textbf{$\times$ SM2被破解} & $\sim$5-15元 \\
+		\multirow{3}{*}{ML-KEM (FIPS 203)}  & ML-KEM-512  & I   & $\approx$ AES-128 \\
+		                                     & ML-KEM-768  & III & $\approx$ AES-192 \\
+		                                     & ML-KEM-1024 & V   & $\approx$ AES-256 \\
+		\midrule
+		\multirow{3}{*}{ML-DSA (FIPS 204)}  & ML-DSA-44   & I   & $\approx$ AES-128 \\
+		                                     & ML-DSA-65   & III & $\approx$ AES-192 \\
+		                                     & ML-DSA-87   & V   & $\approx$ AES-256 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
 
-\section{Q-Day不是“如果”，而是“何时”}
+本算法库完整实现上述全部六组参数集。在门禁场景下，考虑到无源卡片极其有限的硅片面积、RAM资源与NFC通信带宽，我们默认推荐使用安全级别I（ML-KEM-512 + ML-DSA-44），但这并不意味着妥协：在量子计算成熟前，AES-128安全性仍然足以对抗任何已知攻击；且底层架构支持密码敏捷热切换，可在未来无缝迁移至更高级别参数集。
 
-量子计算机破解经典密码体系的那一天被称为 \textbf{Q-Day}。Gartner预测，ECC算法在\textbf{2029年就会变得不安全}。破解ECC所需的量子比特预估，从2012年的10亿个降至2025年的100万个，六年下降95\%！中国科学家也已对主流加密方法发起了世界上第一个有效的量子攻击。
+\subsection{工程落地面临的三大核心挑战}
 
-更可怕的是，量子威胁不是等Q-Day到来才出现。目前，国家级对手和黑客组织正在大规模执行\textbf{“先收集，后解密”（Store Now, Decrypt Later）}策略。门禁出入记录包含人员、时间、区域活动模式，是极高价值的情报。对政府、军工、金融等关键基础设施而言，今天的门禁数据，已经在为明天的量子攻击备货。
+PQC算法的数学安全性已有严密的理论保障，但将这些算法从学术论文\textbf{真正工程化落地到门禁卡+NFC读卡器这类极端受限硬件平台}，面临着传统密码学从未遇到过的全新挑战。
 
-\section{全球已拉响警报}
+\subsubsection{挑战一：内存开销——密钥尺寸的断崖式膨胀}
 
-后量子密码（PQC）迁移已成为全球共识：
+传统ECC公钥密码体系的一个突出优势是\textbf{密钥短小}。以当前最广泛使用的SM2（ECC-256）为例，公钥仅需64字节；而切换到格密码后，密钥与签名尺寸出现了\textbf{数倍乃至数十倍的数量级跃升}：
+
+\begin{table}[htbp]
+	\centering
+	\caption{PQC格密码与经典ECC公钥/签名/密文尺寸对比}
+	\label{tab:size_comparison}
+	\renewcommand{\arraystretch}{1.3}
+	\small
+	\begin{tabular}{lcccc}
+		\toprule
+		\textbf{算法} & \textbf{公钥 (B)} & \textbf{私钥 (B)} & \textbf{签名/密文 (B)} & \textbf{膨胀倍数（公钥）} \\
+		\midrule
+		SM2 (ECC-256)         & 64    & 32    & 64--72  & 基准 $\times$1 \\
+		ECDSA P-256           & 64    & 32    & 64--72  & $\times$1 \\
+		RSA-2048              & 256   & 256   & 256     & $\times$4 \\
+		\midrule
+		ML-DSA-44 (Di.2)      & \textbf{1,312} & \textbf{2,560} & \textbf{2,420} & $\times$20.5 \\
+		ML-DSA-65 (Di.3)      & \textbf{1,952} & \textbf{4,032} & \textbf{3,293} & $\times$30.5 \\
+		ML-DSA-87 (Di.5)      & \textbf{2,592} & \textbf{4,864} & \textbf{4,595} & $\times$40.5 \\
+		ML-KEM-512            & 800   & 1,632 & 768（密文） & $\times$12.5 \\
+		ML-KEM-768            & 1,184 & 2,400 & 1,088     & $\times$18.5 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+这意味着：一张原本只需存储64字节SM2公钥的门禁卡，升级到ML-DSA-44后需要存储\textbf{超过1.3KB的公钥}，签名验证时还需处理2.4KB的签名数据。对于典型无源NFC门禁卡片上仅有\textbf{约8--32KB RAM}的现实而言，单是密钥数据结构的常驻内存就已吃掉相当比例，留给计算中间变量的空间极其紧张。
+
+\subsubsection{挑战二：通信开销——APDU帧长限制下的传输瓶颈}
+
+NFC门禁通信遵循ISO 7816-4 APDU协议规范，读卡器与卡片之间通过非接触式射频帧交换数据。在ISO 14443 Type A/B典型配置下，\textbf{单帧有效载荷仅约256字节}（标准短APDU数据域上限255字节）。
+
+对比两类算法的完整认证交互数据量：传统SM2双向认证仅需交换公钥（64B）+ 签名（64B）= 128B，\textbf{单帧即可完成}；而ML-DSA-44双向认证需要交换公钥（1312B）+ 签名（2420B），如果加上ML-KEM的密钥交换公钥（800B）+ 密文（768B），\textbf{总传输量逼近7.3KB}——按单帧256字节计算，需要约28次APDU往返。这一通信延迟在门禁场景下是致命的：用户体验要求\textbf{刷卡总耗时 $\le$ 300ms}，而每次ISO 14443帧交换的固有延迟约4--5ms，仅帧交换本身就将轻松突破100ms。
+
+这里有一个容易忽视的工程事实：\textbf{在锁端/读卡器端，格密码的纯计算速度实际上已优于同安全级别的ECC}（得益于NTT将多项式乘法从$\mathcal{O}(n^2)$降至$\mathcal{O}(n\log n)$），真正拖慢整条认证链路的\textbf{不是算力，而是传输}。
+
+\subsubsection{挑战三：资源异构——从服务端到无源卡片的两极分化}
+
+PQC算法库面临的运行环境是高度异构的：
+
 \begin{itemize}
-	\item \textbf{美国NIST}：2024年8月发布首批后量子密码标准，明确2030年全面弃用、\textbf{2035年完全禁用RSA与ECC算法}。
-	\item \textbf{美国国防部CNSA 2.0}：要求\textbf{2025年起}，后量子密码必须作为默认加密算法。
-	\item \textbf{科技巨头入局}：IBM、微软成立联盟，谷歌Chrome已集成抗量子加密。
-	\item \textbf{中国产业动态}：2025年2月，国家商用密码标准研究院全面启动抗量子商用密码算法征集；第三代“本源悟空”装备国内首个后量子密码护盾。
+	\item \textbf{后台服务端（x86/AArch64服务器）}：计算资源充裕，可部署SIMD向量化、多线程并行，但需要处理高并发门禁事件流。
+	\item \textbf{门禁读卡器（ARM Cortex-M / RISC-V MCU）}：Flash通常在256KB--1MB量级，RAM 64--256KB，需要运行完整协议栈与多协议兼容逻辑。
+	\item \textbf{无源门禁卡（RISC-V SE安全芯片）}：\textbf{最极端场景}——无电池，靠射频取电，片上RAM通常仅8--32KB，Flash 64--256KB，主频多限制在16--40MHz。在此环境下完成ML-DSA签名所需内存若不做任何优化，内存峰值可达到20--40KB，\textbf{已超出多数无源NFC芯片的物理上限}。
 \end{itemize}
 
-资本市场同样反应热烈：2024年全球后量子密码市场估值1.79亿美元，预计2031年将达22亿美元（CAGR 43.1\%），其中\textbf{量子安全认证解决方案是增速最快的子领域}。
+这三大挑战并非互不相干：内存不够会导致不得不做更多分批计算（耗时增加），更多APDU交换又拉长通信链路（总延迟上升），而服务端的高性能实现和卡片端的极限裁剪之间又存在巨大的\textbf{代码复用鸿沟}。接下来各节将逐层展开：\textbf{2.2节}阐述卡片端如何将算法内存压至3KB以内并重构通信模型；\textbf{2.3节}讨论锁端/服务端的高性能SIMD与RISC-V向量化策略；\textbf{2.4节}则给出贯穿三层的四层解耦合兼容架构。
 
-\section{等不起——Mosca定理与迁移窗口}
-
-历史经验表明，一项密码算法从标准化到完全融入系统完成落地，普遍需要10到20年。密码学界著名的 \textbf{Mosca定理（莫斯卡定理）} 为我们划下了红线：
-
-\begin{center}
-	\textbf{数据保护年限 (X) + 系统迁移时间 (Y) > 量子计算机建成时间 (Z) $\Longrightarrow$ 必须立刻行动！}
-\end{center}
-
-我们的门禁系统需要保障未来10年的安全，全行业完成PQC迁移至少需要5-10年，而量子计算机预计10年内就会攻破现有体系。正如Gartner副总裁警告：“等到接近2030年才采取行动的组织，将没有足够的时间完成安全替换。”
-
-如果现在不启动迁移，当Q-Day到来时我们将毫无还手之力。而我们自主研发的 \textbf{基于 PQ-Aliro 协议的后量子门禁系统}，正是解决这一痛点的终极解：\textbf{一步到位完成量子安全升级，守住当下的门，更守住未来的安全。}
+\endinput
