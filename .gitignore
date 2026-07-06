@@ -3,3 +3,9 @@ run_*
 bench_*
 
 .vscode/
+
+build/
+
+interm_report/
+
+autobuild.sh
