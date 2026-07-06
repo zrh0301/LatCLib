@@ -1,1 +1,0 @@
-/usr/bin/cc  -fsanitize=address -g  -fsanitize=address CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o -o test_sampling  libcore.a -lm 

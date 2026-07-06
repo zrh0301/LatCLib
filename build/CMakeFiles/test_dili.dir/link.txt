@@ -1,1 +1,0 @@
-/usr/bin/cc  -fsanitize=address -g  -fsanitize=address CMakeFiles/test_dili.dir/test/src/test_dili.c.o -o test_dili  libcore.a -lm 

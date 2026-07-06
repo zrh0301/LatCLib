@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcore.a CMakeFiles/core.dir/src/poly.c.o CMakeFiles/core.dir/src/poly_ntt.c.o CMakeFiles/core.dir/src/rand.c.o CMakeFiles/core.dir/src/keccak.c.o CMakeFiles/core.dir/src/dili.c.o CMakeFiles/core.dir/src/polyvec.c.o CMakeFiles/core.dir/src/pack.c.o
-/usr/bin/ranlib libcore.a
