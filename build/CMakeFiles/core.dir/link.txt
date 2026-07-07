@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcore.a CMakeFiles/core.dir/Poly/src/poly.c.o CMakeFiles/core.dir/Poly/src/poly_ntt.c.o CMakeFiles/core.dir/Poly/src/ntt_table.c.o CMakeFiles/core.dir/Rand/src/rand.c.o CMakeFiles/core.dir/Hash/src/keccak.c.o CMakeFiles/core.dir/Dilithium/src/dili.c.o CMakeFiles/core.dir/Dilithium/src/polyvec.c.o CMakeFiles/core.dir/Dilithium/src/pack.c.o CMakeFiles/core.dir/Dilithium/src/dili_sample.c.o
-/usr/bin/ranlib libcore.a
