@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -DUSE_DILITHIUM_NTT -DUSE_KYBER_NTT
 
-C_INCLUDES = -I/home/zrheng/Documents/PQC/My_PQC/inc -I/home/zrheng/Documents/PQC/My_PQC/test/inc
+C_INCLUDES = -I/home/zrheng/Documents/PQC/My_PQC/Poly/inc -I/home/zrheng/Documents/PQC/My_PQC/Dilithium/inc -I/home/zrheng/Documents/PQC/My_PQC/Rand/inc -I/home/zrheng/Documents/PQC/My_PQC/Hash/inc -I/home/zrheng/Documents/PQC/My_PQC/Test/inc
 
-C_FLAGS =  -fsanitize=address -g -std=gnu11 -O3 -march=native -mtune=native -ffast-math -funroll-loops -g -Wall -Wextra
+C_FLAGS = -std=gnu11 -O3 -march=native -mtune=native -ffast-math -funroll-loops -g -Wall -Wextra
 

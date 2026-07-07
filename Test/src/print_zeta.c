@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../../inc/poly.h"
+#include "poly.h"
 
 static void print_zetas(const char *name, const lp_ctx *ctx, int used) {
     printf("%s dynamic zetas\n", name);

@@ -1,4 +1,4 @@
-#include "../inc/poly.h"
+#include "poly.h"
 
 typedef lssi_t poly[MAX_POLY_COEFS];
 

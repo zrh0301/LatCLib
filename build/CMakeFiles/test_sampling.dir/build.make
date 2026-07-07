@@ -69,28 +69,28 @@ include CMakeFiles/test_sampling.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_sampling.dir/flags.make
 
-CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o: CMakeFiles/test_sampling.dir/flags.make
-CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o: /home/zrheng/Documents/PQC/My_PQC/test/src/test_sampling.c
-CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o: CMakeFiles/test_sampling.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o -MF CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o.d -o CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o -c /home/zrheng/Documents/PQC/My_PQC/test/src/test_sampling.c
+CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o: CMakeFiles/test_sampling.dir/flags.make
+CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o: /home/zrheng/Documents/PQC/My_PQC/Test/src/test_sampling.c
+CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o: CMakeFiles/test_sampling.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o -MF CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o.d -o CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o -c /home/zrheng/Documents/PQC/My_PQC/Test/src/test_sampling.c
 
-CMakeFiles/test_sampling.dir/test/src/test_sampling.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_sampling.dir/test/src/test_sampling.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/test/src/test_sampling.c > CMakeFiles/test_sampling.dir/test/src/test_sampling.c.i
+CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/Test/src/test_sampling.c > CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.i
 
-CMakeFiles/test_sampling.dir/test/src/test_sampling.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_sampling.dir/test/src/test_sampling.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/test/src/test_sampling.c -o CMakeFiles/test_sampling.dir/test/src/test_sampling.c.s
+CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/Test/src/test_sampling.c -o CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.s
 
 # Object files for target test_sampling
 test_sampling_OBJECTS = \
-"CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o"
+"CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o"
 
 # External object files for target test_sampling
 test_sampling_EXTERNAL_OBJECTS =
 
-test_sampling: CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o
+test_sampling: CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o
 test_sampling: CMakeFiles/test_sampling.dir/build.make
 test_sampling: libcore.a
 test_sampling: CMakeFiles/test_sampling.dir/link.txt

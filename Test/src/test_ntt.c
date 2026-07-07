@@ -1,5 +1,5 @@
-#include "../inc/test_common.h"
-#include "../../inc/poly.h"
+#include "test_common.h"
+#include "poly.h"
 
 #define NTESTS 5000
 typedef lssi_t poly[MAX_POLY_COEFS];

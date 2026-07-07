@@ -15,12 +15,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # 开启 AddressSanitizer (ASan) 和调试信息 (-g)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -g")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
 # 添加头文件路径
-include_directories(inc test/inc)
+include_directories(Poly/inc Dilithium/inc Rand/inc Hash/inc Test/inc)
 
 # 宏定义
 add_compile_definitions(USE_DILITHIUM_NTT USE_KYBER_NTT)
@@ -51,15 +51,16 @@ endif()
 # 3. 核心库构建
 # ==========================================
 
-set(CORE_SRCS 
-    src/poly.c 
-    src/poly_ntt.c 
-    src/ntt_table.c
-    src/rand.c 
-    src/keccak.c 
-    src/dili.c 
-    src/polyvec.c 
-    src/pack.c
+set(CORE_SRCS
+    Poly/src/poly.c
+    Poly/src/poly_ntt.c
+    Poly/src/ntt_table.c
+    Rand/src/rand.c
+    Hash/src/keccak.c
+    Dilithium/src/dili.c
+    Dilithium/src/polyvec.c
+    Dilithium/src/pack.c
+    Dilithium/src/dili_sample.c
 )
 
 add_library(core STATIC ${CORE_SRCS})
@@ -75,11 +76,11 @@ macro(add_crypto_test TEST_NAME SOURCE_FILE)
 endmacro()
 
 # 添加测试目标 (已移除 test_sha3)
-add_crypto_test(test_poly     test/src/test_poly.c)
-add_crypto_test(test_ntt      test/src/test_ntt.c)
-add_crypto_test(test_sampling test/src/test_sampling.c)
-add_crypto_test(test_dili     test/src/test_dili.c)
-add_crypto_test(print_zetas   test/src/print_zeta.c)
+add_crypto_test(test_poly     Test/src/test_poly.c)
+add_crypto_test(test_ntt      Test/src/test_ntt.c)
+add_crypto_test(test_sampling Test/src/test_sampling.c)
+add_crypto_test(test_dili     Test/src/test_dili.c)
+add_crypto_test(print_zetas   Test/src/print_zeta.c)
 
 # ==========================================
 # 5. 自定义 Test 命令

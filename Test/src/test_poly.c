@@ -1,4 +1,4 @@
-#include "../inc/test_common.h"
+#include "test_common.h"
 
 void test_correctness() {
     printf("=== Running Correctness Tests ===\n");

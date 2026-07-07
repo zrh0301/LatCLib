@@ -1,6 +1,7 @@
 #include "polyvec.h"
 #include "poly.h"
 #include "keccak.h"
+#include "dili_sample.h"
 #include <string.h>
 
 // Reduce helper macro

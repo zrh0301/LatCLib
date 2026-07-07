@@ -10,9 +10,9 @@
 #else
     #include <x86intrin.h>
 #endif
-#include "../../inc/types.h"
-#include "../../inc/poly.h"
-#include "../../inc/rand.h"
+#include "types.h"
+#include "poly.h"
+#include "rand.h"
 
 #define TEST_COEFS     256
 #define TEST_Q_KYBER   3329

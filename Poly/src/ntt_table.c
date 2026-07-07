@@ -1,4 +1,4 @@
-#include "../inc/poly.h"
+#include "poly.h"
 
 static lssi_t center_mod(lsdi_t a, lssi_t q) {
     a %= q;

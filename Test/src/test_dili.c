@@ -1,6 +1,6 @@
-#include "../inc/test_common.h"
-#include "../../inc/dili.h"
-#include "../../inc/poly.h"
+#include "test_common.h"
+#include "dili.h"
+#include "poly.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>

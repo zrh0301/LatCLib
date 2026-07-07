@@ -69,28 +69,28 @@ include CMakeFiles/test_ntt.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_ntt.dir/flags.make
 
-CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o: CMakeFiles/test_ntt.dir/flags.make
-CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o: /home/zrheng/Documents/PQC/My_PQC/test/src/test_ntt.c
-CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o: CMakeFiles/test_ntt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o -MF CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o.d -o CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o -c /home/zrheng/Documents/PQC/My_PQC/test/src/test_ntt.c
+CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o: CMakeFiles/test_ntt.dir/flags.make
+CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o: /home/zrheng/Documents/PQC/My_PQC/Test/src/test_ntt.c
+CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o: CMakeFiles/test_ntt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o -MF CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o.d -o CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o -c /home/zrheng/Documents/PQC/My_PQC/Test/src/test_ntt.c
 
-CMakeFiles/test_ntt.dir/test/src/test_ntt.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_ntt.dir/test/src/test_ntt.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/test/src/test_ntt.c > CMakeFiles/test_ntt.dir/test/src/test_ntt.c.i
+CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/Test/src/test_ntt.c > CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.i
 
-CMakeFiles/test_ntt.dir/test/src/test_ntt.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_ntt.dir/test/src/test_ntt.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/test/src/test_ntt.c -o CMakeFiles/test_ntt.dir/test/src/test_ntt.c.s
+CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/Test/src/test_ntt.c -o CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.s
 
 # Object files for target test_ntt
 test_ntt_OBJECTS = \
-"CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o"
+"CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o"
 
 # External object files for target test_ntt
 test_ntt_EXTERNAL_OBJECTS =
 
-test_ntt: CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o
+test_ntt: CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o
 test_ntt: CMakeFiles/test_ntt.dir/build.make
 test_ntt: libcore.a
 test_ntt: CMakeFiles/test_ntt.dir/link.txt

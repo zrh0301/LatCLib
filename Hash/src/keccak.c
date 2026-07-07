@@ -1,4 +1,4 @@
-#include "../inc/keccak.h"
+#include "keccak.h"
 #include <assert.h>
 #include <stdio.h>
 

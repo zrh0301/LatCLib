@@ -1,5 +1,5 @@
 
-#include "../inc/rand.h"
+#include "rand.h"
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 *.o
 run_*
 bench_*
@@ -10,13 +9,6 @@ build/
 interm_report/
 
 autobuild.sh
-=======
-*.o
-run_*
-bench_*
-
-.vscode/
->>>>>>> 4c8b77cac32c9b6adc14e35269d244942b2e2749
 
 *.pdf
 

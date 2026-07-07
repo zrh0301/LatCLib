@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/zrheng/Documents/PQC/My_PQC/test/src/print_zeta.c" "CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o" "gcc" "CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o.d"
+  "/home/zrheng/Documents/PQC/My_PQC/Test/src/print_zeta.c" "CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o" "gcc" "CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

@@ -3,17 +3,7 @@
 
 #include <stdint.h>
 #include "poly.h"
-
-// Forward declarations for Dilithium parameters
-#ifndef DILI_N
-#define DILI_N 256
-#endif
-#ifndef DILI_D
-#define DILI_D 13
-#endif
-#ifndef DILI_Q
-#define DILI_Q 8380417
-#endif
+#include "dili.h"
 
 
 // Matrix operations

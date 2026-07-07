@@ -69,28 +69,28 @@ include CMakeFiles/test_dili.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_dili.dir/flags.make
 
-CMakeFiles/test_dili.dir/test/src/test_dili.c.o: CMakeFiles/test_dili.dir/flags.make
-CMakeFiles/test_dili.dir/test/src/test_dili.c.o: /home/zrheng/Documents/PQC/My_PQC/test/src/test_dili.c
-CMakeFiles/test_dili.dir/test/src/test_dili.c.o: CMakeFiles/test_dili.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_dili.dir/test/src/test_dili.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_dili.dir/test/src/test_dili.c.o -MF CMakeFiles/test_dili.dir/test/src/test_dili.c.o.d -o CMakeFiles/test_dili.dir/test/src/test_dili.c.o -c /home/zrheng/Documents/PQC/My_PQC/test/src/test_dili.c
+CMakeFiles/test_dili.dir/Test/src/test_dili.c.o: CMakeFiles/test_dili.dir/flags.make
+CMakeFiles/test_dili.dir/Test/src/test_dili.c.o: /home/zrheng/Documents/PQC/My_PQC/Test/src/test_dili.c
+CMakeFiles/test_dili.dir/Test/src/test_dili.c.o: CMakeFiles/test_dili.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_dili.dir/Test/src/test_dili.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_dili.dir/Test/src/test_dili.c.o -MF CMakeFiles/test_dili.dir/Test/src/test_dili.c.o.d -o CMakeFiles/test_dili.dir/Test/src/test_dili.c.o -c /home/zrheng/Documents/PQC/My_PQC/Test/src/test_dili.c
 
-CMakeFiles/test_dili.dir/test/src/test_dili.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_dili.dir/test/src/test_dili.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/test/src/test_dili.c > CMakeFiles/test_dili.dir/test/src/test_dili.c.i
+CMakeFiles/test_dili.dir/Test/src/test_dili.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_dili.dir/Test/src/test_dili.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/Test/src/test_dili.c > CMakeFiles/test_dili.dir/Test/src/test_dili.c.i
 
-CMakeFiles/test_dili.dir/test/src/test_dili.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_dili.dir/test/src/test_dili.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/test/src/test_dili.c -o CMakeFiles/test_dili.dir/test/src/test_dili.c.s
+CMakeFiles/test_dili.dir/Test/src/test_dili.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_dili.dir/Test/src/test_dili.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/Test/src/test_dili.c -o CMakeFiles/test_dili.dir/Test/src/test_dili.c.s
 
 # Object files for target test_dili
 test_dili_OBJECTS = \
-"CMakeFiles/test_dili.dir/test/src/test_dili.c.o"
+"CMakeFiles/test_dili.dir/Test/src/test_dili.c.o"
 
 # External object files for target test_dili
 test_dili_EXTERNAL_OBJECTS =
 
-test_dili: CMakeFiles/test_dili.dir/test/src/test_dili.c.o
+test_dili: CMakeFiles/test_dili.dir/Test/src/test_dili.c.o
 test_dili: CMakeFiles/test_dili.dir/build.make
 test_dili: libcore.a
 test_dili: CMakeFiles/test_dili.dir/link.txt

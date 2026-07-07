@@ -1,3 +1,6 @@
+#ifndef DILI_H
+#define DILI_H
+
 #define DILI_N 256
 #define DILI_Q 8380417
 #define DILI_QBITS 23
@@ -59,3 +62,5 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
 // Packing/Unpacking functions
 void dili_pack_pk(uint8_t *pk_bytes, const uint8_t *rho, const poly *t1, int k);
 void dili_unpack_pk(uint8_t *rho, poly *t1, const uint8_t *pk_bytes, int k);
+
+#endif // DILI_H

@@ -69,28 +69,28 @@ include CMakeFiles/test_poly.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_poly.dir/flags.make
 
-CMakeFiles/test_poly.dir/test/src/test_poly.c.o: CMakeFiles/test_poly.dir/flags.make
-CMakeFiles/test_poly.dir/test/src/test_poly.c.o: /home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c
-CMakeFiles/test_poly.dir/test/src/test_poly.c.o: CMakeFiles/test_poly.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_poly.dir/test/src/test_poly.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_poly.dir/test/src/test_poly.c.o -MF CMakeFiles/test_poly.dir/test/src/test_poly.c.o.d -o CMakeFiles/test_poly.dir/test/src/test_poly.c.o -c /home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c
+CMakeFiles/test_poly.dir/Test/src/test_poly.c.o: CMakeFiles/test_poly.dir/flags.make
+CMakeFiles/test_poly.dir/Test/src/test_poly.c.o: /home/zrheng/Documents/PQC/My_PQC/Test/src/test_poly.c
+CMakeFiles/test_poly.dir/Test/src/test_poly.c.o: CMakeFiles/test_poly.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_poly.dir/Test/src/test_poly.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/test_poly.dir/Test/src/test_poly.c.o -MF CMakeFiles/test_poly.dir/Test/src/test_poly.c.o.d -o CMakeFiles/test_poly.dir/Test/src/test_poly.c.o -c /home/zrheng/Documents/PQC/My_PQC/Test/src/test_poly.c
 
-CMakeFiles/test_poly.dir/test/src/test_poly.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_poly.dir/test/src/test_poly.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c > CMakeFiles/test_poly.dir/test/src/test_poly.c.i
+CMakeFiles/test_poly.dir/Test/src/test_poly.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/test_poly.dir/Test/src/test_poly.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/Test/src/test_poly.c > CMakeFiles/test_poly.dir/Test/src/test_poly.c.i
 
-CMakeFiles/test_poly.dir/test/src/test_poly.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_poly.dir/test/src/test_poly.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c -o CMakeFiles/test_poly.dir/test/src/test_poly.c.s
+CMakeFiles/test_poly.dir/Test/src/test_poly.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/test_poly.dir/Test/src/test_poly.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/Test/src/test_poly.c -o CMakeFiles/test_poly.dir/Test/src/test_poly.c.s
 
 # Object files for target test_poly
 test_poly_OBJECTS = \
-"CMakeFiles/test_poly.dir/test/src/test_poly.c.o"
+"CMakeFiles/test_poly.dir/Test/src/test_poly.c.o"
 
 # External object files for target test_poly
 test_poly_EXTERNAL_OBJECTS =
 
-test_poly: CMakeFiles/test_poly.dir/test/src/test_poly.c.o
+test_poly: CMakeFiles/test_poly.dir/Test/src/test_poly.c.o
 test_poly: CMakeFiles/test_poly.dir/build.make
 test_poly: libcore.a
 test_poly: CMakeFiles/test_poly.dir/link.txt

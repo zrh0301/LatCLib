@@ -1,8 +1,9 @@
-#include "../inc/dili.h"
-#include "../inc/poly.h"
-#include "../inc/polyvec.h"
-#include "../inc/pack.h"
-#include "../inc/rand.h"
+#include "dili.h"
+#include "poly.h"
+#include "polyvec.h"
+#include "pack.h"
+#include "rand.h"
+#include "dili_sample.h"
 #include <string.h>
 
 #define CMOD_Q(a) ({ \
@@ -21,7 +22,7 @@
 
 #define CMOV(cond, a, b) ({ \
     int32_t _c = -(int32_t)(cond); \
-    ((a)&_c) | ((b)&(~c)); \
+    ((a)&_c) | ((b)&(~_c)); \
 }) // return cond?a:b;
 
 #define REDUCE32(x) ({\

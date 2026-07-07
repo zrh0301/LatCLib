@@ -1,6 +1,7 @@
-#include "../../inc/poly.h"
-#include "../../inc/rand.h"
-#include "../../inc/types.h"
+#include "poly.h"
+#include "rand.h"
+#include "types.h"
+#include "dili_sample.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

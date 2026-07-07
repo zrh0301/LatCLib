@@ -207,317 +207,341 @@ run_test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_test.dir/build.make CMakeFiles/run_test.dir/build
 .PHONY : run_test/fast
 
-src/dili.o: src/dili.c.o
-.PHONY : src/dili.o
+Dilithium/src/dili.o: Dilithium/src/dili.c.o
+.PHONY : Dilithium/src/dili.o
 
 # target to build an object file
-src/dili.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/dili.c.o
-.PHONY : src/dili.c.o
+Dilithium/src/dili.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili.c.o
+.PHONY : Dilithium/src/dili.c.o
 
-src/dili.i: src/dili.c.i
-.PHONY : src/dili.i
+Dilithium/src/dili.i: Dilithium/src/dili.c.i
+.PHONY : Dilithium/src/dili.i
 
 # target to preprocess a source file
-src/dili.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/dili.c.i
-.PHONY : src/dili.c.i
+Dilithium/src/dili.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili.c.i
+.PHONY : Dilithium/src/dili.c.i
 
-src/dili.s: src/dili.c.s
-.PHONY : src/dili.s
+Dilithium/src/dili.s: Dilithium/src/dili.c.s
+.PHONY : Dilithium/src/dili.s
 
 # target to generate assembly for a file
-src/dili.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/dili.c.s
-.PHONY : src/dili.c.s
+Dilithium/src/dili.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili.c.s
+.PHONY : Dilithium/src/dili.c.s
 
-src/keccak.o: src/keccak.c.o
-.PHONY : src/keccak.o
+Dilithium/src/dili_sample.o: Dilithium/src/dili_sample.c.o
+.PHONY : Dilithium/src/dili_sample.o
 
 # target to build an object file
-src/keccak.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/keccak.c.o
-.PHONY : src/keccak.c.o
+Dilithium/src/dili_sample.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili_sample.c.o
+.PHONY : Dilithium/src/dili_sample.c.o
 
-src/keccak.i: src/keccak.c.i
-.PHONY : src/keccak.i
+Dilithium/src/dili_sample.i: Dilithium/src/dili_sample.c.i
+.PHONY : Dilithium/src/dili_sample.i
 
 # target to preprocess a source file
-src/keccak.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/keccak.c.i
-.PHONY : src/keccak.c.i
+Dilithium/src/dili_sample.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili_sample.c.i
+.PHONY : Dilithium/src/dili_sample.c.i
 
-src/keccak.s: src/keccak.c.s
-.PHONY : src/keccak.s
+Dilithium/src/dili_sample.s: Dilithium/src/dili_sample.c.s
+.PHONY : Dilithium/src/dili_sample.s
 
 # target to generate assembly for a file
-src/keccak.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/keccak.c.s
-.PHONY : src/keccak.c.s
+Dilithium/src/dili_sample.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/dili_sample.c.s
+.PHONY : Dilithium/src/dili_sample.c.s
 
-src/ntt_table.o: src/ntt_table.c.o
-.PHONY : src/ntt_table.o
+Dilithium/src/pack.o: Dilithium/src/pack.c.o
+.PHONY : Dilithium/src/pack.o
 
 # target to build an object file
-src/ntt_table.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.o
-.PHONY : src/ntt_table.c.o
+Dilithium/src/pack.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/pack.c.o
+.PHONY : Dilithium/src/pack.c.o
 
-src/ntt_table.i: src/ntt_table.c.i
-.PHONY : src/ntt_table.i
+Dilithium/src/pack.i: Dilithium/src/pack.c.i
+.PHONY : Dilithium/src/pack.i
 
 # target to preprocess a source file
-src/ntt_table.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.i
-.PHONY : src/ntt_table.c.i
+Dilithium/src/pack.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/pack.c.i
+.PHONY : Dilithium/src/pack.c.i
 
-src/ntt_table.s: src/ntt_table.c.s
-.PHONY : src/ntt_table.s
+Dilithium/src/pack.s: Dilithium/src/pack.c.s
+.PHONY : Dilithium/src/pack.s
 
 # target to generate assembly for a file
-src/ntt_table.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.s
-.PHONY : src/ntt_table.c.s
+Dilithium/src/pack.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/pack.c.s
+.PHONY : Dilithium/src/pack.c.s
 
-src/pack.o: src/pack.c.o
-.PHONY : src/pack.o
+Dilithium/src/polyvec.o: Dilithium/src/polyvec.c.o
+.PHONY : Dilithium/src/polyvec.o
 
 # target to build an object file
-src/pack.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/pack.c.o
-.PHONY : src/pack.c.o
+Dilithium/src/polyvec.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/polyvec.c.o
+.PHONY : Dilithium/src/polyvec.c.o
 
-src/pack.i: src/pack.c.i
-.PHONY : src/pack.i
+Dilithium/src/polyvec.i: Dilithium/src/polyvec.c.i
+.PHONY : Dilithium/src/polyvec.i
 
 # target to preprocess a source file
-src/pack.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/pack.c.i
-.PHONY : src/pack.c.i
+Dilithium/src/polyvec.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/polyvec.c.i
+.PHONY : Dilithium/src/polyvec.c.i
 
-src/pack.s: src/pack.c.s
-.PHONY : src/pack.s
+Dilithium/src/polyvec.s: Dilithium/src/polyvec.c.s
+.PHONY : Dilithium/src/polyvec.s
 
 # target to generate assembly for a file
-src/pack.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/pack.c.s
-.PHONY : src/pack.c.s
+Dilithium/src/polyvec.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Dilithium/src/polyvec.c.s
+.PHONY : Dilithium/src/polyvec.c.s
 
-src/poly.o: src/poly.c.o
-.PHONY : src/poly.o
+Hash/src/keccak.o: Hash/src/keccak.c.o
+.PHONY : Hash/src/keccak.o
 
 # target to build an object file
-src/poly.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly.c.o
-.PHONY : src/poly.c.o
+Hash/src/keccak.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Hash/src/keccak.c.o
+.PHONY : Hash/src/keccak.c.o
 
-src/poly.i: src/poly.c.i
-.PHONY : src/poly.i
+Hash/src/keccak.i: Hash/src/keccak.c.i
+.PHONY : Hash/src/keccak.i
 
 # target to preprocess a source file
-src/poly.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly.c.i
-.PHONY : src/poly.c.i
+Hash/src/keccak.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Hash/src/keccak.c.i
+.PHONY : Hash/src/keccak.c.i
 
-src/poly.s: src/poly.c.s
-.PHONY : src/poly.s
+Hash/src/keccak.s: Hash/src/keccak.c.s
+.PHONY : Hash/src/keccak.s
 
 # target to generate assembly for a file
-src/poly.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly.c.s
-.PHONY : src/poly.c.s
+Hash/src/keccak.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Hash/src/keccak.c.s
+.PHONY : Hash/src/keccak.c.s
 
-src/poly_ntt.o: src/poly_ntt.c.o
-.PHONY : src/poly_ntt.o
+Poly/src/ntt_table.o: Poly/src/ntt_table.c.o
+.PHONY : Poly/src/ntt_table.o
 
 # target to build an object file
-src/poly_ntt.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly_ntt.c.o
-.PHONY : src/poly_ntt.c.o
+Poly/src/ntt_table.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/ntt_table.c.o
+.PHONY : Poly/src/ntt_table.c.o
 
-src/poly_ntt.i: src/poly_ntt.c.i
-.PHONY : src/poly_ntt.i
+Poly/src/ntt_table.i: Poly/src/ntt_table.c.i
+.PHONY : Poly/src/ntt_table.i
 
 # target to preprocess a source file
-src/poly_ntt.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly_ntt.c.i
-.PHONY : src/poly_ntt.c.i
+Poly/src/ntt_table.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/ntt_table.c.i
+.PHONY : Poly/src/ntt_table.c.i
 
-src/poly_ntt.s: src/poly_ntt.c.s
-.PHONY : src/poly_ntt.s
+Poly/src/ntt_table.s: Poly/src/ntt_table.c.s
+.PHONY : Poly/src/ntt_table.s
 
 # target to generate assembly for a file
-src/poly_ntt.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/poly_ntt.c.s
-.PHONY : src/poly_ntt.c.s
+Poly/src/ntt_table.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/ntt_table.c.s
+.PHONY : Poly/src/ntt_table.c.s
 
-src/polyvec.o: src/polyvec.c.o
-.PHONY : src/polyvec.o
+Poly/src/poly.o: Poly/src/poly.c.o
+.PHONY : Poly/src/poly.o
 
 # target to build an object file
-src/polyvec.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/polyvec.c.o
-.PHONY : src/polyvec.c.o
+Poly/src/poly.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly.c.o
+.PHONY : Poly/src/poly.c.o
 
-src/polyvec.i: src/polyvec.c.i
-.PHONY : src/polyvec.i
+Poly/src/poly.i: Poly/src/poly.c.i
+.PHONY : Poly/src/poly.i
 
 # target to preprocess a source file
-src/polyvec.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/polyvec.c.i
-.PHONY : src/polyvec.c.i
+Poly/src/poly.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly.c.i
+.PHONY : Poly/src/poly.c.i
 
-src/polyvec.s: src/polyvec.c.s
-.PHONY : src/polyvec.s
+Poly/src/poly.s: Poly/src/poly.c.s
+.PHONY : Poly/src/poly.s
 
 # target to generate assembly for a file
-src/polyvec.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/polyvec.c.s
-.PHONY : src/polyvec.c.s
+Poly/src/poly.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly.c.s
+.PHONY : Poly/src/poly.c.s
 
-src/rand.o: src/rand.c.o
-.PHONY : src/rand.o
+Poly/src/poly_ntt.o: Poly/src/poly_ntt.c.o
+.PHONY : Poly/src/poly_ntt.o
 
 # target to build an object file
-src/rand.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/rand.c.o
-.PHONY : src/rand.c.o
+Poly/src/poly_ntt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly_ntt.c.o
+.PHONY : Poly/src/poly_ntt.c.o
 
-src/rand.i: src/rand.c.i
-.PHONY : src/rand.i
+Poly/src/poly_ntt.i: Poly/src/poly_ntt.c.i
+.PHONY : Poly/src/poly_ntt.i
 
 # target to preprocess a source file
-src/rand.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/rand.c.i
-.PHONY : src/rand.c.i
+Poly/src/poly_ntt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly_ntt.c.i
+.PHONY : Poly/src/poly_ntt.c.i
 
-src/rand.s: src/rand.c.s
-.PHONY : src/rand.s
+Poly/src/poly_ntt.s: Poly/src/poly_ntt.c.s
+.PHONY : Poly/src/poly_ntt.s
 
 # target to generate assembly for a file
-src/rand.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/rand.c.s
-.PHONY : src/rand.c.s
+Poly/src/poly_ntt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Poly/src/poly_ntt.c.s
+.PHONY : Poly/src/poly_ntt.c.s
 
-test/src/print_zeta.o: test/src/print_zeta.c.o
-.PHONY : test/src/print_zeta.o
+Rand/src/rand.o: Rand/src/rand.c.o
+.PHONY : Rand/src/rand.o
 
 # target to build an object file
-test/src/print_zeta.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o
-.PHONY : test/src/print_zeta.c.o
+Rand/src/rand.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Rand/src/rand.c.o
+.PHONY : Rand/src/rand.c.o
 
-test/src/print_zeta.i: test/src/print_zeta.c.i
-.PHONY : test/src/print_zeta.i
+Rand/src/rand.i: Rand/src/rand.c.i
+.PHONY : Rand/src/rand.i
 
 # target to preprocess a source file
-test/src/print_zeta.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.i
-.PHONY : test/src/print_zeta.c.i
+Rand/src/rand.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Rand/src/rand.c.i
+.PHONY : Rand/src/rand.c.i
 
-test/src/print_zeta.s: test/src/print_zeta.c.s
-.PHONY : test/src/print_zeta.s
+Rand/src/rand.s: Rand/src/rand.c.s
+.PHONY : Rand/src/rand.s
 
 # target to generate assembly for a file
-test/src/print_zeta.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.s
-.PHONY : test/src/print_zeta.c.s
+Rand/src/rand.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/Rand/src/rand.c.s
+.PHONY : Rand/src/rand.c.s
 
-test/src/test_dili.o: test/src/test_dili.c.o
-.PHONY : test/src/test_dili.o
+Test/src/print_zeta.o: Test/src/print_zeta.c.o
+.PHONY : Test/src/print_zeta.o
 
 # target to build an object file
-test/src/test_dili.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/test/src/test_dili.c.o
-.PHONY : test/src/test_dili.c.o
+Test/src/print_zeta.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o
+.PHONY : Test/src/print_zeta.c.o
 
-test/src/test_dili.i: test/src/test_dili.c.i
-.PHONY : test/src/test_dili.i
+Test/src/print_zeta.i: Test/src/print_zeta.c.i
+.PHONY : Test/src/print_zeta.i
 
 # target to preprocess a source file
-test/src/test_dili.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/test/src/test_dili.c.i
-.PHONY : test/src/test_dili.c.i
+Test/src/print_zeta.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.i
+.PHONY : Test/src/print_zeta.c.i
 
-test/src/test_dili.s: test/src/test_dili.c.s
-.PHONY : test/src/test_dili.s
+Test/src/print_zeta.s: Test/src/print_zeta.c.s
+.PHONY : Test/src/print_zeta.s
 
 # target to generate assembly for a file
-test/src/test_dili.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/test/src/test_dili.c.s
-.PHONY : test/src/test_dili.c.s
+Test/src/print_zeta.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.s
+.PHONY : Test/src/print_zeta.c.s
 
-test/src/test_ntt.o: test/src/test_ntt.c.o
-.PHONY : test/src/test_ntt.o
+Test/src/test_dili.o: Test/src/test_dili.c.o
+.PHONY : Test/src/test_dili.o
 
 # target to build an object file
-test/src/test_ntt.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/test/src/test_ntt.c.o
-.PHONY : test/src/test_ntt.c.o
+Test/src/test_dili.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/Test/src/test_dili.c.o
+.PHONY : Test/src/test_dili.c.o
 
-test/src/test_ntt.i: test/src/test_ntt.c.i
-.PHONY : test/src/test_ntt.i
+Test/src/test_dili.i: Test/src/test_dili.c.i
+.PHONY : Test/src/test_dili.i
 
 # target to preprocess a source file
-test/src/test_ntt.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/test/src/test_ntt.c.i
-.PHONY : test/src/test_ntt.c.i
+Test/src/test_dili.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/Test/src/test_dili.c.i
+.PHONY : Test/src/test_dili.c.i
 
-test/src/test_ntt.s: test/src/test_ntt.c.s
-.PHONY : test/src/test_ntt.s
+Test/src/test_dili.s: Test/src/test_dili.c.s
+.PHONY : Test/src/test_dili.s
 
 # target to generate assembly for a file
-test/src/test_ntt.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/test/src/test_ntt.c.s
-.PHONY : test/src/test_ntt.c.s
+Test/src/test_dili.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_dili.dir/build.make CMakeFiles/test_dili.dir/Test/src/test_dili.c.s
+.PHONY : Test/src/test_dili.c.s
 
-test/src/test_poly.o: test/src/test_poly.c.o
-.PHONY : test/src/test_poly.o
+Test/src/test_ntt.o: Test/src/test_ntt.c.o
+.PHONY : Test/src/test_ntt.o
 
 # target to build an object file
-test/src/test_poly.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/test/src/test_poly.c.o
-.PHONY : test/src/test_poly.c.o
+Test/src/test_ntt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.o
+.PHONY : Test/src/test_ntt.c.o
 
-test/src/test_poly.i: test/src/test_poly.c.i
-.PHONY : test/src/test_poly.i
+Test/src/test_ntt.i: Test/src/test_ntt.c.i
+.PHONY : Test/src/test_ntt.i
 
 # target to preprocess a source file
-test/src/test_poly.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/test/src/test_poly.c.i
-.PHONY : test/src/test_poly.c.i
+Test/src/test_ntt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.i
+.PHONY : Test/src/test_ntt.c.i
 
-test/src/test_poly.s: test/src/test_poly.c.s
-.PHONY : test/src/test_poly.s
+Test/src/test_ntt.s: Test/src/test_ntt.c.s
+.PHONY : Test/src/test_ntt.s
 
 # target to generate assembly for a file
-test/src/test_poly.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/test/src/test_poly.c.s
-.PHONY : test/src/test_poly.c.s
+Test/src/test_ntt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_ntt.dir/build.make CMakeFiles/test_ntt.dir/Test/src/test_ntt.c.s
+.PHONY : Test/src/test_ntt.c.s
 
-test/src/test_sampling.o: test/src/test_sampling.c.o
-.PHONY : test/src/test_sampling.o
+Test/src/test_poly.o: Test/src/test_poly.c.o
+.PHONY : Test/src/test_poly.o
 
 # target to build an object file
-test/src/test_sampling.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o
-.PHONY : test/src/test_sampling.c.o
+Test/src/test_poly.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/Test/src/test_poly.c.o
+.PHONY : Test/src/test_poly.c.o
 
-test/src/test_sampling.i: test/src/test_sampling.c.i
-.PHONY : test/src/test_sampling.i
+Test/src/test_poly.i: Test/src/test_poly.c.i
+.PHONY : Test/src/test_poly.i
 
 # target to preprocess a source file
-test/src/test_sampling.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/test/src/test_sampling.c.i
-.PHONY : test/src/test_sampling.c.i
+Test/src/test_poly.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/Test/src/test_poly.c.i
+.PHONY : Test/src/test_poly.c.i
 
-test/src/test_sampling.s: test/src/test_sampling.c.s
-.PHONY : test/src/test_sampling.s
+Test/src/test_poly.s: Test/src/test_poly.c.s
+.PHONY : Test/src/test_poly.s
 
 # target to generate assembly for a file
-test/src/test_sampling.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/test/src/test_sampling.c.s
-.PHONY : test/src/test_sampling.c.s
+Test/src/test_poly.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_poly.dir/build.make CMakeFiles/test_poly.dir/Test/src/test_poly.c.s
+.PHONY : Test/src/test_poly.c.s
+
+Test/src/test_sampling.o: Test/src/test_sampling.c.o
+.PHONY : Test/src/test_sampling.o
+
+# target to build an object file
+Test/src/test_sampling.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.o
+.PHONY : Test/src/test_sampling.c.o
+
+Test/src/test_sampling.i: Test/src/test_sampling.c.i
+.PHONY : Test/src/test_sampling.i
+
+# target to preprocess a source file
+Test/src/test_sampling.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.i
+.PHONY : Test/src/test_sampling.c.i
+
+Test/src/test_sampling.s: Test/src/test_sampling.c.s
+.PHONY : Test/src/test_sampling.s
+
+# target to generate assembly for a file
+Test/src/test_sampling.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sampling.dir/build.make CMakeFiles/test_sampling.dir/Test/src/test_sampling.c.s
+.PHONY : Test/src/test_sampling.c.s
 
 # Help Target
 help:
@@ -534,45 +558,48 @@ help:
 	@echo "... test_ntt"
 	@echo "... test_poly"
 	@echo "... test_sampling"
-	@echo "... src/dili.o"
-	@echo "... src/dili.i"
-	@echo "... src/dili.s"
-	@echo "... src/keccak.o"
-	@echo "... src/keccak.i"
-	@echo "... src/keccak.s"
-	@echo "... src/ntt_table.o"
-	@echo "... src/ntt_table.i"
-	@echo "... src/ntt_table.s"
-	@echo "... src/pack.o"
-	@echo "... src/pack.i"
-	@echo "... src/pack.s"
-	@echo "... src/poly.o"
-	@echo "... src/poly.i"
-	@echo "... src/poly.s"
-	@echo "... src/poly_ntt.o"
-	@echo "... src/poly_ntt.i"
-	@echo "... src/poly_ntt.s"
-	@echo "... src/polyvec.o"
-	@echo "... src/polyvec.i"
-	@echo "... src/polyvec.s"
-	@echo "... src/rand.o"
-	@echo "... src/rand.i"
-	@echo "... src/rand.s"
-	@echo "... test/src/print_zeta.o"
-	@echo "... test/src/print_zeta.i"
-	@echo "... test/src/print_zeta.s"
-	@echo "... test/src/test_dili.o"
-	@echo "... test/src/test_dili.i"
-	@echo "... test/src/test_dili.s"
-	@echo "... test/src/test_ntt.o"
-	@echo "... test/src/test_ntt.i"
-	@echo "... test/src/test_ntt.s"
-	@echo "... test/src/test_poly.o"
-	@echo "... test/src/test_poly.i"
-	@echo "... test/src/test_poly.s"
-	@echo "... test/src/test_sampling.o"
-	@echo "... test/src/test_sampling.i"
-	@echo "... test/src/test_sampling.s"
+	@echo "... Dilithium/src/dili.o"
+	@echo "... Dilithium/src/dili.i"
+	@echo "... Dilithium/src/dili.s"
+	@echo "... Dilithium/src/dili_sample.o"
+	@echo "... Dilithium/src/dili_sample.i"
+	@echo "... Dilithium/src/dili_sample.s"
+	@echo "... Dilithium/src/pack.o"
+	@echo "... Dilithium/src/pack.i"
+	@echo "... Dilithium/src/pack.s"
+	@echo "... Dilithium/src/polyvec.o"
+	@echo "... Dilithium/src/polyvec.i"
+	@echo "... Dilithium/src/polyvec.s"
+	@echo "... Hash/src/keccak.o"
+	@echo "... Hash/src/keccak.i"
+	@echo "... Hash/src/keccak.s"
+	@echo "... Poly/src/ntt_table.o"
+	@echo "... Poly/src/ntt_table.i"
+	@echo "... Poly/src/ntt_table.s"
+	@echo "... Poly/src/poly.o"
+	@echo "... Poly/src/poly.i"
+	@echo "... Poly/src/poly.s"
+	@echo "... Poly/src/poly_ntt.o"
+	@echo "... Poly/src/poly_ntt.i"
+	@echo "... Poly/src/poly_ntt.s"
+	@echo "... Rand/src/rand.o"
+	@echo "... Rand/src/rand.i"
+	@echo "... Rand/src/rand.s"
+	@echo "... Test/src/print_zeta.o"
+	@echo "... Test/src/print_zeta.i"
+	@echo "... Test/src/print_zeta.s"
+	@echo "... Test/src/test_dili.o"
+	@echo "... Test/src/test_dili.i"
+	@echo "... Test/src/test_dili.s"
+	@echo "... Test/src/test_ntt.o"
+	@echo "... Test/src/test_ntt.i"
+	@echo "... Test/src/test_ntt.s"
+	@echo "... Test/src/test_poly.o"
+	@echo "... Test/src/test_poly.i"
+	@echo "... Test/src/test_poly.s"
+	@echo "... Test/src/test_sampling.o"
+	@echo "... Test/src/test_sampling.i"
+	@echo "... Test/src/test_sampling.s"
 .PHONY : help
 
 

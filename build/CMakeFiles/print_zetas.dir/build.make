@@ -69,28 +69,28 @@ include CMakeFiles/print_zetas.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/print_zetas.dir/flags.make
 
-CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o: CMakeFiles/print_zetas.dir/flags.make
-CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o: /home/zrheng/Documents/PQC/My_PQC/test/src/print_zeta.c
-CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o: CMakeFiles/print_zetas.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o -MF CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o.d -o CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o -c /home/zrheng/Documents/PQC/My_PQC/test/src/print_zeta.c
+CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o: CMakeFiles/print_zetas.dir/flags.make
+CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o: /home/zrheng/Documents/PQC/My_PQC/Test/src/print_zeta.c
+CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o: CMakeFiles/print_zetas.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o -MF CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o.d -o CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o -c /home/zrheng/Documents/PQC/My_PQC/Test/src/print_zeta.c
 
-CMakeFiles/print_zetas.dir/test/src/print_zeta.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/print_zetas.dir/test/src/print_zeta.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/test/src/print_zeta.c > CMakeFiles/print_zetas.dir/test/src/print_zeta.c.i
+CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/Test/src/print_zeta.c > CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.i
 
-CMakeFiles/print_zetas.dir/test/src/print_zeta.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/print_zetas.dir/test/src/print_zeta.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/test/src/print_zeta.c -o CMakeFiles/print_zetas.dir/test/src/print_zeta.c.s
+CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/Test/src/print_zeta.c -o CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.s
 
 # Object files for target print_zetas
 print_zetas_OBJECTS = \
-"CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o"
+"CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o"
 
 # External object files for target print_zetas
 print_zetas_EXTERNAL_OBJECTS =
 
-print_zetas: CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o
+print_zetas: CMakeFiles/print_zetas.dir/Test/src/print_zeta.c.o
 print_zetas: CMakeFiles/print_zetas.dir/build.make
 print_zetas: libcore.a
 print_zetas: CMakeFiles/print_zetas.dir/link.txt
