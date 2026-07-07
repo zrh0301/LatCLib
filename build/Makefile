@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zrheng/Documents/PQC/My_PQC
+CMAKE_SOURCE_DIR = /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zrheng/Documents/PQC/My_PQC/build
+CMAKE_BINARY_DIR = /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles /home/zrheng/Documents/PQC/My_PQC/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -182,6 +182,19 @@ test_dili/fast:
 .PHONY : test_dili/fast
 
 #=============================================================================
+# Target rules for targets named print_zetas
+
+# Build rule for target.
+print_zetas: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 print_zetas
+.PHONY : print_zetas
+
+# fast build rule for target.
+print_zetas/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/build
+.PHONY : print_zetas/fast
+
+#=============================================================================
 # Target rules for targets named run_test
 
 # Build rule for target.
@@ -241,6 +254,30 @@ src/keccak.s: src/keccak.c.s
 src/keccak.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/keccak.c.s
 .PHONY : src/keccak.c.s
+
+src/ntt_table.o: src/ntt_table.c.o
+.PHONY : src/ntt_table.o
+
+# target to build an object file
+src/ntt_table.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.o
+.PHONY : src/ntt_table.c.o
+
+src/ntt_table.i: src/ntt_table.c.i
+.PHONY : src/ntt_table.i
+
+# target to preprocess a source file
+src/ntt_table.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.i
+.PHONY : src/ntt_table.c.i
+
+src/ntt_table.s: src/ntt_table.c.s
+.PHONY : src/ntt_table.s
+
+# target to generate assembly for a file
+src/ntt_table.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/ntt_table.c.s
+.PHONY : src/ntt_table.c.s
 
 src/pack.o: src/pack.c.o
 .PHONY : src/pack.o
@@ -362,6 +399,30 @@ src/rand.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/rand.c.s
 .PHONY : src/rand.c.s
 
+test/src/print_zeta.o: test/src/print_zeta.c.o
+.PHONY : test/src/print_zeta.o
+
+# target to build an object file
+test/src/print_zeta.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o
+.PHONY : test/src/print_zeta.c.o
+
+test/src/print_zeta.i: test/src/print_zeta.c.i
+.PHONY : test/src/print_zeta.i
+
+# target to preprocess a source file
+test/src/print_zeta.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.i
+.PHONY : test/src/print_zeta.c.i
+
+test/src/print_zeta.s: test/src/print_zeta.c.s
+.PHONY : test/src/print_zeta.s
+
+# target to generate assembly for a file
+test/src/print_zeta.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/print_zetas.dir/build.make CMakeFiles/print_zetas.dir/test/src/print_zeta.c.s
+.PHONY : test/src/print_zeta.c.s
+
 test/src/test_dili.o: test/src/test_dili.c.o
 .PHONY : test/src/test_dili.o
 
@@ -468,6 +529,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... run_test"
 	@echo "... core"
+	@echo "... print_zetas"
 	@echo "... test_dili"
 	@echo "... test_ntt"
 	@echo "... test_poly"
@@ -478,6 +540,9 @@ help:
 	@echo "... src/keccak.o"
 	@echo "... src/keccak.i"
 	@echo "... src/keccak.s"
+	@echo "... src/ntt_table.o"
+	@echo "... src/ntt_table.i"
+	@echo "... src/ntt_table.s"
 	@echo "... src/pack.o"
 	@echo "... src/pack.i"
 	@echo "... src/pack.s"
@@ -493,6 +558,9 @@ help:
 	@echo "... src/rand.o"
 	@echo "... src/rand.i"
 	@echo "... src/rand.s"
+	@echo "... test/src/print_zeta.o"
+	@echo "... test/src/print_zeta.i"
+	@echo "... test/src/print_zeta.s"
 	@echo "... test/src/test_dili.o"
 	@echo "... test/src/test_dili.i"
 	@echo "... test/src/test_dili.s"

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zrheng/Documents/PQC/My_PQC
+CMAKE_SOURCE_DIR = /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zrheng/Documents/PQC/My_PQC/build
+CMAKE_BINARY_DIR = /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/core.dir/depend.make
@@ -70,107 +70,122 @@ include CMakeFiles/core.dir/progress.make
 include CMakeFiles/core.dir/flags.make
 
 CMakeFiles/core.dir/src/poly.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/poly.c.o: /home/zrheng/Documents/PQC/My_PQC/src/poly.c
+CMakeFiles/core.dir/src/poly.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly.c
 CMakeFiles/core.dir/src/poly.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/core.dir/src/poly.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/poly.c.o -MF CMakeFiles/core.dir/src/poly.c.o.d -o CMakeFiles/core.dir/src/poly.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/poly.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/core.dir/src/poly.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/poly.c.o -MF CMakeFiles/core.dir/src/poly.c.o.d -o CMakeFiles/core.dir/src/poly.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly.c
 
 CMakeFiles/core.dir/src/poly.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/poly.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/poly.c > CMakeFiles/core.dir/src/poly.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly.c > CMakeFiles/core.dir/src/poly.c.i
 
 CMakeFiles/core.dir/src/poly.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/poly.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/poly.c -o CMakeFiles/core.dir/src/poly.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly.c -o CMakeFiles/core.dir/src/poly.c.s
 
 CMakeFiles/core.dir/src/poly_ntt.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/poly_ntt.c.o: /home/zrheng/Documents/PQC/My_PQC/src/poly_ntt.c
+CMakeFiles/core.dir/src/poly_ntt.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly_ntt.c
 CMakeFiles/core.dir/src/poly_ntt.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/core.dir/src/poly_ntt.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/poly_ntt.c.o -MF CMakeFiles/core.dir/src/poly_ntt.c.o.d -o CMakeFiles/core.dir/src/poly_ntt.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/poly_ntt.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/core.dir/src/poly_ntt.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/poly_ntt.c.o -MF CMakeFiles/core.dir/src/poly_ntt.c.o.d -o CMakeFiles/core.dir/src/poly_ntt.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly_ntt.c
 
 CMakeFiles/core.dir/src/poly_ntt.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/poly_ntt.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/poly_ntt.c > CMakeFiles/core.dir/src/poly_ntt.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly_ntt.c > CMakeFiles/core.dir/src/poly_ntt.c.i
 
 CMakeFiles/core.dir/src/poly_ntt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/poly_ntt.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/poly_ntt.c -o CMakeFiles/core.dir/src/poly_ntt.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly_ntt.c -o CMakeFiles/core.dir/src/poly_ntt.c.s
+
+CMakeFiles/core.dir/src/ntt_table.c.o: CMakeFiles/core.dir/flags.make
+CMakeFiles/core.dir/src/ntt_table.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/ntt_table.c
+CMakeFiles/core.dir/src/ntt_table.c.o: CMakeFiles/core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/core.dir/src/ntt_table.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/ntt_table.c.o -MF CMakeFiles/core.dir/src/ntt_table.c.o.d -o CMakeFiles/core.dir/src/ntt_table.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/ntt_table.c
+
+CMakeFiles/core.dir/src/ntt_table.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/ntt_table.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/ntt_table.c > CMakeFiles/core.dir/src/ntt_table.c.i
+
+CMakeFiles/core.dir/src/ntt_table.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/ntt_table.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/ntt_table.c -o CMakeFiles/core.dir/src/ntt_table.c.s
 
 CMakeFiles/core.dir/src/rand.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/rand.c.o: /home/zrheng/Documents/PQC/My_PQC/src/rand.c
+CMakeFiles/core.dir/src/rand.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/rand.c
 CMakeFiles/core.dir/src/rand.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/core.dir/src/rand.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/rand.c.o -MF CMakeFiles/core.dir/src/rand.c.o.d -o CMakeFiles/core.dir/src/rand.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/rand.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/core.dir/src/rand.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/rand.c.o -MF CMakeFiles/core.dir/src/rand.c.o.d -o CMakeFiles/core.dir/src/rand.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/rand.c
 
 CMakeFiles/core.dir/src/rand.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/rand.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/rand.c > CMakeFiles/core.dir/src/rand.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/rand.c > CMakeFiles/core.dir/src/rand.c.i
 
 CMakeFiles/core.dir/src/rand.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/rand.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/rand.c -o CMakeFiles/core.dir/src/rand.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/rand.c -o CMakeFiles/core.dir/src/rand.c.s
 
 CMakeFiles/core.dir/src/keccak.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/keccak.c.o: /home/zrheng/Documents/PQC/My_PQC/src/keccak.c
+CMakeFiles/core.dir/src/keccak.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/keccak.c
 CMakeFiles/core.dir/src/keccak.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/core.dir/src/keccak.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/keccak.c.o -MF CMakeFiles/core.dir/src/keccak.c.o.d -o CMakeFiles/core.dir/src/keccak.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/keccak.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/core.dir/src/keccak.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/keccak.c.o -MF CMakeFiles/core.dir/src/keccak.c.o.d -o CMakeFiles/core.dir/src/keccak.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/keccak.c
 
 CMakeFiles/core.dir/src/keccak.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/keccak.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/keccak.c > CMakeFiles/core.dir/src/keccak.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/keccak.c > CMakeFiles/core.dir/src/keccak.c.i
 
 CMakeFiles/core.dir/src/keccak.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/keccak.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/keccak.c -o CMakeFiles/core.dir/src/keccak.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/keccak.c -o CMakeFiles/core.dir/src/keccak.c.s
 
 CMakeFiles/core.dir/src/dili.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/dili.c.o: /home/zrheng/Documents/PQC/My_PQC/src/dili.c
+CMakeFiles/core.dir/src/dili.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/dili.c
 CMakeFiles/core.dir/src/dili.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/core.dir/src/dili.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/dili.c.o -MF CMakeFiles/core.dir/src/dili.c.o.d -o CMakeFiles/core.dir/src/dili.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/dili.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/core.dir/src/dili.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/dili.c.o -MF CMakeFiles/core.dir/src/dili.c.o.d -o CMakeFiles/core.dir/src/dili.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/dili.c
 
 CMakeFiles/core.dir/src/dili.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/dili.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/dili.c > CMakeFiles/core.dir/src/dili.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/dili.c > CMakeFiles/core.dir/src/dili.c.i
 
 CMakeFiles/core.dir/src/dili.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/dili.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/dili.c -o CMakeFiles/core.dir/src/dili.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/dili.c -o CMakeFiles/core.dir/src/dili.c.s
 
 CMakeFiles/core.dir/src/polyvec.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/polyvec.c.o: /home/zrheng/Documents/PQC/My_PQC/src/polyvec.c
+CMakeFiles/core.dir/src/polyvec.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/polyvec.c
 CMakeFiles/core.dir/src/polyvec.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/core.dir/src/polyvec.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/polyvec.c.o -MF CMakeFiles/core.dir/src/polyvec.c.o.d -o CMakeFiles/core.dir/src/polyvec.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/polyvec.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/core.dir/src/polyvec.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/polyvec.c.o -MF CMakeFiles/core.dir/src/polyvec.c.o.d -o CMakeFiles/core.dir/src/polyvec.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/polyvec.c
 
 CMakeFiles/core.dir/src/polyvec.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/polyvec.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/polyvec.c > CMakeFiles/core.dir/src/polyvec.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/polyvec.c > CMakeFiles/core.dir/src/polyvec.c.i
 
 CMakeFiles/core.dir/src/polyvec.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/polyvec.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/polyvec.c -o CMakeFiles/core.dir/src/polyvec.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/polyvec.c -o CMakeFiles/core.dir/src/polyvec.c.s
 
 CMakeFiles/core.dir/src/pack.c.o: CMakeFiles/core.dir/flags.make
-CMakeFiles/core.dir/src/pack.c.o: /home/zrheng/Documents/PQC/My_PQC/src/pack.c
+CMakeFiles/core.dir/src/pack.c.o: /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/pack.c
 CMakeFiles/core.dir/src/pack.c.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/core.dir/src/pack.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/pack.c.o -MF CMakeFiles/core.dir/src/pack.c.o.d -o CMakeFiles/core.dir/src/pack.c.o -c /home/zrheng/Documents/PQC/My_PQC/src/pack.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/core.dir/src/pack.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/core.dir/src/pack.c.o -MF CMakeFiles/core.dir/src/pack.c.o.d -o CMakeFiles/core.dir/src/pack.c.o -c /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/pack.c
 
 CMakeFiles/core.dir/src/pack.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/core.dir/src/pack.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/zrheng/Documents/PQC/My_PQC/src/pack.c > CMakeFiles/core.dir/src/pack.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/pack.c > CMakeFiles/core.dir/src/pack.c.i
 
 CMakeFiles/core.dir/src/pack.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/core.dir/src/pack.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/zrheng/Documents/PQC/My_PQC/src/pack.c -o CMakeFiles/core.dir/src/pack.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/pack.c -o CMakeFiles/core.dir/src/pack.c.s
 
 # Object files for target core
 core_OBJECTS = \
 "CMakeFiles/core.dir/src/poly.c.o" \
 "CMakeFiles/core.dir/src/poly_ntt.c.o" \
+"CMakeFiles/core.dir/src/ntt_table.c.o" \
 "CMakeFiles/core.dir/src/rand.c.o" \
 "CMakeFiles/core.dir/src/keccak.c.o" \
 "CMakeFiles/core.dir/src/dili.c.o" \
@@ -182,6 +197,7 @@ core_EXTERNAL_OBJECTS =
 
 libcore.a: CMakeFiles/core.dir/src/poly.c.o
 libcore.a: CMakeFiles/core.dir/src/poly_ntt.c.o
+libcore.a: CMakeFiles/core.dir/src/ntt_table.c.o
 libcore.a: CMakeFiles/core.dir/src/rand.c.o
 libcore.a: CMakeFiles/core.dir/src/keccak.c.o
 libcore.a: CMakeFiles/core.dir/src/dili.c.o
@@ -189,7 +205,7 @@ libcore.a: CMakeFiles/core.dir/src/polyvec.c.o
 libcore.a: CMakeFiles/core.dir/src/pack.c.o
 libcore.a: CMakeFiles/core.dir/build.make
 libcore.a: CMakeFiles/core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C static library libcore.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C static library libcore.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/core.dir/link.txt --verbose=$(VERBOSE)
 
@@ -202,6 +218,6 @@ CMakeFiles/core.dir/clean:
 .PHONY : CMakeFiles/core.dir/clean
 
 CMakeFiles/core.dir/depend:
-	cd /home/zrheng/Documents/PQC/My_PQC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zrheng/Documents/PQC/My_PQC /home/zrheng/Documents/PQC/My_PQC /home/zrheng/Documents/PQC/My_PQC/build /home/zrheng/Documents/PQC/My_PQC/build /home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/core.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/core.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/core.dir/depend
 

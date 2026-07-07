@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/zrheng/Documents/PQC/My_PQC/CMakeLists.txt"
+  "/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/CMakeLists.txt"
   "CMakeFiles/3.28.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.28.3/CMakeSystem.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeCCompiler.cmake.in"
@@ -108,5 +108,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/test_ntt.dir/DependInfo.cmake"
   "CMakeFiles/test_sampling.dir/DependInfo.cmake"
   "CMakeFiles/test_dili.dir/DependInfo.cmake"
+  "CMakeFiles/print_zetas.dir/DependInfo.cmake"
   "CMakeFiles/run_test.dir/DependInfo.cmake"
   )

@@ -1,6 +1,7 @@
 CMakeFiles/core.dir/src/poly.c.o: \
- /home/zrheng/Documents/PQC/My_PQC/src/poly.c /usr/include/stdc-predef.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/types.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/poly.c \
+ /usr/include/stdc-predef.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/types.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -23,10 +24,10 @@ CMakeFiles/core.dir/src/poly.c.o: \
  /usr/include/strings.h \
  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/rand.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/poly.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/../inc/types.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/../inc/rand.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/rand.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/poly.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/../inc/types.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/../inc/rand.h \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
@@ -67,11 +68,8 @@ CMakeFiles/core.dir/src/poly.c.o: \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/../inc/dili_ntt_tables.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/../inc/types.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/../inc/kyber_ntt_tables.h \
- /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h /usr/include/stdio.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \

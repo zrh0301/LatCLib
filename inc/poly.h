@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
-#include "../inc/dili_ntt_tables.h"
-#include "../inc/kyber_ntt_tables.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -133,26 +131,6 @@ typedef lssi_t poly[MAX_POLY_COEFS];
     (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
 } while(0)
 
-#define INIT_NTT_DILI(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 8380417; \
-    (Q)->mode = NTT_FULL_MODE; \
-    (Q)->layer = 8; \
-    (Q)->f = 41978; \
-    (Q)->qc = 58728449; \
-    (Q)->zetas = zetas_dili_256; \
-} while(0)
-
-#define INIT_NTT_KYBER(Q) do { \
-    (Q)->n = 256; \
-    (Q)->q = 3329; \
-    (Q)->mode = NTT_INCOMPLETE_MODE; \
-    (Q)->layer = 7; \
-    (Q)->f = 1104; \
-    (Q)->qc = 1806234369; \
-    (Q)->zetas = zetas_kyber_256; \
-} while(0)
-
 typedef enum{
     NTT_FULL_MODE, // for Dilithium
     NTT_INCOMPLETE_MODE // for Kyber
@@ -166,25 +144,18 @@ typedef struct {
     ntt_mode_t mode;
     
     lssi_t f;
-    const lssi_t* zetas; // origin root table
+    lssi_t zetas_storage[MAX_POLY_COEFS];
+    const lssi_t* zetas;
     const int* rev_table;
 } lp_ctx;
 
-#define MONTGOMERY_REDUCE(a, q, qc) ({ \
-    int32_t _t = (int64_t)(int32_t)(a) * (qc); \
-    _t = ((a) - (int64_t)_t * (q)) >> 32; \
-    _t; \
-})
+void ntt_generate_zetas(lssi_t zetas[MAX_POLY_COEFS], lssi_t q, lssi_t root,
+                        lssi_t mont_r, int bitrev_bits, int used);
+void ntt_init_dili(lp_ctx *Q);
+void ntt_init_kyber(lp_ctx *Q);
 
-#define BASEMUL(r, a, b, zeta, q, qc) do { \
-    lssi_t _r0, _t; \
-    _r0 = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[0], q, qc); \
-    _t = MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[1], q, qc); \
-    _t = MONTGOMERY_REDUCE((lsdi_t)_t * (zeta), q, qc); \
-    (r)[0] = _r0 + _t; \
-    (r)[1] = MONTGOMERY_REDUCE((lsdi_t)(a)[0] * (b)[1], q, qc); \
-    (r)[1] += MONTGOMERY_REDUCE((lsdi_t)(a)[1] * (b)[0], q, qc); \
-} while(0)
+#define INIT_NTT_DILI(Q) ntt_init_dili(Q)
+#define INIT_NTT_KYBER(Q) ntt_init_kyber(Q)
 
 void rand_bytes(uint8_t* output, int len);
 

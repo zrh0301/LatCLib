@@ -1,8 +1,9 @@
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/core.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/test_poly.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/test_ntt.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/test_sampling.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/test_dili.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/run_test.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/edit_cache.dir
-/home/zrheng/Documents/PQC/My_PQC/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/core.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/test_poly.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/test_ntt.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/test_sampling.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/test_dili.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/print_zetas.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/run_test.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/build/CMakeFiles/rebuild_cache.dir

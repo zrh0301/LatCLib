@@ -2,20 +2,27 @@
 #include "dili.h"
 #include <string.h>
 
+// t1: 10-bit 打包, 每 4 系数 -> 5 字节 (标准布局)
 void dili_polyt1_pack(uint8_t *r, const poly p, int n, int d) {
     unsigned int i;
-    for(i = 0; i < n; i++) {
-        uint32_t t = p[i];
-        r[i*2] = t & 0xFF;
-        r[i*2+1] = (t >> 8) & 0xFF;
+    (void)d;
+    for(i = 0; i < (unsigned)n/4; i++) {
+        r[5*i+0] = (uint8_t)(p[4*i+0] >> 0);
+        r[5*i+1] = (uint8_t)((p[4*i+0] >> 8) | (p[4*i+1] << 2));
+        r[5*i+2] = (uint8_t)((p[4*i+1] >> 6) | (p[4*i+2] << 4));
+        r[5*i+3] = (uint8_t)((p[4*i+2] >> 4) | (p[4*i+3] << 6));
+        r[5*i+4] = (uint8_t)(p[4*i+3] >> 2);
     }
 }
 
 void dili_polyt1_unpack(poly p, const uint8_t *a, int n, int d) {
     unsigned int i;
-    for(i = 0; i < n; i++) {
-        p[i] = a[i*2] | ((uint32_t)a[i*2+1] << 8);
-        p[i] &= (1 << (d-1)) - 1;
+    (void)d;
+    for(i = 0; i < (unsigned)n/4; i++) {
+        p[4*i+0] = ((a[5*i+0] >> 0) | ((uint32_t)a[5*i+1] << 8)) & 0x3FF;
+        p[4*i+1] = ((a[5*i+1] >> 2) | ((uint32_t)a[5*i+2] << 6)) & 0x3FF;
+        p[4*i+2] = ((a[5*i+2] >> 4) | ((uint32_t)a[5*i+3] << 4)) & 0x3FF;
+        p[4*i+3] = ((a[5*i+3] >> 6) | ((uint32_t)a[5*i+4] << 2)) & 0x3FF;
     }
 }
 
@@ -28,42 +35,77 @@ void dili_pack_pk(uint8_t *pk_bytes, const uint8_t *rho, const poly *t1, int k) 
     
     for(i = 0; i < k; i++) {
         dili_polyt1_pack(pk_bytes, t1[i], DILI_N, DILI_D);
-        pk_bytes += 2 * DILI_N;
+        pk_bytes += DILI_POLYT1_PACKEDBYTES;
     }
 }
 
 void dili_unpack_pk(uint8_t *rho, poly *t1, const uint8_t *pk_bytes, int k) {
     unsigned int i;
-    
+
     for(i = 0; i < 32; i++)
         rho[i] = pk_bytes[i];
     pk_bytes += 32;
-    
+
     for(i = 0; i < k; i++) {
         dili_polyt1_unpack(t1[i], pk_bytes, DILI_N, DILI_D);
-        pk_bytes += 2 * DILI_N;
+        pk_bytes += DILI_POLYT1_PACKEDBYTES;
     }
 }
 
+// z: 标准打包, 存 t = gamma1 - z
+// gamma1=2^17 -> 18-bit, 每 4 系数 9 字节; gamma1=2^19 -> 20-bit, 每 2 系数 5 字节
 void pack_z(uint8_t* r, const poly z, int gamma1){
     int i;
-    uint32_t t;
-    for(i=0; i<DILI_N; ++i){
-        t = (uint32_t)(gamma1 - z[i]);
-        r[3*i+0] = t & 0xff;
-        r[3*i+1] = (t>>8) & 0xff;
-        r[3*i+2] = (t>>16) & 0xff;
+    uint32_t t[4];
+    if(gamma1 == (1 << 17)) {
+        for(i = 0; i < DILI_N/4; i++){
+            t[0] = (uint32_t)(gamma1 - z[4*i+0]);
+            t[1] = (uint32_t)(gamma1 - z[4*i+1]);
+            t[2] = (uint32_t)(gamma1 - z[4*i+2]);
+            t[3] = (uint32_t)(gamma1 - z[4*i+3]);
+            r[9*i+0] = (uint8_t)(t[0]);
+            r[9*i+1] = (uint8_t)(t[0] >> 8);
+            r[9*i+2] = (uint8_t)((t[0] >> 16) | (t[1] << 2));
+            r[9*i+3] = (uint8_t)(t[1] >> 6);
+            r[9*i+4] = (uint8_t)((t[1] >> 14) | (t[2] << 4));
+            r[9*i+5] = (uint8_t)(t[2] >> 4);
+            r[9*i+6] = (uint8_t)((t[2] >> 12) | (t[3] << 6));
+            r[9*i+7] = (uint8_t)(t[3] >> 2);
+            r[9*i+8] = (uint8_t)(t[3] >> 10);
+        }
+    } else {  // gamma1 = 2^19
+        for(i = 0; i < DILI_N/2; i++){
+            t[0] = (uint32_t)(gamma1 - z[2*i+0]);
+            t[1] = (uint32_t)(gamma1 - z[2*i+1]);
+            r[5*i+0] = (uint8_t)(t[0]);
+            r[5*i+1] = (uint8_t)(t[0] >> 8);
+            r[5*i+2] = (uint8_t)((t[0] >> 16) | (t[1] << 4));
+            r[5*i+3] = (uint8_t)(t[1] >> 4);
+            r[5*i+4] = (uint8_t)(t[1] >> 12);
+        }
     }
 }
 
 void unpack_z(poly z, const uint8_t* r, int gamma1){
     int i;
-    uint32_t t;
-    for(i=0; i<DILI_N; ++i){
-        t = r[3*i+0];
-        t |= (uint32_t)(r[3*i+1]<<8);
-        t |= (uint32_t)(r[3*i+2]<<16);
-        z[i] = gamma1 - (lssi_t)t;
+    if(gamma1 == (1 << 17)) {
+        for(i = 0; i < DILI_N/4; i++){
+            z[4*i+0] = (r[9*i+0] | ((uint32_t)r[9*i+1] << 8) | ((uint32_t)r[9*i+2] << 16)) & 0x3FFFF;
+            z[4*i+1] = ((r[9*i+2] >> 2) | ((uint32_t)r[9*i+3] << 6) | ((uint32_t)r[9*i+4] << 14)) & 0x3FFFF;
+            z[4*i+2] = ((r[9*i+4] >> 4) | ((uint32_t)r[9*i+5] << 4) | ((uint32_t)r[9*i+6] << 12)) & 0x3FFFF;
+            z[4*i+3] = ((r[9*i+6] >> 6) | ((uint32_t)r[9*i+7] << 2) | ((uint32_t)r[9*i+8] << 10)) & 0x3FFFF;
+            z[4*i+0] = gamma1 - z[4*i+0];
+            z[4*i+1] = gamma1 - z[4*i+1];
+            z[4*i+2] = gamma1 - z[4*i+2];
+            z[4*i+3] = gamma1 - z[4*i+3];
+        }
+    } else {  // gamma1 = 2^19
+        for(i = 0; i < DILI_N/2; i++){
+            z[2*i+0] = (r[5*i+0] | ((uint32_t)r[5*i+1] << 8) | ((uint32_t)r[5*i+2] << 16)) & 0xFFFFF;
+            z[2*i+1] = ((r[5*i+2] >> 4) | ((uint32_t)r[5*i+3] << 4) | ((uint32_t)r[5*i+4] << 12)) & 0xFFFFF;
+            z[2*i+0] = gamma1 - z[2*i+0];
+            z[2*i+1] = gamma1 - z[2*i+1];
+        }
     }
 }
 
@@ -122,9 +164,19 @@ int unpack_h(uint8_t h[][256], const uint8_t* r, int k, int omega){
             if(idx >= DILI_N) {
                 return -1;
             }
+            // 同一多项式内索引必须严格递增, 否则拒绝 (防止签名可锻性)
+            if(j > prev_limit && idx <= r[j-1]) {
+                return -1;
+            }
             h[i][idx] = 1;
         }
         prev_limit = limit;
+    }
+    // 尾部填充字节必须全 0
+    for(j = prev_limit; j < omega; ++j){
+        if(r[j] != 0) {
+            return -1;
+        }
     }
     return 0;
 }

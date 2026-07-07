@@ -1,6 +1,7 @@
 CMakeFiles/core.dir/src/rand.c.o: \
- /home/zrheng/Documents/PQC/My_PQC/src/rand.c /usr/include/stdc-predef.h \
- /home/zrheng/Documents/PQC/My_PQC/src/../inc/rand.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/rand.c \
+ /usr/include/stdc-predef.h \
+ /mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/src/../inc/rand.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \

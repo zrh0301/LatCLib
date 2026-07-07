@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -DUSE_DILITHIUM_NTT -DUSE_KYBER_NTT
 
-C_INCLUDES = -I/home/zrheng/Documents/PQC/My_PQC/inc -I/home/zrheng/Documents/PQC/My_PQC/test/inc
+C_INCLUDES = -I/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/inc -I/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/test/inc
 
 C_FLAGS =  -fsanitize=address -g -std=gnu11 -O3 -march=native -mtune=native -ffast-math -funroll-loops -g -Wall -Wextra
 

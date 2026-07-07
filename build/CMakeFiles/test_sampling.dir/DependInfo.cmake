@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/zrheng/Documents/PQC/My_PQC/test/src/test_sampling.c" "CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o" "gcc" "CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o.d"
+  "/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/test/src/test_sampling.c" "CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o" "gcc" "CMakeFiles/test_sampling.dir/test/src/test_sampling.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

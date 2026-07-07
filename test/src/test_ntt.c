@@ -334,6 +334,40 @@ static int check_eq(lssi_t *a, lssi_t *b, int n, lssi_t q) {
     return 1;
 }
 
+static int check_dili_zetas(const lssi_t *z) {
+    static const lssi_t expected[] = {
+        0, 25847, -2608894, -518909, 237124, -777960, -876248, 466468
+    };
+    int i;
+    for(i = 0; i < (int)(sizeof(expected) / sizeof(expected[0])); i++) {
+        if(z[i] != expected[i]) {
+            printf(" Dilithium zetas mismatch at %d: generated=%d expected=%d\n", i, z[i], expected[i]);
+            return 0;
+        }
+    }
+    return z[255] == 1976782;
+}
+
+static int check_kyber_zetas(const lssi_t *z) {
+    static const lssi_t expected[] = {
+        0, -950, -1381, -856, -720, 166, -18, -1161
+    };
+    int i;
+    for(i = 0; i < (int)(sizeof(expected) / sizeof(expected[0])); i++) {
+        if(z[i] != expected[i]) {
+            printf(" Kyber zetas mismatch at %d: generated=%d expected=%d\n", i, z[i], expected[i]);
+            return 0;
+        }
+    }
+    for(i = 128; i < 256; i++) {
+        if(z[i] != 0) {
+            printf(" Kyber zetas tail should be zero at %d: generated=%d\n", i, z[i]);
+            return 0;
+        }
+    }
+    return 1;
+}
+
 void test_ntt(){
     printf("\n============================================\n");
     printf("  Test Suite: NTT\n");
@@ -345,6 +379,22 @@ void test_ntt(){
     int n = ctx.n;
     ctx.layer = 7;
     lssi_t a[256], res[256], original[256];
+
+    TEST_START("dynamic Dilithium zetas match known values", 1) {
+        TEST_ITEM(check_dili_zetas(ctx.zetas), end_dili_zetas);
+    } TEST_FINAL
+    end_dili_zetas:
+
+    INIT_NTT_KYBER(&ctx);
+    TEST_START("dynamic Kyber zetas match known values", 1) {
+        TEST_ITEM(check_kyber_zetas(ctx.zetas), end_kyber_zetas);
+    } TEST_FINAL
+    end_kyber_zetas:
+
+    INIT_NTT_DILI(&ctx);
+    q = ctx.q;
+    n = ctx.n;
+    ctx.layer = 7;
 
     int passed = 0;
     TEST_START("NTT/INTT reversibility (Dilithium)", 1) {

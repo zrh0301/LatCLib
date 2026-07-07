@@ -15,6 +15,7 @@ typedef struct {
     size_t block_size;      // 率 (Rate)
     size_t md_size;         // 输出长度 (对于 SHAKE 可忽略)
     size_t bufsz;           // 缓冲区当前使用量
+    size_t squeeze_off;     // XOF 挤压偏移: 当前已从置换态输出的字节数
     unsigned char pad;      // 填充字符 (0x06 或 0x1F)
     unsigned char buf[200]; // 临时缓冲区 (Keccak 最大 rate 为 1600/8 = 200)
 } KECCAK1600_CTX;

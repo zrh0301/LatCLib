@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/zrheng/Documents/PQC/My_PQC/test/src/test_poly.c" "CMakeFiles/test_poly.dir/test/src/test_poly.c.o" "gcc" "CMakeFiles/test_poly.dir/test/src/test_poly.c.o.d"
+  "/mnt/c/Users/34621/Desktop/redo_PQ/My_PQC/test/src/test_poly.c" "CMakeFiles/test_poly.dir/test/src/test_poly.c.o" "gcc" "CMakeFiles/test_poly.dir/test/src/test_poly.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/core.dir/src/dili.c.o.d"
   "CMakeFiles/core.dir/src/keccak.c.o"
   "CMakeFiles/core.dir/src/keccak.c.o.d"
+  "CMakeFiles/core.dir/src/ntt_table.c.o"
+  "CMakeFiles/core.dir/src/ntt_table.c.o.d"
   "CMakeFiles/core.dir/src/pack.c.o"
   "CMakeFiles/core.dir/src/pack.c.o.d"
   "CMakeFiles/core.dir/src/poly.c.o"
