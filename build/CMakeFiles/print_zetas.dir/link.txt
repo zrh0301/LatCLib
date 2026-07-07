@@ -1,0 +1,1 @@
+/usr/bin/cc  -fsanitize=address -g  -fsanitize=address CMakeFiles/print_zetas.dir/test/src/print_zeta.c.o -o print_zetas  libcore.a -lm 

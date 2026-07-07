@@ -31,6 +31,7 @@ void init_dili_param(dili_param *param, int mode) {
             param->gamma1 = (1 << 17);      // 2^17 = 131072
             param->gamma2 = (DILI_Q-1)/88;  // 95232
             param->w1_packed_bytes = 192;   // 6-bit encoding: (256/4)*3 = 192
+            param->c_tilde_bytes = 32;      // lambda/4 = 128/4
             break;
         case 1: // Dilithium3
             param->k = 6;
@@ -42,6 +43,7 @@ void init_dili_param(dili_param *param, int mode) {
             param->gamma1 = (1 << 19);      // 2^19 = 524288
             param->gamma2 = (DILI_Q-1)/32;  // 261888
             param->w1_packed_bytes = 128;   // 4-bit encoding: 256/2 = 128
+            param->c_tilde_bytes = 48;      // lambda/4 = 192/4
             break;
         case 2: // Dilithium5
             param->k = 8;
@@ -53,6 +55,7 @@ void init_dili_param(dili_param *param, int mode) {
             param->gamma1 = (1 << 19);      // 2^19 = 524288
             param->gamma2 = (DILI_Q-1)/32;  // 261888
             param->w1_packed_bytes = 128;   // 4-bit encoding: 256/2 = 128
+            param->c_tilde_bytes = 64;      // lambda/4 = 256/4
             break;
         default:
             printf("[ERROR] Unknown mode %d, defaulting to Dilithium2\n", mode);
@@ -64,6 +67,8 @@ void init_dili_param(dili_param *param, int mode) {
             param->omega = 80;
             param->gamma1 = (1 << 17);
             param->gamma2 = (DILI_Q-1)/88;
+            param->w1_packed_bytes = 192;
+            param->c_tilde_bytes = 32;
             param->mode = 0;
     }
 }

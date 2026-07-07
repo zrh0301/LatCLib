@@ -106,7 +106,9 @@ unsigned int sample_uniform(int32_t *a,unsigned int len,const uint8_t *buf,unsig
     uint32_t t;
 
     while (ctr < len && pos + 3 <= buflen) {
-        t = buf[pos++] | ((uint32_t)buf[pos++] << 8) | ((uint32_t)buf[pos++] << 16);
+        uint32_t b0 = buf[pos], b1 = buf[pos+1], b2 = buf[pos+2];
+        pos += 3;
+        t = b0 | (b1 << 8) | (b2 << 16);
         t &= 0x7FFFFF;
         if (t < Q) {
             a[ctr++] = (int32_t)t;

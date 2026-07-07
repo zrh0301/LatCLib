@@ -176,6 +176,7 @@ static void internal_SHA3_squeeze(uint64_t A[5][5], unsigned char *out, size_t l
 void sha3_reset(KECCAK1600_CTX *ctx) {
     memset(ctx->A, 0, sizeof(ctx->A));
     ctx->bufsz = 0;
+    ctx->squeeze_off = 0;
 }
 
 int sha3_init(KECCAK1600_CTX *ctx, unsigned char pad, size_t bitlen) {
@@ -248,11 +249,26 @@ void shake_xof_final(KECCAK1600_CTX *ctx) {
     ctx->buf[num] = ctx->pad;
     ctx->buf[bsz - 1] |= 0x80;
     (void)SHA3_absorb(ctx->A, ctx->buf, bsz, bsz);
-    ctx->bufsz = 0; 
+    ctx->bufsz = 0;
+    ctx->squeeze_off = 0;   // 状态已置换, 从块首开始挤压
 }
 
+// 连续 XOF 挤压: 跨多次调用维持流位置 (x86 小端下直接按字节读状态)
 void shake_squeeze(KECCAK1600_CTX *ctx, unsigned char *out, size_t len) {
-    internal_SHA3_squeeze(ctx->A, out, len, ctx->block_size);
+    const size_t r = ctx->block_size;
+    const unsigned char *A8 = (const unsigned char *)ctx->A;
+    while (len) {
+        if (ctx->squeeze_off == r) {
+            KeccakF1600(ctx->A);
+            ctx->squeeze_off = 0;
+        }
+        size_t take = r - ctx->squeeze_off;
+        if (take > len) take = len;
+        memcpy(out, A8 + ctx->squeeze_off, take);
+        out += take;
+        len -= take;
+        ctx->squeeze_off += take;
+    }
 }
 
 void shake128(unsigned char *output, size_t outlen, const unsigned char *input, size_t inlen) {

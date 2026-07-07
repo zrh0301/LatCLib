@@ -54,6 +54,7 @@ endif()
 set(CORE_SRCS 
     src/poly.c 
     src/poly_ntt.c 
+    src/ntt_table.c
     src/rand.c 
     src/keccak.c 
     src/dili.c 
@@ -78,6 +79,7 @@ add_crypto_test(test_poly     test/src/test_poly.c)
 add_crypto_test(test_ntt      test/src/test_ntt.c)
 add_crypto_test(test_sampling test/src/test_sampling.c)
 add_crypto_test(test_dili     test/src/test_dili.c)
+add_crypto_test(print_zetas   test/src/print_zeta.c)
 
 # ==========================================
 # 5. 自定义 Test 命令
