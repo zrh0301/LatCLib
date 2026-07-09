@@ -4,6 +4,8 @@
 #include "poly.h"
 #include "dili.h"
 #include "pack.h"
+#include "kyber.h"
+#include "kyber_pack.h"
 #include "types.h"
 
 void print_bytes(const char* label, const uint8_t* data, int len) {
@@ -94,7 +96,7 @@ void test_pack_unpack_h_with_params(int k, int omega, const char* mode_name) {
     
     uint8_t h_original[DILI_K][DILI_N];
     uint8_t h_unpacked[DILI_K][DILI_N];
-    uint8_t packed[omega + k];
+    uint8_t packed[DILI_OMEGA + DILI_K];
     
     // Initialize test data - sparse hint vectors
     for(int i = 0; i < DILI_K; i++) {
@@ -239,13 +241,12 @@ void test_pack_unpack_t1() {
     printf("========================================\n");
     
     poly t1_original, t1_unpacked;
-    // Each t1 coefficient uses (D-1) bits, simplified implementation uses 2 bytes/coeff
-    // 256 coefficients * 2 bytes = 512 bytes
-    uint8_t packed[512];
-    
-    // Initialize test data - t1 values should be in [0, 2^(D-1)), for D=13 that's [0, 4096)
+    // t1 uses 10-bit standard packing: 256 coefficients -> 320 bytes.
+    uint8_t packed[DILI_POLYT1_PACKEDBYTES];
+
+    // Initialize test data in the 10-bit t1 range [0, 1023].
     for(int i = 0; i < DILI_N; i++) {
-        t1_original[i] = (i * 17) % (1 << (DILI_D - 1)); // Range [0, 4096)
+        t1_original[i] = (i * 17) & 0x3FF;
     }
     
     printf("\nOriginal t1 data:\n");
@@ -257,7 +258,7 @@ void test_pack_unpack_t1() {
     // Pack
     dili_polyt1_pack(packed, t1_original, DILI_N, DILI_D);
     printf("\nPacked bytes:\n");
-    print_bytes("  packed", packed, 512);
+    print_bytes("  packed", packed, DILI_POLYT1_PACKEDBYTES);
     
     // Unpack
     dili_polyt1_unpack(t1_unpacked, packed, DILI_N, DILI_D);
@@ -270,7 +271,7 @@ void test_pack_unpack_t1() {
     // Verify
     int errors = 0;
     for(int i = 0; i < DILI_N; i++) {
-        int32_t expected = (i * 17) % (1 << (DILI_D - 1)); // [0, 4096)
+        int32_t expected = (i * 17) & 0x3FF;
         
         if(t1_unpacked[i] != expected) {
             errors++;
@@ -299,9 +300,8 @@ void test_pack_unpack_pk() {
     poly t1_original[K];
     poly t1_unpacked[K];
     
-    // Public key size: 32 bytes (rho) + K * (D-1) * N / 8 bytes (t1)
-    // For simplified implementation: 32 + K * 512 = 32 + 4*512 = 2080 bytes
-    uint8_t pk_bytes[2080];
+    // Public key size: rho + K * packed t1.
+    uint8_t pk_bytes[32 + DILI_K * DILI_POLYT1_PACKEDBYTES];
     
     // Initialize test data
     printf("\nInitializing test data...\n");
@@ -319,7 +319,7 @@ void test_pack_unpack_pk() {
     // Initialize t1 vectors
     for(int k = 0; k < K; k++) {
         for(int i = 0; i < DILI_N; i++) {
-            t1_original[k][i] = ((k * 256 + i) * 19) % (1 << (DILI_D - 1));
+            t1_original[k][i] = ((k * 256 + i) * 19) & 0x3FF;
         }
         printf("  t1[%d][0..3] = %d %d %d %d\n", 
                k, t1_original[k][0], t1_original[k][1], 
@@ -392,7 +392,191 @@ void test_pack_unpack_pk() {
     }
 }
 
+static void fill_kyber_poly(poly a, int seed) {
+    for(int i = 0; i < KYBER_N; i++) {
+        a[i] = (lssi_t)((seed * 97 + i * 31 + (i >> 1)) % KYBER_Q);
+    }
+}
+
+static void fill_kyber_bytes(uint8_t *buf, int len, uint8_t seed) {
+    for(int i = 0; i < len; i++) {
+        buf[i] = (uint8_t)(seed + 13u * (uint8_t)i + (uint8_t)(i >> 2));
+    }
+}
+
+static int kyber_poly_match(const poly a, const poly b) {
+    for(int i = 0; i < KYBER_N; i++) {
+        if(a[i] != b[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static int test_kyber_byte_encode_decode_one(int d) {
+    poly a, b;
+    uint8_t buf[KYBER_POLYBYTES];
+    int mask = (1 << d) - 1;
+
+    for(int i = 0; i < KYBER_N; i++) {
+        a[i] = (d == KYBER_QBITS) ? (lssi_t)((i * 41 + 9) % KYBER_Q)
+                                  : (lssi_t)((i * 41 + 9) & mask);
+    }
+
+    kyber_byte_encode(buf, a, d);
+    kyber_byte_decode(b, buf, d);
+
+    for(int i = 0; i < KYBER_N; i++) {
+        if(a[i] != b[i]) {
+            printf("  [FAIL] Kyber ByteEncode%d mismatch at %d: %d != %d\n",
+                   d, i, a[i], b[i]);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static int test_kyber_byte_encode_decode(void) {
+    int ds[] = {1, 4, 5, 10, 11, 12};
+    int ok = 1;
+
+    printf("\n========================================\n");
+    printf("Test: Kyber ByteEncode / ByteDecode\n");
+    printf("========================================\n");
+
+    for(int i = 0; i < (int)(sizeof(ds) / sizeof(ds[0])); i++) {
+        ok &= test_kyber_byte_encode_decode_one(ds[i]);
+    }
+
+    printf("%s Kyber ByteEncode / ByteDecode tests\n", ok ? "[PASS]" : "[FAIL]");
+    return ok;
+}
+
+static int test_kyber_ek_dk_pack_mode(int mode) {
+    kyber_param param;
+    uint8_t ek[KYBER_MAX_EK_BYTES];
+    uint8_t dk[KYBER_MAX_DK_PKE_BYTES];
+    uint8_t rho[KYBER_SYMBYTES];
+    uint8_t rho2[KYBER_SYMBYTES];
+    poly t_hat[KYBER_MAX_K], t_hat2[KYBER_MAX_K];
+    poly s_hat[KYBER_MAX_K], s_hat2[KYBER_MAX_K];
+    int ok = 1;
+
+    kyber_init_param(&param, mode);
+    fill_kyber_bytes(rho, KYBER_SYMBYTES, (uint8_t)(mode & 0xFF));
+    for(int i = 0; i < param.k; i++) {
+        fill_kyber_poly(t_hat[i], mode + i);
+        fill_kyber_poly(s_hat[i], mode + 17 + i);
+    }
+
+    kyber_pack_ek(ek, t_hat, rho, param);
+    kyber_unpack_ek(t_hat2, rho2, ek, param);
+    kyber_pack_dk_pke(dk, s_hat, param);
+    kyber_unpack_dk_pke(s_hat2, dk, param);
+
+    if(memcmp(rho, rho2, KYBER_SYMBYTES) != 0) {
+        printf("  [FAIL] %s rho mismatch after ek unpack\n", kyber_mode_name(mode));
+        ok = 0;
+    }
+    for(int i = 0; i < param.k; i++) {
+        if(!kyber_poly_match(t_hat[i], t_hat2[i])) {
+            printf("  [FAIL] %s t_hat[%d] mismatch after ek unpack\n",
+                   kyber_mode_name(mode), i);
+            ok = 0;
+            break;
+        }
+        if(!kyber_poly_match(s_hat[i], s_hat2[i])) {
+            printf("  [FAIL] %s s_hat[%d] mismatch after dk unpack\n",
+                   kyber_mode_name(mode), i);
+            ok = 0;
+            break;
+        }
+    }
+    if(!kyber_check_ek_modulus(ek, param)) {
+        printf("  [FAIL] %s valid ek rejected by modulus check\n", kyber_mode_name(mode));
+        ok = 0;
+    }
+
+    ek[0] = 0xFF;
+    ek[1] = 0x0F;
+    if(kyber_check_ek_modulus(ek, param)) {
+        printf("  [FAIL] %s invalid ek accepted by modulus check\n", kyber_mode_name(mode));
+        ok = 0;
+    }
+
+    return ok;
+}
+
+static int test_kyber_ct_pack_mode(int mode) {
+    kyber_param param;
+    uint8_t ct[KYBER_MAX_CT_BYTES];
+    poly u[KYBER_MAX_K], u2[KYBER_MAX_K];
+    poly v, v2;
+    poly compressed;
+    poly expected;
+
+    kyber_init_param(&param, mode);
+    for(int i = 0; i < param.k; i++) {
+        fill_kyber_poly(u[i], mode + 31 + i);
+    }
+    fill_kyber_poly(v, mode + 63);
+
+    kyber_pack_ct(ct, u, v, param);
+    kyber_unpack_ct(u2, v2, ct, param);
+
+    for(int i = 0; i < param.k; i++) {
+        kyber_poly_compress(compressed, u[i], param.du);
+        kyber_poly_decompress(expected, compressed, param.du);
+        if(!kyber_poly_match(expected, u2[i])) {
+            printf("  [FAIL] %s u[%d] mismatch after ct pack/unpack\n",
+                   kyber_mode_name(mode), i);
+            return 0;
+        }
+    }
+
+    kyber_poly_compress(compressed, v, param.dv);
+    kyber_poly_decompress(expected, compressed, param.dv);
+    if(!kyber_poly_match(expected, v2)) {
+        printf("  [FAIL] %s v mismatch after ct pack/unpack\n", kyber_mode_name(mode));
+        return 0;
+    }
+    return 1;
+}
+
+static int test_kyber_pack_all_modes(void) {
+    int modes[] = {KYBER_MODE_2, KYBER_MODE_3, KYBER_MODE_5};
+    int ok = 1;
+
+    printf("\n========================================\n");
+    printf("Test: Kyber ek/dk/ct Pack / Unpack\n");
+    printf("========================================\n");
+
+    for(int i = 0; i < (int)(sizeof(modes) / sizeof(modes[0])); i++) {
+        int mode_ok = test_kyber_ek_dk_pack_mode(modes[i]) &&
+                      test_kyber_ct_pack_mode(modes[i]);
+        printf("  %-16s %s\n", kyber_mode_name(modes[i]), mode_ok ? "[PASS]" : "[FAIL]");
+        ok &= mode_ok;
+    }
+
+    printf("%s Kyber pack/unpack mode tests\n", ok ? "[PASS]" : "[FAIL]");
+    return ok;
+}
+
+int test_kyber_pack_suite(void) {
+    int ok = 1;
+
+    printf("\n========================================\n");
+    printf("  Kyber Pack Functions Test Suite\n");
+    printf("========================================\n");
+
+    ok &= test_kyber_byte_encode_decode();
+    ok &= test_kyber_pack_all_modes();
+    return ok;
+}
+
 int main() {
+    int kyber_ok;
+
     printf("\n");
     printf("========================================\n");
     printf("  Dilithium Pack Functions Test Suite\n");
@@ -411,10 +595,11 @@ int main() {
     test_pack_w1();
     test_pack_unpack_t1();
     test_pack_unpack_pk();
-    
+    kyber_ok = test_kyber_pack_suite();
+
     printf("\n========================================\n");
     printf("  All Pack Tests Complete\n");
     printf("========================================\n\n");
-    
-    return 0;
+
+    return kyber_ok ? 0 : 1;
 }

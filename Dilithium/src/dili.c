@@ -31,7 +31,7 @@
     _t = _a - _t*DILI_Q; \
     _t += (DILI_Q & SGN_MASK(_t)); \
     _t; \
-}) // int32 -> [0,q-1], 无除法
+}) // int32 -> [0,q-1], 无除�?
 
 // Compare bytes: returns 0 if equal, non-zero if different
 static int compare_bytes(const uint8_t *a, const uint8_t *b, int len) {
@@ -46,7 +46,7 @@ static int compare_bytes(const uint8_t *a, const uint8_t *b, int len) {
 static void power2round(poly *r1, poly *r0, poly *r, int k, int n, int d) {
     for(int j = 0; j < k; j++) {
         for(int i = 0; i < n; i++) {
-            // r1 = round(r / 2^d)，与参考实现一致 (a + 2^(d-1) - 1) >> d
+            // r1 = round(r / 2^d)，与参考实现一�?(a + 2^(d-1) - 1) >> d
             r1[j][i] = (r[j][i] + (1 << (d - 1)) - 1) >> d;
             // r0 = r - r1 * 2^d
             r0[j][i] = r[j][i] - (r1[j][i] << d);
@@ -187,7 +187,7 @@ static int make_hint_from_ct0(uint8_t *hint, const lssi_t *ct0, const lssi_t *b,
             }
         }
     }
-    
+
     return weight;
 }
 
@@ -257,7 +257,7 @@ static void expand_s(poly *s1, poly *s2, const uint8_t *rho_prime, int k, int l,
         sha3_update(&kc, seed, 66);
         shake_xof_final(&kc);
 
-        // 拒绝采样：持续 squeeze 直到填满全部系数
+        // 拒绝采样：持�?squeeze 直到填满全部系数
         got = 0;
         while(got < ctx->n) {
             shake_squeeze(&kc, buf, sizeof(buf));
@@ -266,16 +266,42 @@ static void expand_s(poly *s1, poly *s2, const uint8_t *rho_prime, int k, int l,
     }
 }
 
+static void dili_matrix_sample_uniform_ntt(poly out, const uint8_t seed[34],
+                                           lp_ctx *ctx, void *arg) {
+    uint8_t buf[840];
+    KECCAK1600_CTX kc;
+    int got;
+    (void)arg;
+
+    shake128_init(&kc);
+    sha3_update(&kc, seed, 34);
+    shake_xof_final(&kc);
+
+    got = 0;
+    while(got < ctx->n) {
+        shake_squeeze(&kc, buf, sizeof(buf));
+        got += sample_uniform(out + got, ctx->n - got, buf, sizeof(buf), ctx);
+    }
+
+    poly_ntt(out, ctx);
+}
+
+static void dili_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32],
+                               lp_ctx *ctx) {
+    polyvec_matrix_expand_with_sampler(mat, k, l, rho, ctx,
+                                       dili_matrix_sample_uniform_ntt, NULL);
+}
+
 static void calc_t(poly *t, poly *A_mat, int k, int l, lp_ctx *ctx, poly *s1_ntt, poly *s2) {
-    // t = A*s1 + s2 (计算在NTT域)
+    // t = A*s1 + s2 (计算在NTT�?
     polyvec_matrix_pointwise_montgomery(t, A_mat, k, s1_ntt, l, ctx);
-    polyvec_reduce(t, k);            // 累加了 l 个乘积, invNTT 前必须归约防止 int32 溢出
+    polyvec_reduce_mod(t, k, ctx->q);            // 累加�?l 个乘�? invNTT 前必须归约防�?int32 溢出
     polyvec_invntt_tomont(t, k, ctx);
     polyvec_add(t, t, s2, k);
 }
 
 static void expand_mask(lssi_t *y, const uint8_t *seed, int seed_len, int len, int gamma1) {
-    uint8_t buf[640];   // 最大 POLYZ_PACKEDBYTES (gamma1=2^19)
+    uint8_t buf[640];   // 最�?POLYZ_PACKEDBYTES (gamma1=2^19)
     KECCAK1600_CTX ctx;
     int nbytes = DILI_POLYZ_PACKEDBYTES(gamma1);
     (void)len;
@@ -311,7 +337,7 @@ static void challenge(lssi_t *c, const uint8_t *hash, int tau, int c_tilde_bytes
     for(i = DILI_N - tau; i < DILI_N; ++i) {
         do {
             if(pos >= (int)sizeof(buf)) {
-                shake_squeeze(&kc, buf, sizeof(buf));  // 继续 XOF 流, 取新字节
+                shake_squeeze(&kc, buf, sizeof(buf));  // 继续 XOF �? 取新字节
                 pos = 0;
             }
             b = buf[pos++];
@@ -345,28 +371,28 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     rand_bytes(seed, 32);
 
     memcpy(seedbuf, seed, 32);
-    seedbuf[32] = (uint8_t)K_DILI;         // 域分隔: IntegerToBytes(k,1)
+    seedbuf[32] = (uint8_t)K_DILI;         // 域分�? IntegerToBytes(k,1)
     seedbuf[33] = (uint8_t)L_DILI;         //         IntegerToBytes(l,1)
     shake256(buf, 128, seedbuf, 34);
     memcpy(rho, buf, 32);
     memcpy(rho_prime, buf + 32, 64);   // rho' = 64 字节 (标准)
     memcpy(K, buf + 96, 32);
 
-    polyvec_matrix_expand(matrix_A, K_DILI, L_DILI, rho, &ctx);
-    
+    dili_matrix_expand(matrix_A, K_DILI, L_DILI, rho, &ctx);
+
     expand_s(keypair->sk.s1, keypair->sk.s2, rho_prime, K_DILI, L_DILI, param.eta, &ctx);
-    
+
     polyvec_copy(s1_ntt, keypair->sk.s1, L_DILI);
     polyvec_ntt(s1_ntt, L_DILI, &ctx);
 
     calc_t(t, matrix_A, K_DILI, L_DILI, &ctx, s1_ntt, keypair->sk.s2);
-    
-    polyvec_caddq(t, K_DILI);   // 归约到 [0,q), 使 t1 落在规范 10-bit 范围便于打包
+
+    polyvec_caddq_mod(t, K_DILI, ctx.q);   // 归约�?[0,q), �?t1 落在规范 10-bit 范围便于打包
 
     power2round(keypair->pk.t1, keypair->sk.t0, t, K_DILI, ctx.n, DILI_D);
 
     dili_pack_pk(pk_packed, rho, keypair->pk.t1, K_DILI);
-    
+
     shake256(keypair->sk.tr, 64, pk_packed, sizeof(pk_packed));
 
     memcpy(keypair->pk.rho, rho, 32);
@@ -379,7 +405,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     lp_ctx ctx;
     const int K = param.k;
     const int L = param.l;
-    
+
     poly matrix_A[K * L];
     poly y[L];
     poly w[K], w1[K];
@@ -406,18 +432,18 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     int z_check_fail, r0_check_fail, ct0_check_fail;
     int hint_ones;
     int i;
-    
+
     INIT_NTT_DILI(&ctx);
-    
+
     nonce = 0;
     retry = 1;
     loop = 0;
 
-    polyvec_matrix_expand(matrix_A, K, L, sk->rho, &ctx);
+    dili_matrix_expand(matrix_A, K, L, sk->rho, &ctx);
 
-    // mu = H(tr(64) || M'),  M' = 0x00 || |ctx| || ctx || M  (纯 ML-DSA, 空 ctx)
+    // mu = H(tr(64) || M'),  M' = 0x00 || |ctx| || ctx || M  (�?ML-DSA, �?ctx)
     {
-        uint8_t domsep[2] = {0x00, 0x00};   // 域分隔字节 + ctx 长度(0)
+        uint8_t domsep[2] = {0x00, 0x00};   // 域分隔字�?+ ctx 长度(0)
         shake256_init(&shake_ctx);
         sha3_update(&shake_ctx, sk->tr, 64);
         sha3_update(&shake_ctx, domsep, 2);
@@ -426,9 +452,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         shake_squeeze(&shake_ctx, mu, 64);
     }
 
-    rand_bytes(rnd, 32);   // hedged 签名: 新鲜 32 字节 (确定性变体为全 0)
+    rand_bytes(rnd, 32);   // hedged 签名: 新鲜 32 字节 (确定性变体为�?0)
 
-    // rho'' = H(K(32) || rnd(32) || mu(64), 64), 循环外常量
+    // rho'' = H(K(32) || rnd(32) || mu(64), 64), 循环外常�?
     memcpy(rho_prime_nonce, sk->K, 32);
     memcpy(rho_prime_nonce + 32, rnd, 32);
     memcpy(rho_prime_nonce + 64, mu, 64);
@@ -458,7 +484,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         polyvec_ntt(y_ntt, L, &ctx);
 
         polyvec_matrix_pointwise_montgomery(w, matrix_A, K, y_ntt, L, &ctx);
-        polyvec_reduce(w, K);
+        polyvec_reduce_mod(w, K, ctx.q);
         polyvec_invntt_tomont(w, K, &ctx);
 
         for(i=0; i<K; i++) {
@@ -481,7 +507,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
         polyvec_invntt_tomont(cs1, L, &ctx);
         polyvec_add(z, y, cs1, L);
-        
+
         z_check_fail = 0;
         for(i=0; i<L; i++) {
             if(check_norm(z[i], param.gamma1 - param.beta)) {
@@ -497,12 +523,12 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         }
         polyvec_invntt_tomont(cs2, K, &ctx);
         polyvec_invntt_tomont(ct0, K, &ctx);
-        
+
         r0_check_fail = 0;
         for(i=0; i<K; i++) {
             POLY_SUB(w_cs2_ct0[i], w[i], cs2[i], DILI_N);
             low_bits(r0, w_cs2_ct0[i], DILI_N, 2 * param.gamma2);
-            
+
             if(check_norm(r0, param.gamma2 - param.beta)) {
                 r0_check_fail = 1;
                 break;
@@ -522,9 +548,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         for(i=0; i<K; i++) {
             POLY_ADD(w_cs2_ct0[i], w_cs2_ct0[i], ct0[i], DILI_N);
         }
-        
-        polyvec_caddq(w_cs2_ct0, K);
-        
+
+        polyvec_caddq_mod(w_cs2_ct0, K, ctx.q);
+
         hint_ones = 0;
         for(i=0; i<K; i++) {
             hint_ones += make_hint_from_ct0(h[i], ct0[i], w_cs2_ct0[i], DILI_N, 2 * param.gamma2);
@@ -546,12 +572,12 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
     memcpy(sig_ptr, c_tilde, param.c_tilde_bytes);
     sig_ptr += param.c_tilde_bytes;
-    
+
     for(i=0; i<L; i++) {
         pack_z(sig_ptr, z[i], param.gamma1);
         sig_ptr += DILI_POLYZ_PACKEDBYTES(param.gamma1);
     }
-    
+
     if(pack_h(sig_ptr, h, K, param.omega)) {
         return -1;
     }
@@ -564,7 +590,7 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     lp_ctx ctx;
     const int K = param.k;
     const int L = param.l;
-    
+
     const uint8_t *c_tilde;
     const uint8_t *z_bytes;
     const uint8_t *h_bytes;
@@ -607,7 +633,7 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     dili_pack_pk(pk_packed, pk->rho, pk->t1, K);
     shake256(tr, 64, pk_packed, sizeof(pk_packed));
 
-    // mu = H(tr(64) || 0x00 || |ctx|(0) || M),  纯 ML-DSA 空 ctx
+    // mu = H(tr(64) || 0x00 || |ctx|(0) || M),  �?ML-DSA �?ctx
     {
         uint8_t domsep[2] = {0x00, 0x00};
         shake256_init(&shake_ctx);
@@ -618,16 +644,16 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
         shake_squeeze(&shake_ctx, mu, 64);
     }
 
-    polyvec_matrix_expand(A, K, L, pk->rho, &ctx);
+    dili_matrix_expand(A, K, L, pk->rho, &ctx);
 
     challenge(c_ntt, c_tilde, param.tau, param.c_tilde_bytes);
     poly_ntt(c_ntt, &ctx);
 
     polyvec_copy(z_ntt, z, L);
     polyvec_ntt(z_ntt, L, &ctx);
-    
+
     polyvec_matrix_pointwise_montgomery(Az_ntt, A, K, z_ntt, L, &ctx);
-    
+
     for(i = 0; i < K; i++) {
         for(j = 0; j < DILI_N; j++) {
             t1_shifted[j] = pk->t1[i][j] << DILI_D;
@@ -636,11 +662,11 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
         poly_pointwise(ct1_ntt, c_ntt, t1_shifted, &ctx);
         POLY_SUB(w_prime[i], Az_ntt[i], ct1_ntt, DILI_N);
     }
-    
-    polyvec_reduce(w_prime, K);     // invNTT 前归约, 防止累加溢出
+
+    polyvec_reduce_mod(w_prime, K, ctx.q);     // invNTT 前归�? 防止累加溢出
     polyvec_invntt_tomont(w_prime, K, &ctx);
-    polyvec_caddq(w_prime, K);
-    
+    polyvec_caddq_mod(w_prime, K, ctx.q);
+
     rc_unpack = unpack_h(h, h_bytes, K, param.omega);
     if(rc_unpack != 0) {
         return -1;
@@ -662,6 +688,6 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
     if(compare_bytes(c_tilde, c_tilde_prime, param.c_tilde_bytes) != 0) {
         return -1;
     }
-    
+
     return 0;
 }

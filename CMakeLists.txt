@@ -20,7 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
 # 添加头文件路径
-include_directories(Poly/inc Dilithium/inc Rand/inc Hash/inc Test/inc)
+include_directories(Poly/inc Dilithium/inc Kyber/inc Rand/inc Hash/inc Test/inc)
 
 # 宏定义
 add_compile_definitions(USE_DILITHIUM_NTT USE_KYBER_NTT)
@@ -55,12 +55,15 @@ set(CORE_SRCS
     Poly/src/poly.c
     Poly/src/poly_ntt.c
     Poly/src/ntt_table.c
+    Poly/src/polyvec.c
     Rand/src/rand.c
     Hash/src/keccak.c
     Dilithium/src/dili.c
-    Dilithium/src/polyvec.c
     Dilithium/src/pack.c
     Dilithium/src/dili_sample.c
+    Kyber/src/kyber.c
+    Kyber/src/kyber_pack.c
+    Kyber/src/kyber_sample.c
 )
 
 add_library(core STATIC ${CORE_SRCS})
@@ -79,7 +82,9 @@ endmacro()
 add_crypto_test(test_poly     Test/src/test_poly.c)
 add_crypto_test(test_ntt      Test/src/test_ntt.c)
 add_crypto_test(test_sampling Test/src/test_sampling.c)
+add_crypto_test(test_pack     Test/src/test_pack.c)
 add_crypto_test(test_dili     Test/src/test_dili.c)
+add_crypto_test(test_kyber    Test/src/test_kyber.c)
 add_crypto_test(print_zetas   Test/src/print_zeta.c)
 
 # ==========================================
