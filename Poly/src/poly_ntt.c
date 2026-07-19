@@ -155,7 +155,7 @@ void poly_mul_small(lssi_t* u, const lssi_t* c, const lssi_t* a, lssi_t U, lp_ct
         ci = c[i];
 
         tau += ci*ci;
-        
+
         d = ci-1;
         nz = ((uint32_t)(d | -d)) >> 31; // nz = 1 if ci != 1, else 0
         is_one = (lssi_t)nz-1;
@@ -177,5 +177,39 @@ void poly_mul_small(lssi_t* u, const lssi_t* c, const lssi_t* a, lssi_t U, lp_ct
         r   += (r>>63) & q;
         r   -= (((lsdi_t)q_half-r)>>63) & q;
         u[i] = (lssi_t)r;
+    }
+}
+
+void poly_mul_small_pub(lssi_t* u, const lssi_t* c, const lssi_t* a, lp_ctx* Q){
+    int n, i, j, k;
+    lssi_t e[2*MAX_POLY_COEFS];
+    lsdi_t w[MAX_POLY_COEFS];
+    
+    n = Q->n;
+
+    for(i=0;i<n;++i){
+        e[n+i] =  a[i];
+        e[i]   = -a[i];
+    }
+    for(j=0;j<n;++j) w[j] = 0;
+    
+    lssi_t ci;
+    for(i=0;i<n;++i){
+        ci = c[i];
+        if(ci == 0) continue;
+        if(ci > 0){
+            for(j=0;j<n;++j){
+                w[j] += e[n+j-i];
+            }
+        }
+        else{
+            for(j=0;j<n;++j){
+                w[j] -= e[n+j-i];
+            }
+        }
+    }
+
+    for(k=0;k<n;++k){
+        u[k] = (lssi_t)w[k];
     }
 }

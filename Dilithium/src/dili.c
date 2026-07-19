@@ -493,7 +493,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         challenge(cp, c_tilde, param.tau, param.c_tilde_bytes);
 
         for(i=0; i<L; i++) {
-            poly_mul_small(cs1[i], cp, sk->s1[i], param.eta, &ctx);
+            poly_mul_small_pub(cs1[i], cp, sk->s1[i], &ctx);
         }
 
         polyvec_add(z, y, cs1, L);
@@ -508,8 +508,8 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         if(z_check_fail) continue;
 
         for(i=0; i<K; i++) {
-            poly_mul_small(cs2[i], cp, sk->s2[i], param.eta, &ctx);
-            poly_mul_small(ct0[i], cp, sk->t0[i], 1 << (DILI_D - 1), &ctx);
+            poly_mul_small_pub(cs2[i], cp, sk->s2[i], &ctx);
+            poly_mul_small_pub(ct0[i], cp, sk->t0[i], &ctx);
         }
 
         r0_check_fail = 0;
