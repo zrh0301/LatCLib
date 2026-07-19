@@ -409,11 +409,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     poly matrix_A[K * L];
     poly y[L];
     poly w[K], w1[K];
-    poly cp_ntt;
+    poly cp;
     poly z[L];
     poly cs1[L], cs2[K], ct0[K];
-    poly s1_ntt[L];
-    poly s2_ntt[K], t0_ntt[K];
     poly y_ntt[L];
     poly w_cs2_ct0[K];
     poly r0;
@@ -460,12 +458,6 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     memcpy(rho_prime_nonce + 64, mu, 64);
     shake256(rhoprimepp, 64, rho_prime_nonce, 128);
 
-    polyvec_copy(s1_ntt, sk->s1, L);
-    polyvec_ntt(s1_ntt, L, &ctx);
-    polyvec_copy(s2_ntt, sk->s2, K);
-    polyvec_copy(t0_ntt, sk->t0, K);
-    polyvec_ntt(s2_ntt, K, &ctx);
-    polyvec_ntt(t0_ntt, K, &ctx);
     memcpy(seed_with_nonce, rhoprimepp, 64);
     memcpy(c_tilde_temp_buf, mu, 64);
 
@@ -498,14 +490,12 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         }
         shake256(c_tilde, param.c_tilde_bytes, c_tilde_temp_buf, offset);
 
-        challenge(cp_ntt, c_tilde, param.tau, param.c_tilde_bytes);
-        poly_ntt(cp_ntt, &ctx);
+        challenge(cp, c_tilde, param.tau, param.c_tilde_bytes);
 
         for(i=0; i<L; i++) {
-            poly_pointwise(cs1[i], cp_ntt, s1_ntt[i], &ctx);
+            poly_mul_small(cs1[i], cp, sk->s1[i], param.eta, &ctx);
         }
 
-        polyvec_invntt_tomont(cs1, L, &ctx);
         polyvec_add(z, y, cs1, L);
 
         z_check_fail = 0;
@@ -518,11 +508,9 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         if(z_check_fail) continue;
 
         for(i=0; i<K; i++) {
-            poly_pointwise(cs2[i], cp_ntt, s2_ntt[i], &ctx);
-            poly_pointwise(ct0[i], cp_ntt, t0_ntt[i], &ctx);
+            poly_mul_small(cs2[i], cp, sk->s2[i], param.eta, &ctx);
+            poly_mul_small(ct0[i], cp, sk->t0[i], 1 << (DILI_D - 1), &ctx);
         }
-        polyvec_invntt_tomont(cs2, K, &ctx);
-        polyvec_invntt_tomont(ct0, K, &ctx);
 
         r0_check_fail = 0;
         for(i=0; i<K; i++) {

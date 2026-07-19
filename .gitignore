@@ -10,7 +10,7 @@ interm_report/
 
 docs/
 
-autobuild.sh
+*.sh
 
 *.pdf
 

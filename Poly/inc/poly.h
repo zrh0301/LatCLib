@@ -173,6 +173,7 @@ void poly_invntt(lssi_t* a, lp_ctx* Q);
 
 void poly_base_pointwise(lssi_t* r, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q);
+void poly_mul_small(lssi_t* c, const lssi_t* a, const lssi_t* b, const lssi_t U, lp_ctx* Q);
 
 void poly_uniform_CBD(poly *a, lp_ctx* ctx);
 unsigned int sample_CBD(int32_t *a, unsigned int len, const uint8_t *buf, unsigned int buflen, lp_ctx *ctx);

@@ -80,6 +80,7 @@ endmacro()
 
 # 添加测试目标 (已移除 test_sha3)
 add_crypto_test(test_poly     Test/src/test_poly.c)
+add_crypto_test(test_poly_mul_small Test/src/test_poly_mul_small.c)
 add_crypto_test(test_ntt      Test/src/test_ntt.c)
 add_crypto_test(test_sampling Test/src/test_sampling.c)
 add_crypto_test(test_pack     Test/src/test_pack.c)

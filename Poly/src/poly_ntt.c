@@ -118,3 +118,64 @@ void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
         c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], q, qc);
     }
 }
+
+/*
+* poly_mul_small
+* According to the PDF: Small polynomial multiplication. Algorithm 7 & 8
+* input:  c = \Sigma_{i=0}^{n-1} c_i x^i, a = \Sigma_{i=0}^{n-1} a_i x^i, where c_i \belongs to B_\tau, a_i \belongs to R_q
+* input:  U = max(|a_i|), satisfying 2*tau*U < q
+* output: u = c \cdot a 
+*/
+void poly_mul_small(lssi_t* u, const lssi_t* c, const lssi_t* a, lssi_t U, lp_ctx* Q){
+    int n, i, j, tau;
+    lssi_t q, q_half;
+    lssi_t v[2*MAX_POLY_COEFS];
+    lsdi_t vbar[2*MAX_POLY_COEFS];
+    lsdi_t w[MAX_POLY_COEFS];
+    lsdi_t tauU, r;
+
+    n = Q->n;
+    q = Q->q;
+    q_half = q >> 1;
+
+    for(i=0;i<n;++i){
+        v[n+i]    = U+a[i];
+        v[i]      = U-a[i];
+        vbar[n+i] = U-a[i];
+        vbar[i]   = U+a[i];
+    }
+
+    for(j=0;j<n;++j) w[j] = 0;
+    tau = 0;
+    lssi_t ci;
+    lssi_t d, is_one, is_negone;
+    lssi_t vv, vvbar;
+    uint32_t nz;
+    for(i=0;i<n;++i){
+        ci = c[i];
+
+        tau += ci*ci;
+        
+        d = ci-1;
+        nz = ((uint32_t)(d | -d)) >> 31; // nz = 1 if ci != 1, else 0
+        is_one = (lssi_t)nz-1;
+
+        d = ci+1;
+        nz = ((uint32_t)(d | -d)) >> 31; // nz = 1 if ci != -1, else 0
+        is_negone = (lssi_t)nz-1;
+
+        for(j=0;j<n;++j){
+            vv = v[n+j-i];
+            vvbar = vbar[n+j-i];
+            w[j] += (vv&is_one) | (vvbar&is_negone);
+        }
+    }
+
+    tauU = (lsdi_t)tau * (lsdi_t)U;
+    for(i=0;i<n;++i){
+        r    = w[i] - tauU;
+        r   += (r>>63) & q;
+        r   -= (((lsdi_t)q_half-r)>>63) & q;
+        u[i] = (lssi_t)r;
+    }
+}
