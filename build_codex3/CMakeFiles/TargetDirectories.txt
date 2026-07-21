@@ -1,0 +1,12 @@
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/core.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_poly.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_ntt.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_sampling.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_pack.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_hash.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_sig.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/test_enc.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/print_zetas.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/run_test.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/edit_cache.dir
+C:/Users/34621/Desktop/redo_PQ/My_PQC/build_codex3/CMakeFiles/rebuild_cache.dir

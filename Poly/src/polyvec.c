@@ -1,7 +1,23 @@
 #include "polyvec.h"
 #include <string.h>
 
+#define DILI_Q_VALUE 8380417
+
+static inline lssi_t dili_reduce32(lssi_t a) {
+    lssi_t t = (lssi_t)(((lsdi_t)a + (1LL << 22)) >> 23);
+    return (lssi_t)((lsdi_t)a - (lsdi_t)t * DILI_Q_VALUE);
+}
+
+static inline lssi_t dili_freeze(lssi_t a) {
+    a = dili_reduce32(a);
+    a += (a >> 31) & DILI_Q_VALUE;
+    return a;
+}
+
 lssi_t poly_reduce_mod_one(lssi_t a, lssi_t q) {
+    if(q == DILI_Q_VALUE) {
+        return dili_freeze(a);
+    }
     a %= q;
     if(a < 0) {
         a += q;
@@ -10,6 +26,12 @@ lssi_t poly_reduce_mod_one(lssi_t a, lssi_t q) {
 }
 
 void poly_reduce_mod(lssi_t *a, int n, lssi_t q) {
+    if(q == DILI_Q_VALUE) {
+        for(int i = 0; i < n; i++) {
+            a[i] = dili_freeze(a[i]);
+        }
+        return;
+    }
     for(int i = 0; i < n; i++) {
         a[i] = poly_reduce_mod_one(a[i], q);
     }

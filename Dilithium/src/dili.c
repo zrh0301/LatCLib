@@ -282,8 +282,6 @@ static void dili_matrix_sample_uniform_ntt(poly out, const uint8_t seed[34],
         shake_squeeze(&kc, buf, sizeof(buf));
         got += sample_uniform(out + got, ctx->n - got, buf, sizeof(buf), ctx);
     }
-
-    poly_ntt(out, ctx);
 }
 
 static void dili_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32],
@@ -401,7 +399,7 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 }
 
 // Sign
-int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param) {
+static int dili_sign_core(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, const uint8_t rnd_input[32]) {
     lp_ctx ctx;
     const int K = param.k;
     const int L = param.l;
@@ -409,9 +407,11 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     poly matrix_A[K * L];
     poly y[L];
     poly w[K], w1[K];
-    poly cp;
+    poly cp_ntt;
     poly z[L];
-    poly cs1[L], cs2[K], ct0[K];
+    poly tmp, ct0[K];
+    poly s1_ntt[L];
+    poly s2_ntt[K], t0_ntt[K];
     poly y_ntt[L];
     poly w_cs2_ct0[K];
     poly r0;
@@ -450,7 +450,7 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         shake_squeeze(&shake_ctx, mu, 64);
     }
 
-    rand_bytes(rnd, 32);   // hedged 签名: 新鲜 32 字节 (确定性变体为�?0)
+    memcpy(rnd, rnd_input, 32);
 
     // rho'' = H(K(32) || rnd(32) || mu(64), 64), 循环外常�?
     memcpy(rho_prime_nonce, sk->K, 32);
@@ -458,6 +458,12 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
     memcpy(rho_prime_nonce + 64, mu, 64);
     shake256(rhoprimepp, 64, rho_prime_nonce, 128);
 
+    polyvec_copy(s1_ntt, sk->s1, L);
+    polyvec_ntt(s1_ntt, L, &ctx);
+    polyvec_copy(s2_ntt, sk->s2, K);
+    polyvec_copy(t0_ntt, sk->t0, K);
+    polyvec_ntt(s2_ntt, K, &ctx);
+    polyvec_ntt(t0_ntt, K, &ctx);
     memcpy(seed_with_nonce, rhoprimepp, 64);
     memcpy(c_tilde_temp_buf, mu, 64);
 
@@ -490,16 +496,14 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         }
         shake256(c_tilde, param.c_tilde_bytes, c_tilde_temp_buf, offset);
 
-        challenge(cp, c_tilde, param.tau, param.c_tilde_bytes);
-
-        for(i=0; i<L; i++) {
-            poly_mul_small_pub(cs1[i], cp, sk->s1[i], &ctx);
-        }
-
-        polyvec_add(z, y, cs1, L);
+        challenge(cp_ntt, c_tilde, param.tau, param.c_tilde_bytes);
+        poly_ntt(cp_ntt, &ctx);
 
         z_check_fail = 0;
         for(i=0; i<L; i++) {
+            poly_pointwise(tmp, cp_ntt, s1_ntt[i], &ctx);
+            poly_invntt(tmp, &ctx);
+            POLY_ADD(z[i], y[i], tmp, DILI_N);
             if(check_norm(z[i], param.gamma1 - param.beta)) {
                 z_check_fail = 1;
                 break;
@@ -507,14 +511,11 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         }
         if(z_check_fail) continue;
 
-        for(i=0; i<K; i++) {
-            poly_mul_small_pub(cs2[i], cp, sk->s2[i], &ctx);
-            poly_mul_small_pub(ct0[i], cp, sk->t0[i], &ctx);
-        }
-
         r0_check_fail = 0;
         for(i=0; i<K; i++) {
-            POLY_SUB(w_cs2_ct0[i], w[i], cs2[i], DILI_N);
+            poly_pointwise(tmp, cp_ntt, s2_ntt[i], &ctx);
+            poly_invntt(tmp, &ctx);
+            POLY_SUB(w_cs2_ct0[i], w[i], tmp, DILI_N);
             low_bits(r0, w_cs2_ct0[i], DILI_N, 2 * param.gamma2);
 
             if(check_norm(r0, param.gamma2 - param.beta)) {
@@ -526,6 +527,8 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
 
         ct0_check_fail = 0;
         for(i=0; i<K; i++) {
+            poly_pointwise(ct0[i], cp_ntt, t0_ntt[i], &ctx);
+            poly_invntt(ct0[i], &ctx);
             if(check_norm(ct0[i], param.gamma2)) {
                 ct0_check_fail = 1;
                 break;
@@ -536,8 +539,6 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         for(i=0; i<K; i++) {
             POLY_ADD(w_cs2_ct0[i], w_cs2_ct0[i], ct0[i], DILI_N);
         }
-
-        polyvec_caddq_mod(w_cs2_ct0, K, ctx.q);
 
         hint_ones = 0;
         for(i=0; i<K; i++) {
@@ -570,6 +571,30 @@ int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const
         return -1;
     }
     return 0;
+}
+
+int dili_sign_with_rnd(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, const uint8_t rnd[32]) {
+    if(rnd == NULL) {
+        return -1;
+    }
+    return dili_sign_core(signature, message, message_len, sk, param, rnd);
+}
+
+int dili_sign_with_rng(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, dili_rng_func rng, void *rng_ctx) {
+    uint8_t rnd[32];
+
+    if(rng != NULL) {
+        if(rng(rng_ctx, rnd, sizeof(rnd)) != 0) {
+            return -1;
+        }
+    } else {
+        rand_bytes(rnd, sizeof(rnd));
+    }
+    return dili_sign_with_rnd(signature, message, message_len, sk, param, rnd);
+}
+
+int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param) {
+    return dili_sign_with_rng(signature, message, message_len, sk, param, NULL, NULL);
 }
 
 

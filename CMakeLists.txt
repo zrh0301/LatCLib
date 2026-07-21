@@ -20,7 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
 # 添加头文件路径
-include_directories(Poly/inc Dilithium/inc Kyber/inc Rand/inc Hash/inc Test/inc)
+include_directories(Poly/inc Dilithium/inc Kyber/inc Rand/inc Hash/inc Test)
 
 # 宏定义
 add_compile_definitions(USE_DILITHIUM_NTT USE_KYBER_NTT)
@@ -79,14 +79,19 @@ macro(add_crypto_test TEST_NAME SOURCE_FILE)
 endmacro()
 
 # 添加测试目标 (已移除 test_sha3)
-add_crypto_test(test_poly     Test/src/test_poly.c)
-add_crypto_test(test_poly_mul_small Test/src/test_poly_mul_small.c)
-add_crypto_test(test_ntt      Test/src/test_ntt.c)
-add_crypto_test(test_sampling Test/src/test_sampling.c)
-add_crypto_test(test_pack     Test/src/test_pack.c)
-add_crypto_test(test_dili     Test/src/test_dili.c)
-add_crypto_test(test_kyber    Test/src/test_kyber.c)
-add_crypto_test(print_zetas   Test/src/print_zeta.c)
+add_crypto_test(test_poly     Test/poly/test_poly.c)
+add_crypto_test(test_ntt      Test/ntt/test_ntt.c)
+add_crypto_test(test_sampling Test/sampling/test_sampling.c)
+add_crypto_test(test_pack     Test/pack/test_pack.c)
+add_crypto_test(test_hash     Test/hash/test_hash.c)
+add_crypto_test(test_sig      Test/sig/test_sig.c)
+add_crypto_test(test_enc      Test/enc/test_enc.c)
+add_crypto_test(print_zetas   Test/tools/print_zeta.c)
+
+target_sources(test_sig PRIVATE Test/sig/cases.c)
+target_sources(test_enc PRIVATE Test/enc/cases.c)
+target_sources(test_hash PRIVATE Test/hash/cases.c)
+target_sources(test_pack PRIVATE Test/pack/cases.c Test/pack/dilithium.c Test/pack/kyber.c)
 
 # ==========================================
 # 5. 自定义 Test 命令
@@ -94,7 +99,7 @@ add_crypto_test(print_zetas   Test/src/print_zeta.c)
 # 【修改点】使用 generator expression 自动定位文件位置
 # 无论是在 build/ 下还是 build/Release/ 下都能找到
 add_custom_target(run_test
-    COMMAND $<TARGET_FILE:test_dili>
-    COMMENT "Running Dilithium Tests..."
-    DEPENDS test_dili
+    COMMAND $<TARGET_FILE:test_sig>
+    COMMENT "Running Signature Tests..."
+    DEPENDS test_sig
 )

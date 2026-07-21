@@ -19,6 +19,7 @@
 #define DILI_POLYT1_PACKEDBYTES 320                       // t1: 10-bit x 256 / 8
 #define DILI_POLYZ_PACKEDBYTES(g1) ((g1)==(1<<17) ? 576 : 640)  // z: 18-bit(576) / 20-bit(640)
 
+#include <stddef.h>
 #include <stdint.h>
 #include "poly.h"
 #include "keccak.h"
@@ -55,8 +56,12 @@ typedef struct {
     int c_tilde_bytes;    // c~ 挑战哈希字节数 = lambda/4 (ML-DSA-44/65/87: 32/48/64)
 } dili_param;
 
+typedef int (*dili_rng_func)(void *rng_ctx, uint8_t *out, size_t out_len);
+
 void dili_keygen(dili_keypair_t* keypair, dili_param param);
 int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param);
+int dili_sign_with_rnd(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, const uint8_t rnd[32]);
+int dili_sign_with_rng(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, dili_rng_func rng, void *rng_ctx);
 int dili_verify(const uint8_t* signature, const uint8_t* message, int message_len, const dili_pk* pk, dili_param param);
 
 // Packing/Unpacking functions
