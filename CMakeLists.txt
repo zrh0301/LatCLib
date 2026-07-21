@@ -20,7 +20,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
 # 添加头文件路径
-include_directories(Poly/inc Dilithium/inc Kyber/inc Rand/inc Hash/inc Test)
 
 # 宏定义
 add_compile_definitions(USE_DILITHIUM_NTT USE_KYBER_NTT)
@@ -51,22 +50,23 @@ endif()
 # 3. 核心库构建
 # ==========================================
 
-set(CORE_SRCS
-    Poly/src/poly.c
-    Poly/src/poly_ntt.c
-    Poly/src/ntt_table.c
-    Poly/src/polyvec.c
-    Rand/src/rand.c
-    Hash/src/keccak.c
-    Dilithium/src/dili.c
-    Dilithium/src/pack.c
-    Dilithium/src/dili_sample.c
-    Kyber/src/kyber.c
-    Kyber/src/kyber_pack.c
-    Kyber/src/kyber_sample.c
+file(GLOB COMMON_SRCS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
+)
+file(GLOB_RECURSE ALG_SRCS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/alg/*/*.c"
 )
 
-add_library(core STATIC ${CORE_SRCS})
+add_library(core STATIC ${COMMON_SRCS} ${ALG_SRCS})
+target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/inc")
+
+file(GLOB ALG_DIRS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/alg/*")
+foreach(ALG_DIR ${ALG_DIRS})
+    if(IS_DIRECTORY "${ALG_DIR}")
+        target_include_directories(core PUBLIC "${ALG_DIR}")
+    endif()
+endforeach()
+
 target_link_libraries(core m)
 
 # ==========================================
@@ -75,6 +75,7 @@ target_link_libraries(core m)
 
 macro(add_crypto_test TEST_NAME SOURCE_FILE)
     add_executable(${TEST_NAME} ${SOURCE_FILE})
+    target_include_directories(${TEST_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Test")
     target_link_libraries(${TEST_NAME} core)
 endmacro()
 

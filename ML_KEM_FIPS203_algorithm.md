@@ -217,7 +217,7 @@ Current repository note:
 - Do not introduce a separate classic 16-bit Kyber NTT path.
 - Kyber polynomial multiplication is treated as already validated in this repository; the ML-KEM implementation should focus on upper-layer correctness: sampling, byte encoding, compression, matrix index order, transpose use, and normal-domain versus NTT-domain transitions.
 - If using Montgomery arithmetic, keep all zetas and pointwise products in the existing repository convention.
-- The standard table in Appendix A is natural modulo `Q`; current dynamic table generation and Montgomery representation should remain centralized in `Poly/src/ntt_table.c`.
+- The standard table in Appendix A is natural modulo `Q`; current dynamic table generation and Montgomery representation should remain centralized in `src/ntt_table.c`.
 
 ## 7. K-PKE Algorithms
 
@@ -436,7 +436,7 @@ Recommended file layout:
 - `MLKEM/src/kem_pke.c`: K-PKE KeyGen/Encrypt/Decrypt.
 - `MLKEM/src/kem_encode.c`: ByteEncode/ByteDecode, Compress/Decompress.
 - `MLKEM/src/kem_sample.c`: SampleNTT, SamplePolyCBD, PRF wrappers.
-- Reuse `Poly/src/poly_ntt.c` and dynamic zeta generation for Kyber/ML-KEM mode.
+- Reuse `src/poly_ntt.c` and dynamic zeta generation for Kyber/ML-KEM mode.
 
 Suggested build order:
 
@@ -481,21 +481,21 @@ Suggested build order:
 - 每个主算法内部创建 `lp_ctx ctx; INIT_NTT_DILI(&ctx);`。
 - 多项式向量操作集中在 `polyvec_*` 风格函数中。
 - 采样函数集中在 `dili_sample.*`。
-- pack/unpack 函数集中在 `pack.*`，但 Kyber 模块不建议再叫 `pack.h`，否则会和 `Dilithium/inc/pack.h` 在 include path 上冲突。
+- pack/unpack 函数集中在 `pack.*`，但 Kyber 模块不建议再叫 `pack.h`，否则会和 `alg/dilithium/pack.h` 在 include path 上冲突。
 - 测试风格是 `init_xxx_param()`、`get_xxx_mode_name()`、`test_xxx_mode()`、`test_xxx()`、`test_perf()`。
 
 建议新增模块目录：
 
 ```text
-Kyber/inc/kyber.h
-Kyber/inc/kyber_pack.h
-Kyber/inc/kyber_sample.h
-Kyber/inc/kyber_polyvec.h
+alg/kyber/kyber.h
+alg/kyber/kyber_pack.h
+alg/kyber/kyber_sample.h
+inc/polyvec.h
 
-Kyber/src/kyber.c
-Kyber/src/kyber_pack.c
-Kyber/src/kyber_sample.c
-Kyber/src/kyber_polyvec.c
+alg/kyber/kyber.c
+alg/kyber/kyber_pack.c
+alg/kyber/kyber_sample.c
+src/polyvec.c
 
 Test/src/test_kyber.c
 ```
@@ -513,7 +513,7 @@ Test/src/test_kyber.c
 
 ### 13.1 宏定义
 
-放在 `Kyber/inc/kyber.h`：
+放在 `alg/kyber/kyber.h`：
 
 ```c
 #ifndef KYBER_H
@@ -667,7 +667,7 @@ kyber_prf(out, outlen, seed, nonce):
 
 ### 14.2 pack/encode/compress
 
-放在 `Kyber/inc/kyber_pack.h` 和 `Kyber/src/kyber_pack.c`。
+放在 `alg/kyber/kyber_pack.h` 和 `alg/kyber/kyber_pack.c`。
 
 ```c
 void kyber_byte_encode(uint8_t *out, const poly a, int d);
