@@ -16,11 +16,6 @@ typedef struct {
     size_t used;
 } test_rng_pool;
 
-static inline double now_ms(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return ts.tv_sec * 1000.0 + ts.tv_nsec / 1e6;
-}
 
 static size_t sig_len(const test_sig_alg *alg) {
     return alg->sig_bytes;
@@ -177,8 +172,8 @@ static int test_sig_correctness(void) {
     return ok;
 }
 
-static void print_perf(const char *label, uint64_t cycles, double ms) {
-    printf("  %-13s: %12llu cycles/op | %10.4f ms/op  (total %10.2f ms)\n", label, (unsigned long long)(cycles / SIG_PERF_ITERATIONS), ms / SIG_PERF_ITERATIONS, ms);
+static void print_perf(const char *label, uint64_t cycles) {
+    printf("  %-24s: %12llu cycles/op\n", label, (unsigned long long)(cycles / SIG_PERF_ITERATIONS));
 }
 
 static void bench_one_sig_alg(const test_sig_alg *alg) {
@@ -193,14 +188,13 @@ static void bench_one_sig_alg(const test_sig_alg *alg) {
     const dili_sk *sk;
     test_rng_pool rng_pool = {rnd_pool, rnd_pool_size, 0};
     uint64_t c0, c1;
-    double t0, t1;
 
     if(!keypair || !sig || (rnd_pool_size && !rnd_pool)) {
         printf("  [FAIL] allocation failed for %s perf\n", alg->name);
         goto cleanup;
     }
     if(rnd_pool) {
-        rand_bytes(rnd_pool, (int)rnd_pool_size);
+        test_random_bytes(rnd_pool, rnd_pool_size);
     }
     alg->keygen(keypair, alg->param);
     pk = &keypair->pk;
@@ -210,47 +204,39 @@ static void bench_one_sig_alg(const test_sig_alg *alg) {
     printf("  Test: %s Performance (%d iterations)\n", alg->name, SIG_PERF_ITERATIONS);
     printf("============================================\n");
 
-    c0 = __rdtsc();
-    t0 = now_ms();
+    c0 = test_ticks();
     for(int i = 0; i < SIG_PERF_ITERATIONS; i++) {
         alg->keygen(keypair, alg->param);
     }
-    c1 = __rdtsc();
-    t1 = now_ms();
-    print_perf("KeyGen", c1 - c0, t1 - t0);
+    c1 = test_ticks();
+    print_perf("KeyGen", c1 - c0);
 
     pk = &keypair->pk;
     sk = &keypair->sk;
     if(alg->sign) {
-        c0 = __rdtsc();
-        t0 = now_ms();
+        c0 = test_ticks();
         for(int i = 0; i < SIG_PERF_ITERATIONS; i++) {
             alg->sign(sig, msg, (int)mlen, sk, alg->param);
         }
-        c1 = __rdtsc();
-        t1 = now_ms();
-        print_perf("sign", c1 - c0, t1 - t0);
+        c1 = test_ticks();
+        print_perf("sign", c1 - c0);
     }
     if(alg->sign_with_rnd && rnd_pool) {
-        c0 = __rdtsc();
-        t0 = now_ms();
+        c0 = test_ticks();
         for(int i = 0; i < SIG_PERF_ITERATIONS; i++) {
             alg->sign_with_rnd(sig, msg, (int)mlen, sk, alg->param, rnd_pool + (size_t)i * alg->rnd_bytes);
         }
-        c1 = __rdtsc();
-        t1 = now_ms();
-        print_perf("sign_with_rnd", c1 - c0, t1 - t0);
+        c1 = test_ticks();
+        print_perf("sign_with_rnd", c1 - c0);
     }
     if(alg->sign_with_rng && rnd_pool) {
-        c0 = __rdtsc();
-        t0 = now_ms();
+        c0 = test_ticks();
         rng_pool.used = 0;
         for(int i = 0; i < SIG_PERF_ITERATIONS; i++) {
             alg->sign_with_rng(sig, msg, (int)mlen, sk, alg->param, test_pool_rng, &rng_pool);
         }
-        c1 = __rdtsc();
-        t1 = now_ms();
-        print_perf("sign_with_rng", c1 - c0, t1 - t0);
+        c1 = test_ticks();
+        print_perf("sign_with_rng", c1 - c0);
     }
     if(alg->sign) {
         alg->sign(sig, msg, (int)mlen, sk, alg->param);
@@ -261,14 +247,12 @@ static void bench_one_sig_alg(const test_sig_alg *alg) {
         alg->sign_with_rng(sig, msg, (int)mlen, sk, alg->param, test_pool_rng, &rng_pool);
     }
 
-    c0 = __rdtsc();
-    t0 = now_ms();
+    c0 = test_ticks();
     for(int i = 0; i < SIG_PERF_ITERATIONS; i++) {
         alg->verify(sig, msg, (int)mlen, pk, alg->param);
     }
-    c1 = __rdtsc();
-    t1 = now_ms();
-    print_perf("Verify", c1 - c0, t1 - t0);
+    c1 = test_ticks();
+    print_perf("Verify", c1 - c0);
 
 cleanup:
     free(keypair);
@@ -285,13 +269,20 @@ static void test_sig_perf(void) {
     }
 }
 
-int main(void) {
+int main(int argc, char **argv) {
     int ok;
     test_init();
     printf("============================================\n");
     printf("  Test Suite: Signature Algorithms\n");
     printf("============================================\n");
-    ok = test_sig_correctness();
+#ifdef PQC_PERF_ONLY
+    (void)argc; (void)argv;
     test_sig_perf();
+    return 0;
+#else
+    ok = test_sig_correctness();
+    if (argc == 2 && strcmp(argv[1], "--bench") == 0)
+        test_sig_perf();
+#endif
     return ok ? 0 : 1;
 }

@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include "poly.h"
 #include "keccak.h"
+#include "rand.h"
 
 typedef struct {
     uint8_t rho[32];
@@ -56,9 +57,17 @@ typedef struct {
     int c_tilde_bytes;    // c~ 挑战哈希字节数 = lambda/4 (ML-DSA-44/65/87: 32/48/64)
 } dili_param;
 
-typedef int (*dili_rng_func)(void *rng_ctx, uint8_t *out, size_t out_len);
+typedef pqc_rng_func dili_rng_func; /* Source compatibility alias. */
 
+/* Key generation returns 0 or -1. seed is exactly 32 bytes; injected RNG
+ * failure leaves keypair unchanged. NULL rng selects the OS random source.
+ * These APIs retain the existing expanded key representation and parameters. */
+int dili_keygen_with_seed(dili_keypair_t *keypair, dili_param param, const uint8_t seed[32]);
+int dili_keygen_with_rng(dili_keypair_t *keypair, dili_param param, pqc_rng_func rng, void *rng_ctx);
+/* Legacy wrapper: aborts on invalid input or RNG failure. */
 void dili_keygen(dili_keypair_t* keypair, dili_param param);
+/* dili_sign uses OS randomness; use dili_sign_with_rnd for reproducible
+ * signing. RNG failure returns -1 without modifying signature. */
 int dili_sign(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param);
 int dili_sign_with_rnd(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, const uint8_t rnd[32]);
 int dili_sign_with_rng(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, dili_rng_func rng, void *rng_ctx);

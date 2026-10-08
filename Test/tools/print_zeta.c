@@ -3,8 +3,8 @@
 #include "poly.h"
 
 static void print_zetas(const char *name, const lp_ctx *ctx, int used) {
-    printf("%s dynamic zetas\n", name);
-    printf("q=%d, n=%d, layer=%d, used=%d\n", ctx->q, ctx->n, ctx->layer, used);
+    printf("%s immutable zetas\n", name);
+    printf("q=%d, n=%d, layer=%d, used=%d\n", ctx->ring.field.q, ctx->ring.n, ctx->layers, used);
 
     for(int i = 0; i < used; i++) {
         if(i % 8 == 0) {

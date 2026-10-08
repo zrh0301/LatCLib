@@ -76,7 +76,7 @@ int kyber_pke_keygen(uint8_t *ek_pke, uint8_t *dk_pke,
     poly t_hat[KYBER_MAX_K];
     uint8_t nonce = 0;
 
-    if(!kyber_param_is_valid(param)) {
+    if(ek_pke == NULL || dk_pke == NULL || d == NULL || !kyber_param_is_valid(param)) {
         return -1;
     }
 
@@ -101,7 +101,7 @@ int kyber_pke_keygen(uint8_t *ek_pke, uint8_t *dk_pke,
     polyvec_ntt(s_hat, param.k, &ctx);
     polyvec_ntt(e_hat, param.k, &ctx);
 
-    polyvec_matrix_pointwise(t_hat, A, param.k, param.k, s_hat, &ctx, POLYVEC_MUL_BASE);
+    polyvec_matrix_pointwise(t_hat, A, param.k, param.k, s_hat, &ctx);
     polyvec_tomont(t_hat, param.k, &ctx);
     polyvec_add(t_hat, t_hat, e_hat, param.k);
     polyvec_reduce_mod(t_hat, param.k, KYBER_Q);
@@ -109,6 +109,18 @@ int kyber_pke_keygen(uint8_t *ek_pke, uint8_t *dk_pke,
     kyber_pack_ek(ek_pke, t_hat, rho, param);
     kyber_pack_dk_pke(dk_pke, s_hat, param);
     return 0;
+}
+
+int kyber_pke_keygen_with_rng(uint8_t *ek_pke, uint8_t *dk_pke,
+                             kyber_param param, pqc_rng_func rng, void *rng_ctx) {
+    uint8_t seed[KYBER_SYMBYTES];
+    if(ek_pke == NULL || dk_pke == NULL || !kyber_param_is_valid(param)) {
+        return -1;
+    }
+    if(pqc_randombytes(seed, sizeof(seed), rng, rng_ctx) != 0) {
+        return -1;
+    }
+    return kyber_pke_keygen(ek_pke, dk_pke, seed, param);
 }
 
 int kyber_pke_encrypt(uint8_t *ct, const uint8_t *ek_pke,
@@ -147,12 +159,12 @@ int kyber_pke_encrypt(uint8_t *ct, const uint8_t *ek_pke,
     polyvec_copy(y_hat, y, param.k);
     polyvec_ntt(y_hat, param.k, &ctx);
 
-    polyvec_matrix_transpose_pointwise(u, A, param.k, param.k, y_hat, &ctx, POLYVEC_MUL_BASE);
+    polyvec_matrix_transpose_pointwise(u, A, param.k, param.k, y_hat, &ctx);
     polyvec_invntt(u, param.k, &ctx);
     polyvec_add(u, u, e1, param.k);
     polyvec_reduce_mod(u, param.k, KYBER_Q);
 
-    polyvec_pointwise_acc(v, t_hat, y_hat, param.k, &ctx, POLYVEC_MUL_BASE);
+    polyvec_pointwise_acc(v, t_hat, y_hat, param.k, &ctx);
     poly_invntt(v, &ctx);
     POLY_ADD(v, v, e2, KYBER_N);
 
@@ -185,7 +197,7 @@ int kyber_pke_decrypt(uint8_t m[KYBER_SYMBYTES], const uint8_t *dk_pke,
 
     polyvec_copy(u_hat, u, param.k);
     polyvec_ntt(u_hat, param.k, &ctx);
-    polyvec_pointwise_acc(w, s_hat, u_hat, param.k, &ctx, POLYVEC_MUL_BASE);
+    polyvec_pointwise_acc(w, s_hat, u_hat, param.k, &ctx);
     poly_invntt(w, &ctx);
 
     POLY_SUB(m_poly, v, w, KYBER_N);

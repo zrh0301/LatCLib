@@ -1,10 +1,6 @@
 #include "test.h"
 #include "polyvec.h"
-
-typedef struct {
-    const char *name;
-    int (*run)(void);
-} test_case;
+#include "fp32.h"
 
 static lssi_t reference_mod(lssi_t a, lssi_t q) {
     a %= q;
@@ -47,85 +43,73 @@ static int test_dili_fast_reduce(void) {
     return 1;
 }
 
-static int test_correctness() {
+static void fill_polynomial(poly a, int32_t q) {
+    for (int i = 0; i < TEST_COEFS; ++i)
+        a[i] = (int32_t)(test_random_u32() % (uint32_t)q);
+}
+
+static int test_correctness(void) {
+    poly a, b, c, d;
+    fp32_ctx field;
     int ok = 1;
+    if (fp32_init(&field, TEST_Q_KYBER) != 0) return 0;
+    fill_polynomial(a, field.q);
+    fill_polynomial(b, field.q);
 
-    printf("=== Running Correctness Tests ===\n");
-    
-    lssi_t a[TEST_COEFS], b[TEST_COEFS], c[TEST_COEFS], d[TEST_COEFS];
-    lssi_t qc;
-    lssi_t q = TEST_Q_KYBER;
-    int ret;
-
-    TEST_START("poly_rand generates random polynomials", 1) {
-        poly_rand(a, TEST_COEFS);
-        poly_rand(b, TEST_COEFS);
-        TEST_ITEM(1, end_rand);
-    } TEST_FINAL
-    end_rand:
-
-    TEST_START("poly_add/sub: (a+b)-b == a", 1) {
-        POLY_ADD(c, a, b, TEST_COEFS);
-        POLY_SUB(d, c, b, TEST_COEFS);
-        TEST_ITEM(memcmp(a, d, TEST_COEFS * sizeof(lssi_t)) == 0, end_addsub);
-    } TEST_FINAL
-    end_addsub:
-
-    TEST_START("poly_mont_init initializes correctly", 1) {
-        ret = POLY_MONT_INIT(&qc, q);
-        TEST_ITEM(ret == 0, end_mont);
-        printf("(qc = %d) ", qc);
-    } TEST_FINAL
-    end_mont:
-
-    TEST_START("poly_mod_barrett_lsdi reduces to valid range", 1) {
-        lsdi_t big_a[TEST_COEFS];
-        int i;
-        for(i=0; i<TEST_COEFS; i++) big_a[i] = (lsdi_t)a[i] * b[i];
-        
-        poly_mod_barrett_lsdi(c, big_a, q, TEST_QBITS, TEST_COEFS);
-        
-        TEST_ITEM(check_poly_range(c, TEST_COEFS, -(q-1)/2, (q-1)/2), end_barrett);
-    } TEST_FINAL
-    end_barrett:
-
+    /* Bounded inputs respect the signed addition/subtraction contract. */
+    POLY_ADD(c, a, b, TEST_COEFS);
+    POLY_SUB(d, c, b, TEST_COEFS);
+    if (memcmp(a, d, sizeof(a)) != 0) {
+        fprintf(stderr, "[FAIL] polynomial add/sub round trip\n");
+        ok = 0;
+    }
+    {
+        int64_t products[TEST_COEFS];
+        for (int i = 0; i < TEST_COEFS; ++i)
+            products[i] = (int64_t)a[i] * b[i];
+        poly_mod_barrett_lsdi(c, products, field.q, TEST_QBITS, TEST_COEFS);
+        for (int i = 0; i < TEST_COEFS; ++i) {
+            int64_t expected = products[i] % field.q;
+            if (expected > (field.q - 1) / 2) expected -= field.q;
+            if (c[i] != expected) {
+                fprintf(stderr, "[FAIL] centered reduction at coefficient %d\n", i);
+                ok = 0;
+                break;
+            }
+        }
+    }
+    printf("%s polynomial arithmetic\n", ok ? "[PASS]" : "[FAIL]");
     return ok;
 }
 
-static int test_performance() {
-    printf("\n=== Running Performance Tests ===\n");
-    
-    lssi_t a[TEST_COEFS], b[TEST_COEFS], c[TEST_COEFS];
-    lssi_t q = TEST_Q_KYBER;
-    lssi_t qc;
-    POLY_MONT_INIT(&qc, q);
-    poly_rand(a, TEST_COEFS);
-    poly_rand(b, TEST_COEFS);
+static void montgomery_product(poly c, const poly a, const poly b,
+                                const fp32_ctx *field) {
+    for (int i = 0; i < TEST_COEFS; ++i)
+        c[i] = fp32_mont_reduce((int64_t)a[i] * b[i], field);
+}
 
+static int test_performance(void) {
+    poly a, b, c;
+    fp32_ctx field;
+    if (fp32_init(&field, TEST_Q_KYBER) != 0) return 0;
+    fill_polynomial(a, field.q);
+    fill_polynomial(b, field.q);
     BENCH_START("poly_mont_mul", 10) {
-        BENCH_ITEM(POLY_MONT_MUL(c, a, b, q, qc, TEST_COEFS), 100000);
-    } BENCH_FINAL(10, 100000);
-
+        BENCH_ITEM(montgomery_product(c, a, b, &field), 10000);
+    } BENCH_FINAL(10, 10000);
     BENCH_START("poly_mod_barrett_lssi", 10) {
-        BENCH_ITEM(poly_mod_barrett_lssi(c, a, q, TEST_QBITS, TEST_COEFS), 100000);
-    } BENCH_FINAL(10, 100000);
-
+        BENCH_ITEM(poly_mod_barrett_lssi(c, a, field.q, TEST_QBITS, TEST_COEFS), 10000);
+    } BENCH_FINAL(10, 10000);
+    printf("Benchmark checksum: %d\n", c[0]);
     return 1;
 }
 
-int main() {
-    const test_case poly_cases[] = {
-        {"poly correctness", test_correctness},
-        {"Dilithium fast reduction", test_dili_fast_reduce},
-        {"poly performance", test_performance},
-    };
-    int ok = 1;
-
+int main(int argc, char **argv) {
+    int ok;
     test_init();
-
-    for(size_t i = 0; i < sizeof(poly_cases) / sizeof(poly_cases[0]); i++) {
-        ok &= poly_cases[i].run();
-    }
-
+    ok = test_correctness();
+    ok &= test_dili_fast_reduce();
+    if (argc == 2 && strcmp(argv[1], "--bench") == 0)
+        ok &= test_performance();
     return ok ? 0 : 1;
 }

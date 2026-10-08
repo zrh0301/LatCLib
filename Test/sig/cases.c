@@ -39,5 +39,13 @@ const test_sig_alg test_sig_dilithium5_alg = {
     .verify = dili_verify,
 };
 
+#if PQC_DILITHIUM_MODE == 2
+const test_sig_alg *test_sig_algs[] = {&test_sig_dilithium2_alg};
+#elif PQC_DILITHIUM_MODE == 3
+const test_sig_alg *test_sig_algs[] = {&test_sig_dilithium3_alg};
+#elif PQC_DILITHIUM_MODE == 5
+const test_sig_alg *test_sig_algs[] = {&test_sig_dilithium5_alg};
+#else
 const test_sig_alg *test_sig_algs[] = {&test_sig_dilithium2_alg, &test_sig_dilithium3_alg, &test_sig_dilithium5_alg};
+#endif
 const size_t test_sig_alg_count = sizeof(test_sig_algs) / sizeof(test_sig_algs[0]);

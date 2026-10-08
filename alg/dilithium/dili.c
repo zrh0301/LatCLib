@@ -4,6 +4,7 @@
 #include "pack.h"
 #include "rand.h"
 #include "dili_sample.h"
+#include <stdlib.h>
 #include <string.h>
 
 #define CMOD_Q(a) ({ \
@@ -259,9 +260,9 @@ static void expand_s(poly *s1, poly *s2, const uint8_t *rho_prime, int k, int l,
 
         // 拒绝采样：持�?squeeze 直到填满全部系数
         got = 0;
-        while(got < ctx->n) {
+        while(got < ctx->ring.n) {
             shake_squeeze(&kc, buf, sizeof(buf));
-            got += sample_eta((*dst) + got, ctx->n - got, buf, sizeof(buf), ctx, eta);
+            got += sample_eta((*dst) + got, ctx->ring.n - got, buf, sizeof(buf), ctx, eta);
         }
     }
 }
@@ -278,9 +279,9 @@ static void dili_matrix_sample_uniform_ntt(poly out, const uint8_t seed[34],
     shake_xof_final(&kc);
 
     got = 0;
-    while(got < ctx->n) {
+    while(got < ctx->ring.n) {
         shake_squeeze(&kc, buf, sizeof(buf));
-        got += sample_uniform(out + got, ctx->n - got, buf, sizeof(buf), ctx);
+        got += sample_uniform(out + got, ctx->ring.n - got, buf, sizeof(buf), ctx);
     }
 }
 
@@ -293,7 +294,7 @@ static void dili_matrix_expand(poly *mat, int k, int l, const uint8_t rho[32],
 static void calc_t(poly *t, poly *A_mat, int k, int l, lp_ctx *ctx, poly *s1_ntt, poly *s2) {
     // t = A*s1 + s2 (计算在NTT�?
     polyvec_matrix_pointwise_montgomery(t, A_mat, k, s1_ntt, l, ctx);
-    polyvec_reduce_mod(t, k, ctx->q);            // 累加�?l 个乘�? invNTT 前必须归约防�?int32 溢出
+    polyvec_reduce_mod(t, k, ctx->ring.field.q);            // 累加�?l 个乘�? invNTT 前必须归约防�?int32 溢出
     polyvec_invntt_tomont(t, k, ctx);
     polyvec_add(t, t, s2, k);
 }
@@ -351,12 +352,20 @@ static void challenge(lssi_t *c, const uint8_t *hash, int tau, int c_tilde_bytes
 //  Main Algorithm Functions
 // ============================================
 
+static int dili_keygen_param_is_valid(dili_param param) {
+    return param.k > 0 && param.k <= DILI_K &&
+           param.l > 0 && param.l <= DILI_L &&
+           (param.eta == 2 || param.eta == 4);
+}
+
 // Key Generation
-void dili_keygen(dili_keypair_t* keypair, dili_param param) {
+int dili_keygen_with_seed(dili_keypair_t *keypair, dili_param param, const uint8_t seed[32]) {
+    if(keypair == NULL || seed == NULL || !dili_keygen_param_is_valid(param)) {
+        return -1;
+    }
     const int K_DILI = param.k;
     const int L_DILI = param.l;
     lp_ctx ctx;
-    uint8_t seed[32];
     uint8_t seedbuf[34];
     uint8_t buf[128];
     uint8_t rho[32], rho_prime[64], K[32];
@@ -366,7 +375,6 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     poly t[K_DILI];
 
     INIT_NTT_DILI(&ctx);
-    rand_bytes(seed, 32);
 
     memcpy(seedbuf, seed, 32);
     seedbuf[32] = (uint8_t)K_DILI;         // 域分�? IntegerToBytes(k,1)
@@ -385,9 +393,9 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
 
     calc_t(t, matrix_A, K_DILI, L_DILI, &ctx, s1_ntt, keypair->sk.s2);
 
-    polyvec_caddq_mod(t, K_DILI, ctx.q);   // 归约�?[0,q), �?t1 落在规范 10-bit 范围便于打包
+    polyvec_caddq_mod(t, K_DILI, ctx.ring.field.q);   // 归约�?[0,q), �?t1 落在规范 10-bit 范围便于打包
 
-    power2round(keypair->pk.t1, keypair->sk.t0, t, K_DILI, ctx.n, DILI_D);
+    power2round(keypair->pk.t1, keypair->sk.t0, t, K_DILI, ctx.ring.n, DILI_D);
 
     dili_pack_pk(pk_packed, rho, keypair->pk.t1, K_DILI);
 
@@ -396,6 +404,24 @@ void dili_keygen(dili_keypair_t* keypair, dili_param param) {
     memcpy(keypair->pk.rho, rho, 32);
     memcpy(keypair->sk.rho, rho, 32);
     memcpy(keypair->sk.K, K, 32);
+    return 0;
+}
+
+int dili_keygen_with_rng(dili_keypair_t *keypair, dili_param param, pqc_rng_func rng, void *rng_ctx) {
+    uint8_t seed[32];
+    if(keypair == NULL || !dili_keygen_param_is_valid(param)) {
+        return -1;
+    }
+    if(pqc_randombytes(seed, sizeof(seed), rng, rng_ctx) != 0) {
+        return -1;
+    }
+    return dili_keygen_with_seed(keypair, param, seed);
+}
+
+void dili_keygen(dili_keypair_t *keypair, dili_param param) {
+    if(dili_keygen_with_rng(keypair, param, NULL, NULL) != 0) {
+        abort();
+    }
 }
 
 // Sign
@@ -482,7 +508,7 @@ static int dili_sign_core(uint8_t* signature, const uint8_t* message, int messag
         polyvec_ntt(y_ntt, L, &ctx);
 
         polyvec_matrix_pointwise_montgomery(w, matrix_A, K, y_ntt, L, &ctx);
-        polyvec_reduce_mod(w, K, ctx.q);
+        polyvec_reduce_mod(w, K, ctx.ring.field.q);
         polyvec_invntt_tomont(w, K, &ctx);
 
         for(i=0; i<K; i++) {
@@ -574,7 +600,9 @@ static int dili_sign_core(uint8_t* signature, const uint8_t* message, int messag
 }
 
 int dili_sign_with_rnd(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, const uint8_t rnd[32]) {
-    if(rnd == NULL) {
+    if(signature == NULL || sk == NULL || rnd == NULL || message_len < 0 ||
+       (message == NULL && message_len != 0) ||
+       param.k <= 0 || param.k > DILI_K || param.l <= 0 || param.l > DILI_L) {
         return -1;
     }
     return dili_sign_core(signature, message, message_len, sk, param, rnd);
@@ -583,12 +611,13 @@ int dili_sign_with_rnd(uint8_t* signature, const uint8_t* message, int message_l
 int dili_sign_with_rng(uint8_t* signature, const uint8_t* message, int message_len, const dili_sk* sk, dili_param param, dili_rng_func rng, void *rng_ctx) {
     uint8_t rnd[32];
 
-    if(rng != NULL) {
-        if(rng(rng_ctx, rnd, sizeof(rnd)) != 0) {
-            return -1;
-        }
-    } else {
-        rand_bytes(rnd, sizeof(rnd));
+    if(signature == NULL || sk == NULL || message_len < 0 ||
+       (message == NULL && message_len != 0) ||
+       param.k <= 0 || param.k > DILI_K || param.l <= 0 || param.l > DILI_L) {
+        return -1;
+    }
+    if(pqc_randombytes(rnd, sizeof(rnd), rng, rng_ctx) != 0) {
+        return -1;
     }
     return dili_sign_with_rnd(signature, message, message_len, sk, param, rnd);
 }
@@ -676,9 +705,9 @@ int dili_verify(const uint8_t* signature, const uint8_t* message, int message_le
         POLY_SUB(w_prime[i], Az_ntt[i], ct1_ntt, DILI_N);
     }
 
-    polyvec_reduce_mod(w_prime, K, ctx.q);     // invNTT 前归�? 防止累加溢出
+    polyvec_reduce_mod(w_prime, K, ctx.ring.field.q);     // invNTT 前归�? 防止累加溢出
     polyvec_invntt_tomont(w_prime, K, &ctx);
-    polyvec_caddq_mod(w_prime, K, ctx.q);
+    polyvec_caddq_mod(w_prime, K, ctx.ring.field.q);
 
     rc_unpack = unpack_h(h, h_bytes, K, param.omega);
     if(rc_unpack != 0) {

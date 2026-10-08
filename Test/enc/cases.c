@@ -48,5 +48,13 @@ const test_enc_alg test_enc_kyber5_pke_alg = {
     .decrypt = kyber_pke_decrypt,
 };
 
+#if PQC_KYBER_MODE == 2
+const test_enc_alg *test_enc_algs[] = {&test_enc_kyber2_pke_alg};
+#elif PQC_KYBER_MODE == 3
+const test_enc_alg *test_enc_algs[] = {&test_enc_kyber3_pke_alg};
+#elif PQC_KYBER_MODE == 5
+const test_enc_alg *test_enc_algs[] = {&test_enc_kyber5_pke_alg};
+#else
 const test_enc_alg *test_enc_algs[] = {&test_enc_kyber2_pke_alg, &test_enc_kyber3_pke_alg, &test_enc_kyber5_pke_alg};
+#endif
 const size_t test_enc_alg_count = sizeof(test_enc_algs) / sizeof(test_enc_algs[0]);

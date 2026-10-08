@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "poly.h"
+#include "rand.h"
 
 #define KYBER_N 256
 #define KYBER_Q 3329
@@ -36,6 +37,10 @@ const char *kyber_mode_name(int mode);
 
 int kyber_pke_keygen(uint8_t *ek_pke, uint8_t *dk_pke,
                      const uint8_t d[KYBER_SYMBYTES], kyber_param param);
+/* Returns 0 or -1. NULL rng selects the OS random source. RNG failure leaves
+ * both outputs unchanged. The seeded K-PKE API above remains deterministic. */
+int kyber_pke_keygen_with_rng(uint8_t *ek_pke, uint8_t *dk_pke,
+                             kyber_param param, pqc_rng_func rng, void *rng_ctx);
 int kyber_pke_encrypt(uint8_t *ct, const uint8_t *ek_pke,
                       const uint8_t m[KYBER_SYMBYTES],
                       const uint8_t r[KYBER_SYMBYTES], kyber_param param);

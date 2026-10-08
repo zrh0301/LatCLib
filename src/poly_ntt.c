@@ -1,7 +1,5 @@
 #include "poly.h"
 
-typedef lssi_t poly[MAX_POLY_COEFS];
-
 void ntt_vector(poly* vec, int count, lp_ctx* Q) {
     for(int i = 0; i < count; i++) {
         poly_ntt(vec[i], Q);
@@ -16,18 +14,19 @@ void ntt_matrix(poly* mat, int rows, int cols, lp_ctx* Q) {
     }
 }
 
-void poly_ntt(int32_t a[256], lp_ctx* Q) {
+void poly_ntt(int32_t *a, lp_ctx* Q) {
     int n, layer, min_len;
-    int32_t q, qc;
+    int32_t q;
+    uint32_t qc;
     const int32_t* zetas;
     int len, start, j, k;
     int32_t zeta, t;
     
-    n = Q->n;
-    q = Q->q;
-    qc = Q->qc;
+    n = Q->ring.n;
+    q = Q->ring.field.q;
+    qc = Q->ring.field.qinv;
     zetas = Q->zetas;
-    layer = Q->layer;
+    layer = Q->layers;
     min_len = (n >> layer);
     k = 0;
     
@@ -35,7 +34,7 @@ void poly_ntt(int32_t a[256], lp_ctx* Q) {
         for(start = 0; start < n; start += (len << 1)) {
             zeta = zetas[++k];
             for(j = start; j < start + len; ++j) {
-                t = MONTGOMERY_REDUCE((int64_t)a[j + len] * zeta, q, qc);
+                t = fp32_mont_reduce_raw((int64_t)a[j + len] * zeta, q, qc);
                 a[j + len] = a[j] - t;
                 a[j] = a[j] + t;
             }
@@ -43,20 +42,22 @@ void poly_ntt(int32_t a[256], lp_ctx* Q) {
     }
 }
 
-void poly_invntt(int32_t a[256], lp_ctx* Q) {
+void poly_invntt(int32_t *a, lp_ctx* Q) {
     int n, layer, step;
-    int32_t q, qc, f;
+    int32_t q, f;
+    uint32_t qc;
     const int32_t* zetas;
     int start, len, j, k;
     int32_t t, zeta;
     
-    n = Q->n;
-    q = Q->q;
-    qc = Q->qc;
+    n = Q->ring.n;
+    q = Q->ring.field.q;
+    qc = Q->ring.field.qinv;
     zetas = Q->zetas;
-    layer = Q->layer;
-    f = Q->f * (1 << (8 - layer));
-    k = (n >> (8 - layer));
+    layer = Q->layers;
+    f = Q->inverse_scale;
+    k = (1 << layer);
+    for (j = 0; j < n; ++j) a[j] = fp32_center(a[j], &Q->ring.field);
     
     for(len = (n >> layer); len < n; len <<= 1) {
         step = len << 1;
@@ -66,56 +67,69 @@ void poly_invntt(int32_t a[256], lp_ctx* Q) {
                 t = a[j];
                 a[j] = t + a[j + len];
                 a[j + len] = t - a[j + len];
-                a[j + len] = MONTGOMERY_REDUCE((int64_t)zeta * a[j + len], q, qc);
+                a[j + len] = fp32_mont_reduce_raw((int64_t)zeta * a[j + len], q, qc);
             }
         }
     }
     
     for(j = 0; j < n; ++j) {
-        a[j] = MONTGOMERY_REDUCE((int64_t)f * a[j], q, qc);
+        a[j] = fp32_mont_reduce_raw((int64_t)f * a[j], q, qc);
     }
 }
 
 void poly_base_pointwise(lssi_t * r, const lssi_t * a, const lssi_t * b, lp_ctx * Q){
     unsigned int i, n, x, y;
     const int32_t* zetas;
-    int32_t q, qc, zeta;
+    int32_t q, zeta;
+    uint32_t qc;
     int32_t t0, t1, t2;
     
-    q = Q->q;
-    qc = Q->qc;
+    q = Q->ring.field.q;
+    qc = Q->ring.field.qinv;
     zetas = Q->zetas;
-    n = Q->n / 4;
+    n = Q->ring.n / 4;
 
     for(i=0; i<n; i++) {
         x = 4*i;
         y = x + 2;
-        zeta = zetas[64+i];
+        zeta = zetas[Q->ring.n / 4 + i];
         
-        t0 = MONTGOMERY_REDUCE((lsdi_t)a[x] * b[x], q, qc);
-        t1 = MONTGOMERY_REDUCE((lsdi_t)a[x+1] * b[x+1], q, qc);
-        t2 = MONTGOMERY_REDUCE((lsdi_t)(a[x] + a[x+1]) * (b[x] + b[x+1]), q, qc);
-        r[x] = MONTGOMERY_REDUCE((lsdi_t)t1 * zeta, q, qc) + t0;
+        t0 = fp32_mont_reduce_raw((lsdi_t)a[x] * b[x], q, qc);
+        t1 = fp32_mont_reduce_raw((lsdi_t)a[x+1] * b[x+1], q, qc);
+        t2 = fp32_mont_reduce_raw((lsdi_t)(a[x] + a[x+1]) * (b[x] + b[x+1]), q, qc);
+        r[x] = fp32_mont_reduce_raw((lsdi_t)t1 * zeta, q, qc) + t0;
         r[x+1] = t2 - t0 - t1;
         
-        t0 = MONTGOMERY_REDUCE((lsdi_t)a[y] * b[y], q, qc);
-        t1 = MONTGOMERY_REDUCE((lsdi_t)a[y+1] * b[y+1], q, qc);
-        t2 = MONTGOMERY_REDUCE((lsdi_t)(a[y] + a[y+1]) * (b[y] + b[y+1]), q, qc);
-        r[y] = MONTGOMERY_REDUCE((lsdi_t)t1 * (-zeta), q, qc) + t0;
+        t0 = fp32_mont_reduce_raw((lsdi_t)a[y] * b[y], q, qc);
+        t1 = fp32_mont_reduce_raw((lsdi_t)a[y+1] * b[y+1], q, qc);
+        t2 = fp32_mont_reduce_raw((lsdi_t)(a[y] + a[y+1]) * (b[y] + b[y+1]), q, qc);
+        r[y] = fp32_mont_reduce_raw((lsdi_t)t1 * (-zeta), q, qc) + t0;
         r[y+1] = t2 - t0 - t1;
     }
 }
 
 void poly_pointwise(lssi_t* c, const lssi_t* a, const lssi_t* b, lp_ctx* Q){
-    int32_t q, qc;
+    int32_t q;
+    uint32_t qc;
     int i;
     int n;
-    q = Q->q;
-    qc = Q->qc;
-    n = Q->n;
+    q = Q->ring.field.q;
+    qc = Q->ring.field.qinv;
+    n = Q->ring.n;
 
     for(i=0;i<n;++i){
-        c[i] = MONTGOMERY_REDUCE((lsdi_t)a[i]*b[i], q, qc);
+        c[i] = fp32_mont_reduce_raw((lsdi_t)a[i]*b[i], q, qc);
+    }
+}
+
+void poly_mul_ntt(lssi_t *r, const lssi_t *a, const lssi_t *b, lp_ctx *Q) {
+    if (Q->block_degree == 1) {
+        poly_pointwise(r, a, b, Q);
+    } else {
+        poly_base_pointwise(r, a, b, Q);
+    }
+    for (int i = 0; i < Q->ring.n; ++i) {
+        r[i] = fp32_reduce(r[i], &Q->ring.field);
     }
 }
 
@@ -134,8 +148,8 @@ void poly_mul_small(lssi_t* u, const lssi_t* c, const lssi_t* a, lssi_t U, lp_ct
     lsdi_t w[MAX_POLY_COEFS];
     lsdi_t tauU, r;
 
-    n = Q->n;
-    q = Q->q;
+    n = Q->ring.n;
+    q = Q->ring.field.q;
     q_half = q >> 1;
 
     for(i=0;i<n;++i){
@@ -185,7 +199,7 @@ void poly_mul_small_pub(lssi_t* u, const lssi_t* c, const lssi_t* a, lp_ctx* Q){
     lssi_t e[2*MAX_POLY_COEFS];
     lsdi_t w[MAX_POLY_COEFS];
     
-    n = Q->n;
+    n = Q->ring.n;
 
     for(i=0;i<n;++i){
         e[n+i] =  a[i];

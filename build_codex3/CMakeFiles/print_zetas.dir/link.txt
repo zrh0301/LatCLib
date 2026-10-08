@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\print_zetas.dir/objects.a
-D:\dev_C\msys64\mingw64\bin\ar.exe qc CMakeFiles\print_zetas.dir/objects.a @CMakeFiles\print_zetas.dir\objects1.rsp
-D:\dev_C\msys64\mingw64\bin\cc.exe -Wl,--whole-archive CMakeFiles\print_zetas.dir/objects.a -Wl,--no-whole-archive -o print_zetas.exe -Wl,--out-implib,libprint_zetas.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\print_zetas.dir\linkLibs.rsp

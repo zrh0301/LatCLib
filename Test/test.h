@@ -7,13 +7,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#if defined(_WIN32)
+#if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
     #include <intrin.h>
-#else
+#elif defined(__i386__) || defined(__x86_64__)
     #include <x86intrin.h>
 #endif
+#include "test_rng.h"
 #include "types.h"
 #include "poly.h"
+#include "poly_sample.h"
 #include "rand.h"
 #include "dili.h"
 #include "kyber.h"
@@ -77,12 +79,22 @@ static inline void bench_reset(void) {
     _bench_total = 0;
 }
 
+static inline uint64_t test_ticks(void) {
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+    return __rdtsc();
+#else
+    struct timespec ts;
+    timespec_get(&ts, TIME_UTC);
+    return (uint64_t)ts.tv_sec * UINT64_C(1000000000) + (uint64_t)ts.tv_nsec;
+#endif
+}
+
 static inline void bench_before(void) {
-    _bench_before = __rdtsc();
+    _bench_before = test_ticks();
 }
 
 static inline void bench_after(void) {
-    _bench_after = __rdtsc();
+    _bench_after = test_ticks();
     _bench_total += (_bench_after - _bench_before);
 }
 
@@ -126,9 +138,8 @@ static inline int poly_equals(const lssi_t *a, const lssi_t *b, int len) {
 }
 
 static inline void test_init(void) {
-    uint8_t seed[] = {0x12, 0x34, 0x56, 0x78};
-    rand_seed(seed, sizeof(seed));
-    printf("Test environment initialized\n\n");
+    test_random_state = UINT32_C(0x6d5a56a9);
+    printf("Deterministic test data initialized\n\n");
 }
 
 typedef struct {

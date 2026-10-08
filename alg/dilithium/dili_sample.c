@@ -17,7 +17,7 @@ void poly_uniform(poly *a, lp_ctx *ctx) {
 }
 
 unsigned int sample_uniform(int32_t *a,unsigned int len,const uint8_t *buf,unsigned int buflen,lp_ctx *ctx){
-    const uint32_t Q = ctx->q;
+    const uint32_t Q = ctx->ring.field.q;
     unsigned int ctr = 0;
     unsigned int pos = 0;
     uint32_t t;
@@ -79,7 +79,7 @@ unsigned int sample_gamma1(int32_t *a,unsigned int len,const uint8_t *buf,unsign
     int32_t GAMMA1 = GAMMA1_17;
 
     if (GAMMA1 == GAMMA1_17) {
-        while (ctr < len && pos + 8 <= buflen) {
+        while (ctr < len && pos + 9 <= buflen) {
             a[ctr++] = ((buf[pos] | ((uint32_t)buf[pos+1] << 8) | ((uint32_t)buf[pos+2] << 16)) & 0x3FFFF) - GAMMA1;
             if (ctr >= len) break;
             a[ctr++] = (((buf[pos+2] >> 2) | ((uint32_t)buf[pos+3] << 6) | ((uint32_t)buf[pos+4] << 14)) & 0x3FFFF) - GAMMA1;
@@ -90,7 +90,7 @@ unsigned int sample_gamma1(int32_t *a,unsigned int len,const uint8_t *buf,unsign
             pos += 9;
         }
     } else if (GAMMA1 == GAMMA1_19) {
-        while (ctr < len && pos + 4 <= buflen) {
+        while (ctr < len && pos + 5 <= buflen) {
             a[ctr++] = ((buf[pos] | ((uint32_t)buf[pos+1] << 8) | ((uint32_t)buf[pos+2] << 16)) & 0xFFFFF) - GAMMA1;
             if (ctr >= len) break;
             a[ctr++] = (((buf[pos+2] >> 4) | ((uint32_t)buf[pos+3] << 4) | ((uint32_t)buf[pos+4] << 12)) & 0xFFFFF) - GAMMA1;
@@ -104,12 +104,12 @@ unsigned int sample_gamma1(int32_t *a,unsigned int len,const uint8_t *buf,unsign
 unsigned int sample_gamma2(int32_t *a,unsigned int len,const uint8_t *buf,unsigned int buflen,lp_ctx *ctx){
     unsigned int ctr = 0;
     unsigned int pos = 0;
-    const uint32_t Q = ctx->q;
+    const uint32_t Q = ctx->ring.field.q;
     const int32_t GAMMA2_88 = (Q - 1) / 88;
     const int32_t GAMMA2_32 = (Q - 1) / 32;
     int32_t GAMMA2 = GAMMA2_32;
     if (GAMMA2 == GAMMA2_88) {
-        while (ctr < len && pos + 2 <= buflen) {
+        while (ctr < len && pos + 3 <= buflen) {
             a[ctr++] = buf[pos] & 0x3F;
             if (ctr >= len) break;
             a[ctr++] = ((buf[pos] >> 6) | ((buf[pos+1] & 0x0F) << 2)) & 0x3F;

@@ -5,11 +5,6 @@
 
 #define ENC_PERF_ITERATIONS 10000
 
-static inline double now_ms(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return ts.tv_sec * 1000.0 + ts.tv_nsec / 1e6;
-}
 
 static void fill_bytes(uint8_t *buf, size_t len, uint8_t seed) {
     for(size_t i = 0; i < len; i++) {
@@ -118,8 +113,8 @@ static int test_enc_correctness(void) {
     return ok;
 }
 
-static void print_perf(const char *label, uint64_t cycles, double ms) {
-    printf("  %-18s: %12llu cycles/op | %10.4f ms/op  (total %10.2f ms)\n", label, (unsigned long long)(cycles / ENC_PERF_ITERATIONS), ms / ENC_PERF_ITERATIONS, ms);
+static void print_perf(const char *label, uint64_t cycles) {
+    printf("  %-24s: %12llu cycles/op\n", label, (unsigned long long)(cycles / ENC_PERF_ITERATIONS));
 }
 
 static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
@@ -131,7 +126,6 @@ static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
     uint8_t *coins = calloc(1, alg->coins_bytes);
     uint8_t *msg = calloc(1, alg->msg_bytes);
     uint64_t c0, c1;
-    double t0, t1;
 
     if(!pk || !sk || !ct || !out || !seed || !coins || !msg) {
         printf("  [FAIL] allocation failed for %s perf\n", alg->name);
@@ -147,32 +141,26 @@ static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
     printf("  Test: %s Performance (%d iterations)\n", alg->name, ENC_PERF_ITERATIONS);
     printf("============================================\n");
 
-    c0 = __rdtsc();
-    t0 = now_ms();
+    c0 = test_ticks();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->keygen_with_seed(pk, sk, seed, alg->param);
     }
-    c1 = __rdtsc();
-    t1 = now_ms();
-    print_perf("keygen_with_seed", c1 - c0, t1 - t0);
+    c1 = test_ticks();
+    print_perf("keygen_with_seed", c1 - c0);
 
-    c0 = __rdtsc();
-    t0 = now_ms();
+    c0 = test_ticks();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->encrypt_with_coins(ct, pk, msg, coins, alg->param);
     }
-    c1 = __rdtsc();
-    t1 = now_ms();
-    print_perf("encrypt_with_coins", c1 - c0, t1 - t0);
+    c1 = test_ticks();
+    print_perf("encrypt_with_coins", c1 - c0);
 
-    c0 = __rdtsc();
-    t0 = now_ms();
+    c0 = test_ticks();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->decrypt(out, sk, ct, alg->param);
     }
-    c1 = __rdtsc();
-    t1 = now_ms();
-    print_perf("decrypt", c1 - c0, t1 - t0);
+    c1 = test_ticks();
+    print_perf("decrypt", c1 - c0);
 
 cleanup:
     free(pk);
@@ -193,13 +181,20 @@ static void test_enc_perf(void) {
     }
 }
 
-int main(void) {
+int main(int argc, char **argv) {
     int ok;
     test_init();
     printf("============================================\n");
     printf("  Test Suite: Encryption Algorithms\n");
     printf("============================================\n");
-    ok = test_enc_correctness();
+#ifdef PQC_PERF_ONLY
+    (void)argc; (void)argv;
     test_enc_perf();
+    return 0;
+#else
+    ok = test_enc_correctness();
+    if (argc == 2 && strcmp(argv[1], "--bench") == 0)
+        test_enc_perf();
+#endif
     return ok ? 0 : 1;
 }

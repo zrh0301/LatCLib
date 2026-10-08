@@ -1,51 +1,23 @@
 #include "polyvec.h"
 #include <string.h>
 
-#define DILI_Q_VALUE 8380417
-
-static inline lssi_t dili_reduce32(lssi_t a) {
-    lssi_t t = (lssi_t)(((lsdi_t)a + (1LL << 22)) >> 23);
-    return (lssi_t)((lsdi_t)a - (lsdi_t)t * DILI_Q_VALUE);
-}
-
-static inline lssi_t dili_freeze(lssi_t a) {
-    a = dili_reduce32(a);
-    a += (a >> 31) & DILI_Q_VALUE;
-    return a;
-}
-
 lssi_t poly_reduce_mod_one(lssi_t a, lssi_t q) {
-    if(q == DILI_Q_VALUE) {
-        return dili_freeze(a);
-    }
-    a %= q;
-    if(a < 0) {
-        a += q;
-    }
-    return a;
+    return fp32_reduce_raw(a, q);
 }
 
 void poly_reduce_mod(lssi_t *a, int n, lssi_t q) {
-    if(q == DILI_Q_VALUE) {
-        for(int i = 0; i < n; i++) {
-            a[i] = dili_freeze(a[i]);
-        }
-        return;
-    }
-    for(int i = 0; i < n; i++) {
-        a[i] = poly_reduce_mod_one(a[i], q);
-    }
+    for (int i = 0; i < n; ++i) a[i] = fp32_reduce_raw(a[i], q);
 }
 
 void poly_tomont(lssi_t *a, int n, lp_ctx *ctx) {
     for(int i = 0; i < n; i++) {
-        a[i] = (lssi_t)TO_MONT(poly_reduce_mod_one(a[i], ctx->q), ctx->q);
+        a[i] = fp32_to_mont(a[i], &ctx->ring.field);
     }
 }
 
 void polyvec_tomont(poly *v, int len, lp_ctx *ctx) {
     for(int i = 0; i < len; i++) {
-        poly_tomont(v[i], ctx->n, ctx);
+        poly_tomont(v[i], ctx->ring.n, ctx);
     }
 }
 
@@ -100,71 +72,55 @@ void polyvec_shiftl(poly *v, int len, int shift) {
 }
 
 void polyvec_pointwise_acc(poly r, const poly *u, const poly *v, int len,
-                           lp_ctx *ctx, polyvec_mul_mode_t mode) {
+                           lp_ctx *ctx) {
     poly tmp;
+    int64_t sum[MAX_POLY_COEFS] = {0};
 
-    if(len <= 0) {
-        POLY_ZERO(r, ctx->n);
-        return;
-    }
-
-    if(mode == POLYVEC_MUL_FULL) {
-        for(int j = 0; j < ctx->n; j++) {
-            r[j] = MONTGOMERY_REDUCE((lsdi_t)u[0][j] * v[0][j],
-                                     ctx->q, ctx->qc);
+    for (int i = 0; i < len; ++i) {
+        if (ctx->block_degree == 1) {
+            poly_pointwise(tmp, u[i], v[i], ctx);
+        } else {
+            poly_base_pointwise(tmp, u[i], v[i], ctx);
         }
-        for(int i = 1; i < len; i++) {
-            for(int j = 0; j < ctx->n; j++) {
-                r[j] += MONTGOMERY_REDUCE((lsdi_t)u[i][j] * v[i][j],
-                                          ctx->q, ctx->qc);
-            }
-        }
-        return;
+        for (int j = 0; j < ctx->ring.n; ++j) sum[j] += tmp[j];
     }
-
-    POLY_ZERO(r, ctx->n);
-    for(int i = 0; i < len; i++) {
-        poly_base_pointwise(tmp, u[i], v[i], ctx);
-        POLY_ADD(r, r, tmp, ctx->n);
+    for (int j = 0; j < ctx->ring.n; ++j) {
+        r[j] = fp32_reduce(sum[j], &ctx->ring.field);
     }
-    poly_reduce_mod(r, ctx->n, ctx->q);
 }
 
 void polyvec_pointwise_acc_montgomery(poly *w, const poly *u, const poly *v,
                                       int len, lp_ctx *ctx) {
-    polyvec_pointwise_acc(*w, u, v, len, ctx, POLYVEC_MUL_FULL);
+    polyvec_pointwise_acc(*w, u, v, len, ctx);
 }
 
 void polyvec_matrix_pointwise(poly *t, const poly *mat, int rows, int cols,
-                              const poly *v, lp_ctx *ctx,
-                              polyvec_mul_mode_t mode) {
+                              const poly *v, lp_ctx *ctx) {
     for(int i = 0; i < rows; i++) {
-        polyvec_pointwise_acc(t[i], &mat[i * cols], v, cols, ctx, mode);
+        polyvec_pointwise_acc(t[i], &mat[i * cols], v, cols, ctx);
     }
 }
 
 void polyvec_matrix_pointwise_montgomery(poly *t, const poly *mat, int k,
                                          const poly *v, int l, lp_ctx *ctx) {
-    polyvec_matrix_pointwise(t, mat, k, l, v, ctx, POLYVEC_MUL_FULL);
+    polyvec_matrix_pointwise(t, mat, k, l, v, ctx);
 }
 
 void polyvec_matrix_transpose_pointwise(poly *t, const poly *mat, int rows,
-                                        int cols, const poly *v, lp_ctx *ctx,
-                                        polyvec_mul_mode_t mode) {
+                                        int cols, const poly *v, lp_ctx *ctx) {
     poly tmp;
-
-    for(int j = 0; j < cols; j++) {
-        POLY_ZERO(t[j], ctx->n);
-        for(int i = 0; i < rows; i++) {
-            if(mode == POLYVEC_MUL_FULL) {
+    for (int j = 0; j < cols; ++j) {
+        int64_t sum[MAX_POLY_COEFS] = {0};
+        for (int i = 0; i < rows; ++i) {
+            if (ctx->block_degree == 1) {
                 poly_pointwise(tmp, mat[i * cols + j], v[i], ctx);
             } else {
                 poly_base_pointwise(tmp, mat[i * cols + j], v[i], ctx);
             }
-            POLY_ADD(t[j], t[j], tmp, ctx->n);
+            for (int k = 0; k < ctx->ring.n; ++k) sum[k] += tmp[k];
         }
-        if(mode == POLYVEC_MUL_BASE) {
-            poly_reduce_mod(t[j], ctx->n, ctx->q);
+        for (int k = 0; k < ctx->ring.n; ++k) {
+            t[j][k] = fp32_reduce(sum[k], &ctx->ring.field);
         }
     }
 }
