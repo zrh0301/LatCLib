@@ -91,16 +91,26 @@ static void montgomery_product(poly c, const poly a, const poly b,
 static int test_performance(void) {
     poly a, b, c;
     fp32_ctx field;
+    uint32_t checksum = 0;
     if (fp32_init(&field, TEST_Q_KYBER) != 0) return 0;
     fill_polynomial(a, field.q);
     fill_polynomial(b, field.q);
     BENCH_START("poly_mont_mul", 10) {
-        BENCH_ITEM(montgomery_product(c, a, b, &field), 10000);
+        BENCH_ITEM({
+            a[_r & (TEST_COEFS - 1)]++;
+            montgomery_product(c, a, b, &field);
+            checksum ^= (uint32_t)c[_r & (TEST_COEFS - 1)];
+        }, 10000);
     } BENCH_FINAL(10, 10000);
+    checksum = 0;
     BENCH_START("poly_mod_barrett_lssi", 10) {
-        BENCH_ITEM(poly_mod_barrett_lssi(c, a, field.q, TEST_QBITS, TEST_COEFS), 10000);
+        BENCH_ITEM({
+            a[_r & (TEST_COEFS - 1)]++;
+            poly_mod_barrett_lssi(c, a, field.q, TEST_QBITS, TEST_COEFS);
+            checksum ^= (uint32_t)c[_r & (TEST_COEFS - 1)];
+        }, 10000);
     } BENCH_FINAL(10, 10000);
-    printf("Benchmark checksum: %d\n", c[0]);
+    printf("Benchmark checksum: %u\n", checksum);
     return 1;
 }
 

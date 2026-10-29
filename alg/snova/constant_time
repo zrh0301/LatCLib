@@ -1,0 +1,95 @@
+# Valgrind suppression file for SNOVA
+#
+# Usage example:
+#
+# make clean all P="-DVALGRIND -g"
+# make clean all P="-DVALGRIND -g -DUSE_GFNI=0"
+# valgrind --max-stackframe=6000000 --suppressions=constant_time -s --gen-suppressions=all --log-file=memcheck.log build/speed
+
+# q=16
+
+{
+   Rejection sampling of vinegar variables, no GFNI
+   Memcheck:Cond
+   src:snova_opt_16.c:1343
+}
+
+# q=16, AVX2
+
+{
+   Rejection sampling of vinegar variables, no GFNI
+   Memcheck:Cond
+   src:snova_avx2_16.c:6767
+}
+
+{
+   Obscure error message on a fixed for loop
+   Memcheck:Cond
+   src:snova_avx2_16.c:4135
+}
+
+# q=16, memopt
+
+{
+   Rejection sampling of vinegar variables
+   Memcheck:Cond
+   src:snova_memopt_16.c:783
+}
+
+# q=16, Tiny memopt
+
+{
+   Rejection sampling of vinegar variables
+   Memcheck:Cond
+   src:snova_tinymem_16.c:820
+}
+
+# Wrapper
+
+{
+   Condition depends on the sign return value
+   Memcheck:Cond
+   src:sign.c:78
+}
+
+# Test tool
+{
+   PQCgenKAT_sign KAT output
+   Memcheck:Cond
+   ...
+   fun:fprintBstr
+}
+
+{
+   PQCgenKAT_sign KAT output
+   Memcheck:Value8
+   ...
+   fun:fprintBstr
+}
+
+{
+   speed test output
+   Memcheck:Cond
+   ...
+   fun:print_number
+}
+
+{
+   speed test output
+   Memcheck:Cond
+   src:printf_chk.c:33
+}
+
+{
+   speed test output
+   Memcheck:Value8
+   ...
+   fun:print_number
+}
+
+
+{
+   PQCgenKAT_sign condition depends on the sign return value
+   Memcheck:Cond
+   src:PQCgenKAT_sign.c:139
+}

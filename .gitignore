@@ -16,3 +16,7 @@ docs/
 
 *.md
 
+*.rst
+
+!Test/perf/run_performance.cmake
+!Test/perf/bench.sh.in

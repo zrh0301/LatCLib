@@ -113,8 +113,10 @@ static int test_enc_correctness(void) {
     return ok;
 }
 
-static void print_perf(const char *label, uint64_t cycles) {
-    printf("  %-24s: %12llu cycles/op\n", label, (unsigned long long)(cycles / ENC_PERF_ITERATIONS));
+static void print_perf(const test_enc_alg *alg, const char *label, test_perf_result result) {
+    char module[128];
+    snprintf(module, sizeof(module), "%s %s", alg->name, label);
+    test_perf_print(module, result, ENC_PERF_ITERATIONS);
 }
 
 static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
@@ -125,7 +127,7 @@ static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
     uint8_t *seed = calloc(1, alg->seed_bytes);
     uint8_t *coins = calloc(1, alg->coins_bytes);
     uint8_t *msg = calloc(1, alg->msg_bytes);
-    uint64_t c0, c1;
+    test_perf_mark timer;
 
     if(!pk || !sk || !ct || !out || !seed || !coins || !msg) {
         printf("  [FAIL] allocation failed for %s perf\n", alg->name);
@@ -137,30 +139,23 @@ static void bench_one_enc_alg(const test_enc_alg *alg, uint8_t seed_tag) {
     fill_bytes(msg, alg->msg_bytes, (uint8_t)(0x50 + seed_tag));
     alg->keygen_with_seed(pk, sk, seed, alg->param);
 
-    printf("\n============================================\n");
-    printf("  Test: %s Performance (%d iterations)\n", alg->name, ENC_PERF_ITERATIONS);
-    printf("============================================\n");
-
-    c0 = test_ticks();
+    timer = test_perf_begin();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->keygen_with_seed(pk, sk, seed, alg->param);
     }
-    c1 = test_ticks();
-    print_perf("keygen_with_seed", c1 - c0);
+    print_perf(alg, "keygen_with_seed", test_perf_end(timer));
 
-    c0 = test_ticks();
+    timer = test_perf_begin();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->encrypt_with_coins(ct, pk, msg, coins, alg->param);
     }
-    c1 = test_ticks();
-    print_perf("encrypt_with_coins", c1 - c0);
+    print_perf(alg, "encrypt_with_coins", test_perf_end(timer));
 
-    c0 = test_ticks();
+    timer = test_perf_begin();
     for(int i = 0; i < ENC_PERF_ITERATIONS; i++) {
         alg->decrypt(out, sk, ct, alg->param);
     }
-    c1 = test_ticks();
-    print_perf("decrypt", c1 - c0);
+    print_perf(alg, "decrypt", test_perf_end(timer));
 
 cleanup:
     free(pk);
@@ -173,9 +168,6 @@ cleanup:
 }
 
 static void test_enc_perf(void) {
-    printf("\n============================================\n");
-    printf("  Test: Encryption Performance\n");
-    printf("============================================\n");
     for(size_t i = 0; i < test_enc_alg_count; i++) {
         bench_one_enc_alg(test_enc_algs[i], (uint8_t)i);
     }
@@ -183,15 +175,15 @@ static void test_enc_perf(void) {
 
 int main(int argc, char **argv) {
     int ok;
-    test_init();
-    printf("============================================\n");
-    printf("  Test Suite: Encryption Algorithms\n");
-    printf("============================================\n");
 #ifdef PQC_PERF_ONLY
     (void)argc; (void)argv;
     test_enc_perf();
     return 0;
 #else
+    test_init();
+    printf("============================================\n");
+    printf("  Test Suite: Encryption Algorithms\n");
+    printf("============================================\n");
     ok = test_enc_correctness();
     if (argc == 2 && strcmp(argv[1], "--bench") == 0)
         test_enc_perf();

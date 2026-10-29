@@ -1,6 +1,10 @@
 #ifndef TEST_H
 #define TEST_H
 
+#if defined(__linux__) && !defined(_GNU_SOURCE)
+#define _GNU_SOURCE
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -11,6 +15,9 @@
     #include <intrin.h>
 #elif defined(__i386__) || defined(__x86_64__)
     #include <x86intrin.h>
+#endif
+#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
+    #include <sched.h>
 #endif
 #include "test_rng.h"
 #include "types.h"
@@ -61,9 +68,26 @@
     }                                    \
     bench_after();
 
-static uint64_t _bench_before;
-static uint64_t _bench_after;
-static uint64_t _bench_total;
+typedef struct {
+    uint64_t cycles;
+    struct timespec wall_time;
+    unsigned int cpu_aux;
+#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
+    cpu_set_t original_affinity;
+    int affinity_saved;
+#endif
+} test_perf_mark;
+
+typedef struct {
+    uint64_t cycles;
+    double elapsed_ms;
+    int cycles_valid;
+} test_perf_result;
+
+static uint64_t _bench_cycles;
+static double _bench_elapsed_ms;
+static int _bench_cycles_valid;
+static test_perf_mark _bench_before;
 
 static inline void test_fail(void) {
     printf("[FAIL]\n");
@@ -74,43 +98,107 @@ static inline void test_pass(void) {
 }
 
 static inline void bench_reset(void) {
-    _bench_before = 0;
-    _bench_after = 0;
-    _bench_total = 0;
+    memset(&_bench_before, 0, sizeof(_bench_before));
+    _bench_cycles = 0;
+    _bench_elapsed_ms = 0.0;
+    _bench_cycles_valid = 1;
 }
 
-static inline uint64_t test_ticks(void) {
+static inline uint64_t test_cpu_cycles(unsigned int *cpu_aux) {
 #if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
-    return __rdtsc();
+    _mm_lfence();
+    uint64_t cycles = __rdtscp(cpu_aux);
+    _mm_lfence();
+    return cycles;
 #else
-    struct timespec ts;
-    timespec_get(&ts, TIME_UTC);
-    return (uint64_t)ts.tv_sec * UINT64_C(1000000000) + (uint64_t)ts.tv_nsec;
+    *cpu_aux = 0;
+    return 0;
 #endif
 }
 
+static inline test_perf_mark test_perf_begin(void) {
+    test_perf_mark mark;
+    memset(&mark, 0, sizeof(mark));
+#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
+    cpu_set_t allowed;
+    if (sched_getaffinity(0, sizeof(allowed), &allowed) == 0) {
+        for (int cpu = 0; cpu < CPU_SETSIZE; ++cpu) {
+            if (CPU_ISSET(cpu, &allowed)) {
+                cpu_set_t selected;
+                CPU_ZERO(&selected);
+                CPU_SET(cpu, &selected);
+                mark.original_affinity = allowed;
+                if (sched_setaffinity(0, sizeof(selected), &selected) == 0)
+                    mark.affinity_saved = 1;
+                break;
+            }
+        }
+    }
+#endif
+    mark.cycles = test_cpu_cycles(&mark.cpu_aux);
+    timespec_get(&mark.wall_time, TIME_UTC);
+    return mark;
+}
+
+static inline test_perf_result test_perf_end(test_perf_mark start) {
+    test_perf_mark end;
+    memset(&end, 0, sizeof(end));
+    end.cycles = test_cpu_cycles(&end.cpu_aux);
+    timespec_get(&end.wall_time, TIME_UTC);
+    test_perf_result result = {0, 0.0, 0};
+    int64_t sec = (int64_t)end.wall_time.tv_sec - (int64_t)start.wall_time.tv_sec;
+    int64_t nsec = (int64_t)end.wall_time.tv_nsec - (int64_t)start.wall_time.tv_nsec;
+    if (start.cycles && end.cycles >= start.cycles && start.cpu_aux == end.cpu_aux) {
+        result.cycles = end.cycles - start.cycles;
+        result.cycles_valid = 1;
+    }
+    result.elapsed_ms = (double)sec * 1000.0 + (double)nsec / 1000000.0;
+    if (result.elapsed_ms < 0.0) result.elapsed_ms = 0.0;
+#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
+    if (start.affinity_saved)
+        (void)sched_setaffinity(0, sizeof(start.original_affinity), &start.original_affinity);
+#endif
+    return result;
+}
+
+static inline void test_perf_print(const char *label, test_perf_result result,
+                                   uint64_t iterations) {
+    double ms_per_op = iterations ? result.elapsed_ms / (double)iterations : 0.0;
+    if (result.cycles_valid) {
+        printf("%-24s: %12llu cycles/op | %.6f ms/op (total %9.2f ms)\n",
+               label, (unsigned long long)(iterations ? result.cycles / iterations : 0),
+               ms_per_op, result.elapsed_ms);
+    } else {
+        printf("%-24s: %12s cycles/op | %.6f ms/op (total %9.2f ms)\n",
+               label, "N/A", ms_per_op, result.elapsed_ms);
+    }
+}
+
 static inline void bench_before(void) {
-    _bench_before = test_ticks();
+    _bench_before = test_perf_begin();
 }
 
 static inline void bench_after(void) {
-    _bench_after = test_ticks();
-    _bench_total += (_bench_after - _bench_before);
+    test_perf_result result = test_perf_end(_bench_before);
+    if (result.cycles_valid) _bench_cycles += result.cycles;
+    else _bench_cycles_valid = 0;
+    _bench_elapsed_ms += result.elapsed_ms;
 }
 
 static inline void bench_compute(int benches) {
     if (benches > 0) {
-        _bench_total = _bench_total / benches;
+        _bench_cycles /= (uint64_t)benches;
+        _bench_elapsed_ms /= (double)benches;
     }
 }
 
 static inline void bench_print(int rounds) {
-    uint64_t cycles_per_op = _bench_total / rounds;
-    printf("%llu cycles total | %llu cycles/op\n", (unsigned long long)_bench_total, (unsigned long long)cycles_per_op);
+    test_perf_result result = {_bench_cycles, _bench_elapsed_ms, _bench_cycles_valid};
+    test_perf_print("", result, (uint64_t)rounds);
 }
 
 static inline unsigned long long bench_total(void) {
-    return (unsigned long long)_bench_total;
+    return (unsigned long long)_bench_cycles;
 }
 
 static inline void print_poly(const char* label, lssi_t *a, int len) {

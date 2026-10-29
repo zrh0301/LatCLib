@@ -1,0 +1,150 @@
+# Build the official Round 3 implementation and its isolated RVV-kernel port
+# for K230 RT-Smart.  The targets without `_opt` are the untouched baseline;
+# the `_opt` targets enable only the Round 3 RVV kernel call sites.
+
+K230_SDK ?= $(HOME)/k230_sdk
+RTT_TOOLCHAIN := $(K230_SDK)/toolchain/riscv64-linux-musleabi_for_x86_64-pc-linux-gnu/bin
+RTT_CC := $(RTT_TOOLCHAIN)/riscv64-unknown-linux-musl-gcc
+RTT_LDS := $(K230_SDK)/src/big/mpp/userapps/sample/linker_scripts/riscv64/link.lds
+
+OUT := build/k230
+GEM5_OUT := build/gem5
+GEM5_CC ?= riscv64-linux-gnu-gcc
+ARCH_RVV := rv64imafdcv
+ARCH_SCALAR := rv64imafdc
+COMMON_CFLAGS := -std=c11 -O3 -mcmodel=medany -mabi=lp64d \
+	-Wall -Wextra -Wno-unused-parameter -DSNOVA_OPT=10
+GEM5_CFLAGS := $(COMMON_CFLAGS) -static
+LDFLAGS := -n --static -T $(RTT_LDS)
+SRCS := snova_opt_16.c symmetric.c aes.c bench_r3_k230.c
+HDRS := api.h snova.h snova_params.h symmetric.h snova_r3_profile.h \
+	gf16_r3_rvv.h k230_rvv_compat.h
+
+.PHONY: all rtsmart-rvv rtsmart-scalar rtsmart-rvv-opt rtsmart-scalar-opt \
+	profile-r3 profile-r3-rtsmart-rvv-opt profile-r3-rtsmart-scalar \
+	profile-r3-rtsmart-rvv profile-r3-gem5 test-r3-kernels \
+	bench-r3-kernels test-r3-gem5 bench-r3-gem5 check-toolchain clean
+
+all: rtsmart-rvv rtsmart-scalar rtsmart-rvv-opt rtsmart-scalar-opt
+
+rtsmart-rvv: $(OUT)/snova_r3_rtsmart_rvv.elf
+
+rtsmart-scalar: $(OUT)/snova_r3_rtsmart_scalar.elf
+
+# Round 3 port of the hand-written GF(16) kernels.  The official targets above
+# deliberately omit this define and remain the untouched baseline.
+rtsmart-rvv-opt: $(OUT)/snova_r3_rtsmart_rvv_opt.elf
+
+rtsmart-scalar-opt: $(OUT)/snova_r3_rtsmart_scalar_opt.elf
+
+test-r3-kernels: $(OUT)/test_r3_rvv_kernels_rvv.elf \
+	$(OUT)/test_r3_rvv_kernels_scalar.elf
+
+bench-r3-kernels: $(OUT)/bench_r3_rvv_kernels_rvv.elf \
+	$(OUT)/bench_r3_rvv_kernels_scalar.elf
+
+test-r3-gem5: $(GEM5_OUT)/test_r3_rvv_kernels_scalar \
+	$(GEM5_OUT)/test_r3_rvv_kernels_rvv
+
+bench-r3-gem5: $(GEM5_OUT)/bench_r3_rvv_kernels_scalar \
+	$(GEM5_OUT)/bench_r3_rvv_kernels_rvv
+
+profile-r3: profile-r3-rtsmart-rvv-opt profile-r3-rtsmart-scalar \
+	profile-r3-rtsmart-rvv
+
+profile-r3-rtsmart-rvv-opt: $(OUT)/snova_r3_profile_rtsmart_rvv_opt.elf
+
+profile-r3-rtsmart-scalar: $(OUT)/snova_r3_profile_rtsmart_scalar.elf
+
+profile-r3-rtsmart-rvv: $(OUT)/snova_r3_profile_rtsmart_rvv.elf
+
+profile-r3-gem5: $(GEM5_OUT)/snova_r3_profile_scalar \
+	$(GEM5_OUT)/snova_r3_profile_rvv \
+	$(GEM5_OUT)/snova_r3_profile_rvv_opt
+
+$(OUT):
+	mkdir -p $@
+
+$(GEM5_OUT):
+	mkdir -p $@
+
+$(OUT)/snova_r3_rtsmart_rvv.elf: $(SRCS) $(HDRS) | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_rtsmart_scalar.elf: $(SRCS) $(HDRS) | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -march=$(ARCH_SCALAR) $(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_rtsmart_rvv_opt.elf: $(SRCS) $(HDRS) k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -DSNOVA_R3_RVV_OPT -include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_rtsmart_scalar_opt.elf: $(SRCS) $(HDRS) k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -DSNOVA_R3_RVV_OPT -march=$(ARCH_SCALAR) $(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_profile_rtsmart_rvv_opt.elf: $(SRCS) $(HDRS) k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -DSNOVA_PROFILE_R3 -DSNOVA_R3_RVV_OPT \
+		-include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_profile_rtsmart_scalar.elf: $(SRCS) $(HDRS) | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -DSNOVA_PROFILE_R3 -march=$(ARCH_SCALAR) \
+		$(LDFLAGS) -o $@ $(SRCS)
+
+$(OUT)/snova_r3_profile_rtsmart_rvv.elf: $(SRCS) $(HDRS) k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -DSNOVA_PROFILE_R3 \
+		-include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $(SRCS)
+
+$(GEM5_OUT)/snova_r3_profile_scalar: $(SRCS) $(HDRS) | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -DSNOVA_PROFILE_R3 \
+		-march=$(ARCH_SCALAR) -o $@ $(SRCS)
+
+$(GEM5_OUT)/snova_r3_profile_rvv: $(SRCS) $(HDRS) k230_rvv_compat.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -DSNOVA_PROFILE_R3 \
+		-include k230_rvv_compat.h -march=$(ARCH_RVV) -o $@ $(SRCS)
+
+$(GEM5_OUT)/snova_r3_profile_rvv_opt: $(SRCS) $(HDRS) k230_rvv_compat.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -DSNOVA_PROFILE_R3 -DSNOVA_R3_RVV_OPT \
+		-include k230_rvv_compat.h -march=$(ARCH_RVV) -o $@ $(SRCS)
+
+$(GEM5_OUT)/test_r3_rvv_kernels_scalar: test_r3_rvv_kernels.c gf16_r3_rvv.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -march=$(ARCH_SCALAR) -o $@ $<
+
+$(GEM5_OUT)/test_r3_rvv_kernels_rvv: test_r3_rvv_kernels.c gf16_r3_rvv.h k230_rvv_compat.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -include k230_rvv_compat.h -march=$(ARCH_RVV) -o $@ $<
+
+$(GEM5_OUT)/bench_r3_rvv_kernels_scalar: bench_r3_rvv_kernels.c gf16_r3_rvv.h snova.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -march=$(ARCH_SCALAR) -fno-tree-vectorize -o $@ $<
+
+$(GEM5_OUT)/bench_r3_rvv_kernels_rvv: bench_r3_rvv_kernels.c gf16_r3_rvv.h k230_rvv_compat.h snova.h | $(GEM5_OUT)
+	$(GEM5_CC) $(GEM5_CFLAGS) -include k230_rvv_compat.h -march=$(ARCH_RVV) -fno-tree-vectorize -o $@ $<
+
+$(OUT)/test_r3_rvv_kernels_rvv.elf: test_r3_rvv_kernels.c gf16_r3_rvv.h k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $<
+
+$(OUT)/test_r3_rvv_kernels_scalar.elf: test_r3_rvv_kernels.c gf16_r3_rvv.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -march=$(ARCH_SCALAR) $(LDFLAGS) -o $@ $<
+
+$(OUT)/bench_r3_rvv_kernels_rvv.elf: bench_r3_rvv_kernels.c gf16_r3_rvv.h k230_rvv_compat.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -include k230_rvv_compat.h -march=$(ARCH_RVV) $(LDFLAGS) -o $@ $<
+
+$(OUT)/bench_r3_rvv_kernels_scalar.elf: bench_r3_rvv_kernels.c gf16_r3_rvv.h | $(OUT)
+	$(RTT_CC) $(COMMON_CFLAGS) -march=$(ARCH_SCALAR) $(LDFLAGS) -o $@ $<
+
+check-toolchain:
+	@test -x $(RTT_CC) || { echo "missing: $(RTT_CC)"; exit 1; }
+	@test -f $(RTT_LDS) || { echo "missing: $(RTT_LDS)"; exit 1; }
+	@echo "K230 toolchain and linker script found"
+
+clean:
+	rm -f $(OUT)/snova_r3_rtsmart_rvv.elf $(OUT)/snova_r3_rtsmart_scalar.elf \
+		$(OUT)/snova_r3_rtsmart_rvv_opt.elf $(OUT)/snova_r3_rtsmart_scalar_opt.elf \
+		$(OUT)/snova_r3_profile_rtsmart_rvv_opt.elf \
+		$(OUT)/snova_r3_profile_rtsmart_scalar.elf \
+		$(OUT)/snova_r3_profile_rtsmart_rvv.elf \
+		$(GEM5_OUT)/snova_r3_profile_scalar \
+		$(GEM5_OUT)/snova_r3_profile_rvv \
+		$(GEM5_OUT)/snova_r3_profile_rvv_opt \
+		$(GEM5_OUT)/test_r3_rvv_kernels_scalar \
+		$(GEM5_OUT)/test_r3_rvv_kernels_rvv \
+		$(GEM5_OUT)/bench_r3_rvv_kernels_scalar \
+		$(GEM5_OUT)/bench_r3_rvv_kernels_rvv \
+		$(OUT)/test_r3_rvv_kernels_rvv.elf $(OUT)/test_r3_rvv_kernels_scalar.elf \
+		$(OUT)/bench_r3_rvv_kernels_rvv.elf $(OUT)/bench_r3_rvv_kernels_scalar.elf

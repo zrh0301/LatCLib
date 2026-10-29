@@ -28,23 +28,38 @@ static int check_preset(int kyber)
 static void benchmark_preset(int kyber)
 {
     lp_ctx plan;
-    poly a, b, c;
+    poly a, b, c, transformed_a, transformed_b;
     if (kyber) INIT_NTT_KYBER(&plan);
     else INIT_NTT_DILI(&plan);
     for (int i = 0; i < 256; ++i) {
         a[i] = i;
         b[i] = 255 - i;
     }
-    printf("\n%s polynomial multiplication\n", kyber ? "Kyber" : "Dilithium");
-    BENCH_START("NTT / product / inverse", 10) {
+    memcpy(transformed_a, a, sizeof(a));
+    memcpy(transformed_b, b, sizeof(b));
+    poly_ntt(transformed_a, &plan);
+    poly_ntt(transformed_b, &plan);
+
+    printf("\n%s polynomial operators\n", kyber ? "Kyber" : "Dilithium");
+    BENCH_START("poly_ntt", 10) {
         BENCH_ITEM({
-            poly x;
-            poly y;
-            memcpy(x, a, sizeof(x));
-            memcpy(y, b, sizeof(y));
-            poly_ntt(x, &plan);
-            poly_ntt(y, &plan);
-            poly_mul_ntt(c, x, y, &plan);
+            poly input;
+            memcpy(input, a, sizeof(input));
+            input[_r & 255]++;
+            poly_ntt(input, &plan);
+            c[_r & 255] = input[_r & 255];
+        }, 1000);
+    } BENCH_FINAL(10, 1000);
+    BENCH_START("poly_mul_ntt", 10) {
+        BENCH_ITEM({
+            poly_mul_ntt(c, transformed_a, transformed_b, &plan);
+            c[_r & 255] ^= _r;
+        }, 1000);
+    } BENCH_FINAL(10, 1000);
+    BENCH_START("poly_invntt", 10) {
+        BENCH_ITEM({
+            memcpy(c, transformed_a, sizeof(c));
+            c[_r & 255] ^= _r;
             poly_invntt(c, &plan);
         }, 1000);
     } BENCH_FINAL(10, 1000);
