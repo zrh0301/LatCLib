@@ -1,468 +1,14 @@
-/**
- * SNOVA 2025: Combination of OQS AES functions in a single file
- *
- * Edits: Declared internal functions as static.
- *
- * Copyright: see below
- */
-
-#ifdef USE_OPENSSL
-
-// NIST rng.c
-
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <string.h>
-
-void handleErrors(void) {
-	ERR_print_errors_fp(stderr);
-	abort();
-}
-
-// Use whatever AES implementation you have. This uses AES from openSSL library
-//    key - 256-bit AES key
-//    ctr - a 128-bit plaintext value
-//    buffer - a 128-bit ciphertext value
-void AES128_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer, size_t num) {
-	EVP_CIPHER_CTX* ctx;
-
-	int len;
-
-	/* Create and initialise the context */
-	if (!(ctx = EVP_CIPHER_CTX_new())) {
-		handleErrors();
-	}
-
-	if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, key, NULL)) {
-		handleErrors();
-	}
-
-	if (1 != EVP_EncryptUpdate(ctx, buffer, &len, ctr, num)) {
-		handleErrors();
-	}
-
-	/* Clean up */
-	EVP_CIPHER_CTX_free(ctx);
-}
-
-void AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer) {
-	EVP_CIPHER_CTX* ctx;
-
-	int len;
-
-	/* Create and initialise the context */
-	if (!(ctx = EVP_CIPHER_CTX_new())) {
-		handleErrors();
-	}
-
-	if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_ecb(), NULL, key, NULL)) {
-		handleErrors();
-	}
-
-	if (1 != EVP_EncryptUpdate(ctx, buffer, &len, ctr, 16)) {
-		handleErrors();
-	}
-
-	/* Clean up */
-	EVP_CIPHER_CTX_free(ctx);
-}
-
-int AES128_CTR(unsigned char *data, size_t num_bytes, const unsigned char *input, size_t inputByteLen) {
-	(void)inputByteLen;
-	EVP_CIPHER_CTX* context;
-	int len;
-
-	memset(data, 0, num_bytes);
-	context = EVP_CIPHER_CTX_new();
-	EVP_EncryptInit_ex(context, EVP_aes_128_ctr(), NULL, input, NULL);
-	EVP_EncryptUpdate(context, data, &len, data, num_bytes);
-	EVP_CIPHER_CTX_free(context);
-
-	return 0;
-}
-
-#else
-
-#pragma GCC diagnostic ignored "-Wunused-function"
-
-/**
- * \file aes.h
- * \brief Header defining the API for OQS AES; not part of the public OQS API
- *
- * <b>Note this is not part of the OQS public API: implementations within liboqs can use these
- * functions, but external consumers of liboqs should not use these functions.</b>
- *
- * SPDX-License-Identifier: MIT
- */
-
-#ifndef OQS_AES_H
-#define OQS_AES_H
-
-#include <stdint.h>
-#include <stdlib.h>
-
-// #include "oqs_common.h"
-/**
- * \file common.h
- * \brief Utility functions for use in liboqs.
- *
- * SPDX-License-Identifier: MIT
- */
-
-#ifndef OQS_COMMON_H
-#define OQS_COMMON_H
-
-#include <limits.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-/**
- * Macro for terminating the program if x is
- * a null pointer.
- */
-#define OQS_EXIT_IF_NULLPTR(x, loc)                                                   \
-    do {                                                                              \
-        if ((x) == (void*)0) {                                                        \
-            fprintf(stderr, "Unexpected NULL returned from %s API. Exiting.\n", loc); \
-            exit(EXIT_FAILURE);                                                       \
-        }                                                                             \
-    } while (0)
-
-/**
- * This macro is intended to replace those assert()s
- * involving side-effecting statements in aes/aes_ossl.c.
- *
- * assert() becomes a no-op when -DNDEBUG is defined,
- * which causes compilation failures when the statement
- * being checked also results in side-effects.
- *
- * This is a temporary workaround until a better error
- * handling strategy is developed.
- */
-#define OQS_OPENSSL_GUARD(x)                                                           \
-    do {                                                                               \
-        if (1 != (x)) {                                                                \
-            fprintf(stderr, "Error return value from OpenSSL API: %d. Exiting.\n", x); \
-            exit(EXIT_FAILURE);                                                        \
-        }                                                                              \
-    } while (0)
-
-/**
- * Certain functions (such as OQS_randombytes_openssl in
- * src/rand/rand.c) take in a size_t parameter, but can
- * only handle values up to INT_MAX for those parameters.
- * This macro is a temporary workaround for such functions.
- */
-#define SIZE_T_TO_INT_OR_EXIT(size_t_var_name, int_var_name) \
-    int int_var_name = 0;                                    \
-    if (size_t_var_name <= INT_MAX) {                        \
-        int_var_name = (int)size_t_var_name;                 \
-    } else {                                                 \
-        exit(EXIT_FAILURE);                                  \
-    }
-
-/**
- * Defines which functions should be exposed outside the LibOQS library
- *
- * By default the visibility of all the symbols is defined to "hidden"
- * Only the library API should be marked as default
- *
- * Example: OQS_API return_value function_name(void);
- */
-#if defined(_WIN32)
-#define OQS_API __declspec(dllexport)
-#else
-#define OQS_API __attribute__((visibility("default")))
-#endif
-
-#if defined(OQS_SYS_UEFI)
-#undef OQS_API
-#define OQS_API
-#endif
-
-/**
- * Represents return values from functions.
- *
- * Callers should compare with the symbol rather than the individual value.
- * For example,
- *
- *     ret = OQS_KEM_encaps(...);
- *     if (ret == OQS_SUCCESS) { ... }
- *
- * rather than
- *
- *     if (!OQS_KEM_encaps(...) { ... }
- *
- */
-typedef enum {
-	/** Used to indicate that some undefined error occurred. */
-	OQS_ERROR = -1,
-	/** Used to indicate successful return from function. */
-	OQS_SUCCESS = 0,
-	/** Used to indicate failures in external libraries (e.g., OpenSSL). */
-	OQS_EXTERNAL_LIB_ERROR_OPENSSL = 50,
-} OQS_STATUS;
-
-/**
- * CPU runtime detection flags
- */
-typedef enum {
-	OQS_CPU_EXT_INIT, /* Must be first */
-	/* Start extension list */
-	OQS_CPU_EXT_ADX,
-	OQS_CPU_EXT_AES,
-	OQS_CPU_EXT_AVX,
-	OQS_CPU_EXT_AVX2,
-	OQS_CPU_EXT_AVX512,
-	OQS_CPU_EXT_BMI1,
-	OQS_CPU_EXT_BMI2,
-	OQS_CPU_EXT_PCLMULQDQ,
-	OQS_CPU_EXT_VPCLMULQDQ,
-	OQS_CPU_EXT_POPCNT,
-	OQS_CPU_EXT_SSE,
-	OQS_CPU_EXT_SSE2,
-	OQS_CPU_EXT_SSE3,
-	OQS_CPU_EXT_ARM_AES,
-	OQS_CPU_EXT_ARM_SHA2,
-	OQS_CPU_EXT_ARM_SHA3,
-	OQS_CPU_EXT_ARM_NEON,
-	/* End extension list */
-	OQS_CPU_EXT_COUNT, /* Must be last */
-} OQS_CPU_EXT;
-
-/**
- * Zeros out `len` bytes of memory starting at `ptr`, then frees `ptr`.
- *
- * Can be called with `ptr = NULL`, in which case no operation is performed.
- *
- * Designed to be protected against optimizing compilers which try to remove
- * "unnecessary" operations.  Should be used for all buffers containing secret
- * data.
- *
- * @param[in] ptr The start of the memory to zero out and free.
- * @param[in] len The number of bytes to zero out.
- */
-static void OQS_MEM_secure_free(void *ptr, size_t len) {
-	if (ptr != NULL) {
-		memset(ptr, 0, len);
-		free(ptr);  // IGNORE free-check
-	}
-}
-
-/**
- * Internal implementation of C11 aligned_alloc to work around compiler quirks.
- *
- * Allocates size bytes of uninitialized memory with a base pointer that is
- * a multiple of alignment. Alignment must be a power of two and a multiple
- * of sizeof(void *). Size must be a multiple of alignment.
- */
-void *OQS_MEM_aligned_alloc(size_t alignment, size_t size);
-
-/**
- * Free memory allocated with OQS_MEM_aligned_alloc.
- */
-void OQS_MEM_aligned_free(void *ptr);
-
-#if defined(__cplusplus)
-}  // extern "C"
-#endif
-
-#endif  // OQS_COMMON_H
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-/**
- * Function to fill a key schedule given an initial key for use in ECB mode.
- *
- * @param key            Initial Key.
- * @param ctx            Abstract data structure for a key schedule.
- */
-static void oqs_aes128_ECB_load_schedule(const uint8_t *key, void **ctx);
-
-/**
- * Function to initialize a context and fill a key schedule given an initial key for
- * use in CTR mode.
- *
- * @param key            Initial Key.
- * @param ctx            Abstract data structure for a key schedule.
- */
-static void oqs_aes128_CTR_inc_init(const uint8_t *key, void **ctx);
-
-/**
- * Function to fill a context given an IV for use in CTR mode.
- *
- * Handles a 12- or 16-byte IV.  If a 12-byte IV is given, then 4 counter
- * bytes are initialized to all zeros.
- *
- * @param iv             Initialization Vector.
- * @param iv_len         Length of the initialization vector.
- * @param ctx            Abstract data structure for IV.
- */
-static void oqs_aes128_CTR_inc_iv(const uint8_t *iv, size_t iv_len, void *ctx);
-
-/**
- * Function to fill a context given an IV for use in CTR mode.
- * Handles an 8-byte IV passed as a 64-bit unsigned integer,
- * counter bytes are initialized to zero.
- *
- * @param iv             Initialization Vector as 64-bit integer.
- * @param ctx            Abstract data structure for IV.
- */
-static void oqs_aes128_CTR_inc_ivu64(uint64_t iv, void *ctx);
-
-/**
- * Function to free a key schedule.
- *
- * @param ctx            Context generated with OQS_AES128_ECB_load_schedule().
- */
-static void oqs_aes128_free_schedule(void *ctx);
-
-/**
- * Function to encrypt blocks of plaintext using ECB mode.
- * A schedule based on the key is generated and used internally.
- *
- * @param plaintext     Plaintext to be encrypted.
- * @param plaintext_len Length on the plaintext in bytes. Must be a multiple of 16.
- * @param key           Key to be used for encryption.
- * @param ciphertext    Pointer to a block of memory which >= in size to the plaintext block. The result will be written here.
- * @warning plaintext_len must be a multiple of 16.
- */
-static void oqs_aes128_ECB_enc(const uint8_t *plaintext, const size_t plaintext_len, const uint8_t *key, uint8_t *ciphertext);
-
-/**
- * Same as OQS_AES128_ECB_enc() except a schedule generated by
- * OQS_AES128_ECB_load_schedule() is passed rather then a key. This is faster
- * if the same schedule is used for multiple encryptions since it does
- * not have to be regenerated from the key.
- */
-static void oqs_aes128_ECB_enc_sch(const uint8_t *plaintext, const size_t plaintext_len, const void *schedule,
-                                   uint8_t *ciphertext);
-
-/**
- * AES counter mode keystream generator.  A context generated by
- * OQS_AES128_CTR_inc_init() is passed rather then a key.
- *
- * Handles a 12- or 16-byte IV.  If a 12-byte IV is given, then 4 counter
- * bytes are initialized to all zeros.
- *
- * @param iv       12- or 16-byte initialization vector.
- * @param iv_len   Lengh of IV in bytes.
- * @param ctx      Abstract data structure for a key schedule.
- * @param out      Pointer to a block of memory which is big enough to contain out_len bytes; the result will be written here.
- * @param out_len  Length of output bytes to generate.
- */
-static void oqs_aes128_CTR_inc_stream_iv(const uint8_t *iv, size_t iv_len, const void *ctx, uint8_t *out, size_t out_len);
-
-/**
- * Function to fill a key schedule given an initial key for use in ECB mode encryption.
- *
- * @param key            Initial Key.
- * @param ctx            Abstract data structure for a key schedule.
- */
-static void oqs_aes256_ECB_load_schedule(const uint8_t *key, void **ctx);
-
-/**
- * Function to initialize a context and fill a key schedule given an initial key for
- * use in CTR mode.
- *
- * @param key            Initial Key.
- * @param ctx            Abstract data structure for a key schedule.
- */
-static void oqs_aes256_CTR_inc_init(const uint8_t *key, void **ctx);
-
-/**
- * Function to fill a context given an IV for use in CTR mode.
- *
- * Handles a 12- or 16-byte IV.  If a 12-byte IV is given, then 4 counter
- * bytes are initialized to all zeros.
- *
- * @param iv             Initialization Vector.
- * @param iv_len         Length of the initialization vector.
- * @param ctx            Abstract data structure for IV.
- */
-static void oqs_aes256_CTR_inc_iv(const uint8_t *iv, size_t iv_len, void *ctx);
-
-/**
- * Function to fill a context given an IV for use in CTR mode.
- * Handles an 8-byte IV passed as a 64-bit unsigned integer,
- * counter bytes are initialized to zero.
- *
- * @param iv             Initialization Vector as 64-bit integer.
- * @param ctx            Abstract data structure for IV.
- */
-static void oqs_aes256_CTR_inc_ivu64(uint64_t iv, void *ctx);
-
-/**
- * Function to free a key schedule.
- *
- * @param ctx            Schedule generated with OQS_AES256_ECB_load_schedule
- *                       or OQS_AES256_CTR_inc_init.
- */
-static void oqs_aes256_free_schedule(void *ctx);
-
-/**
- * Function to encrypt blocks of plaintext using ECB mode.
- * A schedule based on the key is generated and used internally.
- *
- * @param plaintext     Plaintext to be encrypted.
- * @param plaintext_len Length on the plaintext in bytes. Must be a multiple of 16.
- * @param key           Key to be used for encryption.
- * @param ciphertext    Pointer to a block of memory which >= in size to the plaintext block. The result will be written here.
- * @warning plaintext_len must be a multiple of 16.
- */
-static void oqs_aes256_ECB_enc(const uint8_t *plaintext, const size_t plaintext_len, const uint8_t *key, uint8_t *ciphertext);
-
-/**
- * Same as OQS_AES256_ECB_enc() except a schedule generated by
- * OQS_AES256_ECB_load_schedule() is passed rather then a key. This is faster
- * if the same schedule is used for multiple encryptions since it does
- * not have to be regenerated from the key.
- */
-static void oqs_aes256_ECB_enc_sch(const uint8_t *plaintext, const size_t plaintext_len, const void *schedule,
-                                   uint8_t *ciphertext);
-
-/**
- * AES counter mode keystream generator.  A context generated by
- * OQS_AES256_CTR_inc_init() is passed rather then a key.
- *
- * Handles a 12- or 16-byte IV.  If a 12-byte IV is given, then 4 counter
- * bytes are initialized to all zeros.
- *
- * @param iv       12- or 16-byte initialization vector.
- * @param iv_len   Lengh of IV in bytes.
- * @param ctx      Abstract data structure for a key schedule.
- * @param out      Pointer to a block of memory which is big enough to contain out_len bytes; the result will be written here.
- * @param out_len  Length of output bytes to generate.
- */
-static void oqs_aes256_CTR_inc_stream_iv(const uint8_t *iv, size_t iv_len, const void *ctx, uint8_t *out, size_t out_len);
-
-/**
- * AES counter mode keystream generator. A context generated by
- * OQS_AES256_CTR_inc_init() and OQS_AES256_CTR_inc_iv() is passed
- * rather than a key and an IV. The counter is internally updated, which allows
- * the function to be called multiple times.
- *
- * @param ctx         Abstract data structure for key schedule and IV.
- * @param out         Pointer to a block of memory which is big enough to contain out_blks*16 bytes; the result will be written
- * here.
- * @param out_blks    Length of output blocks to generate, where one block is 16 bytes.
- */
-static void oqs_aes256_CTR_inc_stream_blks(void *ctx, uint8_t *out, size_t out_blks);
-
-#if defined(__cplusplus)
-}  // extern "C"
-#endif
-
-#endif  // OQS_AES_H
 // SPDX-License-Identifier: MIT
+//
+// pqc 公共 AES 模块, 从 alg/snova/aes.c 抽取而来。
+//
+// 包含两条实现:
+//   - 纯 C 路径: BearSSL ct64 位切片实现 (Thomas Pornin, 经 PQClean/liboqs 适配);
+//   - AES-NI 路径: 基于 Romain Dolbeau 的公共领域 AES-NI 代码。
+// 后端在编译期选择: CMake 选项 PQC_AES_BACKEND=auto|c|ni 控制是否对本文件
+// 单独追加 -maes -mavx2 (auto 模式先探测主机是否支持), 命中本文件底部的
+// #if __AVX2__ && __AES__ 分支即启用 AES-NI 实现, 否则编译纯 C 实现。
+
 /* Adapted for OQS from PQClean. */
 /*
  * AES implementation based on code from BearSSL (https://bearssl.org/)
@@ -497,8 +43,19 @@ static void oqs_aes256_CTR_inc_stream_blks(void *ctx, uint8_t *out, size_t out_b
 #include <stdlib.h>
 #include <string.h>
 
-// #include "aes.h"
-// #include "oqs_common.h"
+#include "aes.h"
+#include "secure_clear.h"
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
+
+static void secure_free(void *ptr, size_t len) {
+	if (ptr != NULL) {
+		pqc_secure_clear(ptr, len);
+		free(ptr);
+	}
+}
 
 #define AES128_KEYBYTES 16
 #define AES256_KEYBYTES 32
@@ -1116,7 +673,7 @@ static void aes_ctr(unsigned char *out, size_t outlen, const unsigned char *iv, 
 
 static void oqs_aes128_load_schedule_c(const uint8_t *key, void **_schedule) {
 	*_schedule = malloc(sizeof(aes128ctx));
-	OQS_EXIT_IF_NULLPTR(*_schedule, "AES");
+	assert(*_schedule != NULL);
 	aes128ctx* ctx = (aes128ctx *)*_schedule;
 	uint64_t skey[22];
 	br_aes_ct64_keysched(skey, key, 16);
@@ -1125,7 +682,7 @@ static void oqs_aes128_load_schedule_c(const uint8_t *key, void **_schedule) {
 
 static void oqs_aes256_load_schedule_c(const uint8_t *key, void **_schedule) {
 	*_schedule = malloc(sizeof(aes256ctx));
-	OQS_EXIT_IF_NULLPTR(*_schedule, "AES");
+	assert(*_schedule != NULL);
 	aes256ctx* ctx = (aes256ctx *)*_schedule;
 	uint64_t skey[30];
 	br_aes_ct64_keysched(skey, key, 32);
@@ -1177,7 +734,7 @@ static void oqs_aes256_load_iv_c(const uint8_t *iv, size_t iv_len, void *_schedu
 }
 
 static void oqs_aes256_load_iv_u64_c(uint64_t iv, void *schedule) {
-	OQS_EXIT_IF_NULLPTR(schedule, "AES");
+	assert(schedule != NULL);
 	aes256ctx* ctx = (aes256ctx *)schedule;
 	ctx->iv[7] = (unsigned char)(iv >> 56);
 	ctx->iv[6] = (unsigned char)(iv >> 48);
@@ -1210,7 +767,7 @@ static void oqs_aes128_load_iv_c(const uint8_t *iv, size_t iv_len, void *_schedu
 }
 
 static void oqs_aes128_load_iv_u64_c(uint64_t iv, void *schedule) {
-	OQS_EXIT_IF_NULLPTR(schedule, "AES");
+	assert(schedule != NULL);
 	aes128ctx* ctx = (aes128ctx *)schedule;
 	ctx->iv[7] = (unsigned char)(iv >> 56);
 	ctx->iv[6] = (unsigned char)(iv >> 48);
@@ -1262,26 +819,26 @@ static void oqs_aes256_ctr_enc_sch_upd_blks_c(void *schedule, uint8_t *out, size
 static void oqs_aes128_free_schedule_c(void *schedule) {
 	if (schedule != NULL) {
 		aes128ctx* ctx = (aes128ctx *)schedule;
-		OQS_MEM_secure_free(ctx, sizeof(aes128ctx));
+		secure_free(ctx, sizeof(aes128ctx));
 	}
 }
 
 static void oqs_aes256_free_schedule_c(void *schedule) {
 	if (schedule != NULL) {
 		aes256ctx* ctx = (aes256ctx *)schedule;
-		OQS_MEM_secure_free(ctx, sizeof(aes256ctx));
+		secure_free(ctx, sizeof(aes256ctx));
 	}
 }
 
 static void oqs_aes256_free_schedule_no_bitslice(void *schedule) {
 	if (schedule != NULL) {
-		OQS_MEM_secure_free(schedule, sizeof(aes256ctx_nobitslice));
+		secure_free(schedule, sizeof(aes256ctx_nobitslice));
 	}
 }
 
 static void oqs_aes128_free_schedule_no_bitslice(void *schedule) {
 	if (schedule != NULL) {
-		OQS_MEM_secure_free(schedule, 44 * sizeof(int));
+		secure_free(schedule, 44 * sizeof(int));
 	}
 }
 
@@ -1295,7 +852,6 @@ static void oqs_aes128_free_schedule_no_bitslice(void *schedule) {
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-// #include "oqs_common.h"
 
 #include <tmmintrin.h>
 #include <wmmintrin.h>
@@ -1339,7 +895,7 @@ static inline void aes128ni_setkey_encrypt(const unsigned char *key, __m128i rke
 
 static void oqs_aes128_load_schedule_ni(const uint8_t *key, void **_schedule) {
 	*_schedule = malloc(sizeof(aes128ctx_));
-	OQS_EXIT_IF_NULLPTR(*_schedule, "AES");
+	assert(*_schedule != NULL);
 	assert(*_schedule != NULL);
 	__m128i* schedule = ((aes128ctx_ *)*_schedule)->sk_exp;
 	aes128ni_setkey_encrypt(key, schedule);
@@ -1365,7 +921,7 @@ static void oqs_aes128_load_iv_u64_ni(uint64_t iv, void *_schedule) {
 
 static void oqs_aes128_free_schedule_ni(void *schedule) {
 	if (schedule != NULL) {
-		OQS_MEM_secure_free(schedule, sizeof(aes128ctx_));
+		secure_free(schedule, sizeof(aes128ctx_));
 	}
 }
 
@@ -1500,7 +1056,6 @@ static void oqs_aes128_ctr_enc_sch_ni(const uint8_t *iv, const size_t iv_len, co
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-// #include "oqs_common.h"
 
 #include <tmmintrin.h>
 #include <wmmintrin.h>
@@ -1573,7 +1128,7 @@ static inline void aes256ni_setkey_encrypt(const unsigned char *key, __m128i rke
 
 static void oqs_aes256_load_schedule_ni(const uint8_t *key, void **_schedule) {
 	*_schedule = malloc(sizeof(aes256ctx_));
-	OQS_EXIT_IF_NULLPTR(*_schedule, "AES");
+	assert(*_schedule != NULL);
 	assert(*_schedule != NULL);
 	__m128i* schedule = ((aes256ctx_ *)*_schedule)->sk_exp;
 	aes256ni_setkey_encrypt(key, schedule);
@@ -1599,7 +1154,7 @@ static void oqs_aes256_load_iv_u64_ni(uint64_t iv, void *_schedule) {
 
 static void oqs_aes256_free_schedule_ni(void *schedule) {
 	if (schedule != NULL) {
-		OQS_MEM_secure_free(schedule, sizeof(aes256ctx_));
+		secure_free(schedule, sizeof(aes256ctx_));
 	}
 }
 
@@ -1803,5 +1358,4 @@ void AES256_ECB(const unsigned char *key, const uint8_t *input, unsigned char *o
 	oqs_aes256_free_schedule_c(schedule);
 }
 
-#endif
 #endif

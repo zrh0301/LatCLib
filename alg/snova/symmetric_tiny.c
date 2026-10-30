@@ -25,9 +25,6 @@
 
 #if defined(AESCTR)
 
-void AES128_ECB(const unsigned char *key, const uint8_t *input, unsigned char *output, size_t num);
-int AES128_CTR(unsigned char *output, size_t outputByteLen, const unsigned char *input, size_t inputByteLen);
-
 void snova_pk_expand(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen) {
 	AES128_CTR(out, outlen, in, inlen);
 }

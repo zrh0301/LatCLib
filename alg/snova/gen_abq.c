@@ -10,7 +10,7 @@
 
 #include "snova_opt_16.c"
 #include "symmetric.c"
-#include "aes.c"
+#include "aes.h"
 #include "api.h"
 
 int main(void) {

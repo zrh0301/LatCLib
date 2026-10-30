@@ -17,9 +17,41 @@ if(NOT PQC_KYBER_MODE MATCHES "^(0|2|3|5)$")
     message(FATAL_ERROR "PQC_KYBER_MODE must be 0, 2, 3, or 5")
 endif()
 
+# AES 后端: auto=探测主机 AES-NI+AVX2 (GNU/Clang 非交叉编译), c=纯 C, ni=强制 AES-NI。
+set(PQC_AES_BACKEND "auto" CACHE STRING "AES backend: auto, c, or ni")
+set_property(CACHE PQC_AES_BACKEND PROPERTY STRINGS auto c ni)
+set(PQC_AES_BACKEND_EFFECTIVE "${PQC_AES_BACKEND}")
+if(PQC_AES_BACKEND STREQUAL "ni" AND NOT CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    message(STATUS "AES-NI requires GNU/Clang; using pure C backend")
+    set(PQC_AES_BACKEND_EFFECTIVE "c")
+endif()
+if(PQC_AES_BACKEND_EFFECTIVE STREQUAL "auto")
+    if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND NOT CMAKE_CROSSCOMPILING)
+        include(CheckCSourceRuns)
+        set(CMAKE_REQUIRED_FLAGS "-maes -mavx2")
+        set(PQC_AES_NI_PROBE "#if !defined(__AES__) || !defined(__AVX2__)
+#error AES-NI is not available
+#endif
+int main(void) {
+    return __builtin_cpu_supports(\"aes\") && __builtin_cpu_supports(\"avx2\") ? 0 : 1;
+}")
+        check_c_source_runs("${PQC_AES_NI_PROBE}" PQC_AES_NI_WORKS)
+        unset(CMAKE_REQUIRED_FLAGS)
+        if(PQC_AES_NI_WORKS)
+            set(PQC_AES_BACKEND_EFFECTIVE "ni")
+            set_source_files_properties(src/aes.c PROPERTIES COMPILE_OPTIONS "-maes;-mavx2")
+        endif()
+    else()
+        set(PQC_AES_BACKEND_EFFECTIVE "c")
+    endif()
+elseif(PQC_AES_BACKEND_EFFECTIVE STREQUAL "ni")
+    set_source_files_properties(src/aes.c PROPERTIES COMPILE_OPTIONS "-maes;-mavx2")
+endif()
+message(STATUS "AES backend: ${PQC_AES_BACKEND_EFFECTIVE}")
+
 add_library(pqc STATIC
     src/fp32.c src/gf16.c src/gf16_matrix.c src/ring.c src/poly.c src/poly_ntt.c src/polyvec.c
-    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/secure_clear.c src/keccak.c
+    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/secure_clear.c src/keccak.c src/aes.c
     alg/dilithium/dili.c alg/dilithium/dili_sample.c alg/dilithium/pack.c
     alg/kyber/kyber.c alg/kyber/kyber_sample.c alg/kyber/kyber_pack.c)
 target_include_directories(pqc PUBLIC inc alg/dilithium alg/kyber)
@@ -45,7 +77,6 @@ endif()
 add_library(pqc_snova STATIC
     alg/snova/snova_opt_16.c
     alg/snova/symmetric.c
-    alg/snova/aes.c
     alg/snova/sign.c)
 target_include_directories(pqc_snova PUBLIC inc alg/snova)
 target_compile_definitions(pqc_snova PUBLIC SNOVA_OPT=10)

@@ -25,8 +25,6 @@ void snova_pk_expander_init(snova_pk_expander_t *instance, const uint8_t *seed, 
 	memcpy(instance, seed, 16);
 }
 
-int AES128_CTR(unsigned char *output, size_t outputByteLen, const unsigned char *input, size_t inputByteLen);
-
 void snova_pk_expander(uint8_t *data, size_t num_bytes, snova_pk_expander_t *instance) {
 	AES128_CTR(data, num_bytes, (uint8_t *)instance, 16);
 }

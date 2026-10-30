@@ -4,11 +4,12 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "keccak.h"
+#include "aes.h"
 #include "secure_clear.h"
 
 typedef KECCAK1600_CTX shake_t;
 
-/* SHA3/SHAKE 不再单独定义 snova_* 包装, 哈希层直接使用 inc/keccak.h 的共享 API。 */
+/* 哈希与 AES 均直接使用 pqc 公共层 (inc/keccak.h, inc/aes.h), 不再单独包装。 */
 
 void snova_pk_expand(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen);
 

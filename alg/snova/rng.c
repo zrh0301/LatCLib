@@ -28,9 +28,9 @@ NIST employees is not subject to copyright protection within the United States.
 #endif
 #include <string.h>
 
-AES256_CTR_DRBG_struct DRBG_ctx;
+#include "aes.h"
 
-void AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer);
+AES256_CTR_DRBG_struct DRBG_ctx;
 
 /*
  seedexpander_init()
