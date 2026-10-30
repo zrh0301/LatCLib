@@ -20,3 +20,4 @@ docs/
 
 !Test/perf/run_performance.cmake
 !Test/perf/bench.sh.in
+!config.sh
