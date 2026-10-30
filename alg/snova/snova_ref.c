@@ -551,16 +551,16 @@ void expand_public(gf_t* P_matrix, const uint8_t *seed) {
 static void hash_combined(uint8_t *hash_out, const uint8_t *digest, const size_t len_digest, const uint8_t *pk_seed,
                           const uint8_t *salt) {
 	shake_t state;
-	snova_shake256_init(&state);
+	shake256_init(&state);
 #if HASH_PK
-	snova_shake_absorb(&state, pk_seed, BYTES_PK_HASH);
+	sha3_update(&state, pk_seed, BYTES_PK_HASH);
 #else
-	snova_shake_absorb(&state, pk_seed, SEED_LENGTH_PUBLIC);
+	sha3_update(&state, pk_seed, SEED_LENGTH_PUBLIC);
 #endif
-	snova_shake_absorb(&state, digest, len_digest);
-	snova_shake_absorb(&state, salt, BYTES_SALT);
-	snova_shake_finalize(&state);
-	snova_shake_squeeze(&state, hash_out, BYTES_HASH);
+	sha3_update(&state, digest, len_digest);
+	sha3_update(&state, salt, BYTES_SALT);
+	shake_xof_final(&state);
+	shake_squeeze(&state, hash_out, BYTES_HASH);
 }
 
 /**
@@ -608,16 +608,16 @@ static void expand_T12(gf_t* T12, const uint8_t *seed) {
 	gf_t sk_data[SK_BLOCK_SIZE];
 	shake_t state;
 
-	snova_shake256_init(&state);
-	snova_shake_absorb(&state, seed, SEED_LENGTH_PRIVATE);
-	snova_shake_finalize(&state);
+	shake256_init(&state);
+	sha3_update(&state, seed, SEED_LENGTH_PRIVATE);
+	shake_xof_final(&state);
 
 	size_t idx = SK_BLOCK_SIZE;
 	size_t t_idx = 0;
 
 	while (t_idx < SNOVA_o * SNOVA_v * SNOVA_l) {
 		if (idx >= SK_BLOCK_SIZE) {
-			snova_shake_squeeze(&state, sk_data, SK_BLOCK_SIZE);
+			shake_squeeze(&state, sk_data, SK_BLOCK_SIZE);
 			idx = 0;
 		}
 
@@ -936,19 +936,19 @@ int SNOVA_NAMESPACE(sign)(const expanded_SK* skx, uint8_t *sig, const uint8_t *d
 		uint8_t vinegar_in_byte[NUM_GEN_SEC_BYTES];
 		shake_t v_instance;
 
-		snova_shake256_init(&v_instance);
-		snova_shake_absorb(&v_instance, seed + SEED_LENGTH_PUBLIC, SEED_LENGTH_PRIVATE);
-		snova_shake_absorb(&v_instance, digest, BYTES_DIGEST);
-		snova_shake_absorb(&v_instance, salt, BYTES_SALT);
-		snova_shake_absorb(&v_instance, &num_sign, 1);
-		snova_shake_finalize(&v_instance);
+		shake256_init(&v_instance);
+		sha3_update(&v_instance, seed + SEED_LENGTH_PUBLIC, SEED_LENGTH_PRIVATE);
+		sha3_update(&v_instance, digest, BYTES_DIGEST);
+		sha3_update(&v_instance, salt, BYTES_SALT);
+		sha3_update(&v_instance, &num_sign, 1);
+		shake_xof_final(&v_instance);
 
 		size_t b_idx = SK_BLOCK_SIZE;
 		size_t t_idx = 0;
 
 		while (t_idx < SNOVA_v * SNOVA_l * SNOVA_r) {
 			if (b_idx >= SK_BLOCK_SIZE) {
-				snova_shake_squeeze(&v_instance, vinegar_in_byte, SK_BLOCK_SIZE);
+				shake_squeeze(&v_instance, vinegar_in_byte, SK_BLOCK_SIZE);
 				b_idx = 0;
 			}
 

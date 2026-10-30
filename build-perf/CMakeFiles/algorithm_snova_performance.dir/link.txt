@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_snova_performance.dir/Test/perf/test_snova_perf.c.o -o algorithm_snova_performance  libpqc_snova.a libpqc.a -lm 

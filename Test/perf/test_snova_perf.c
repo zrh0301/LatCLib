@@ -85,10 +85,10 @@ static void bench_shake(void) {
     test_perf_mark start = test_perf_begin();
     for (unsigned int i = 0; i < SHAKE_ITERATIONS; ++i) {
         input[0] = (uint8_t)i;
-        snova_shake256_init(&shake);
-        snova_shake_absorb(&shake, input, sizeof(input));
-        snova_shake_finalize(&shake);
-        snova_shake_squeeze(&shake, output, sizeof(output));
+        shake256_init(&shake);
+        sha3_update(&shake, input, sizeof(input));
+        shake_xof_final(&shake);
+        shake_squeeze(&shake, output, sizeof(output));
     }
     volatile uint8_t checksum = output[0];
     (void)checksum;

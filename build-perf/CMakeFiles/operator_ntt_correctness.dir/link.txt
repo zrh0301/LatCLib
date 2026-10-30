@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_ntt_correctness.dir/Test/ntt/test_ntt.c.o -o operator_ntt_correctness  libpqc.a -lm 

@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_gf16_correctness.dir/Test/field/test_gf16.c.o -o operator_gf16_correctness  libpqc.a -lm 

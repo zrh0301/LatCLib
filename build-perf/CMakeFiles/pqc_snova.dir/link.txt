@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpqc_snova.a CMakeFiles/pqc_snova.dir/alg/snova/snova_opt_16.c.o CMakeFiles/pqc_snova.dir/alg/snova/symmetric.c.o CMakeFiles/pqc_snova.dir/alg/snova/aes.c.o CMakeFiles/pqc_snova.dir/alg/snova/sign.c.o
+/usr/bin/ranlib libpqc_snova.a

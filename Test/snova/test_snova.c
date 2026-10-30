@@ -33,12 +33,12 @@ static int check_hash_adapter(void) {
     memcpy(joined + sizeof(first), second, sizeof(second));
     shake256(expected, sizeof(expected), joined, sizeof(joined));
 
-    snova_shake256_init(&ctx);
-    snova_shake_absorb(&ctx, first, sizeof(first));
-    snova_shake_absorb(&ctx, second, sizeof(second));
-    snova_shake_finalize(&ctx);
-    snova_shake_squeeze(&ctx, actual, 17);
-    snova_shake_squeeze(&ctx, actual + 17, sizeof(actual) - 17);
+    shake256_init(&ctx);
+    sha3_update(&ctx, first, sizeof(first));
+    sha3_update(&ctx, second, sizeof(second));
+    shake_xof_final(&ctx);
+    shake_squeeze(&ctx, actual, 17);
+    shake_squeeze(&ctx, actual + 17, sizeof(actual) - 17);
     return memcmp(expected, actual, sizeof(actual)) == 0;
 }
 

@@ -3,7 +3,8 @@
 /**
  * Symmetric primitives used by SNOVA
  *
- * Contains a SHAKE implementation and Vectorized SNOVA-SHAKE XOF.
+ * The SHAKE/SHA3 hash layer is provided by the shared inc/keccak.h of the pqc
+ * library; this file only contains the small-memory SNOVA public key expander.
  * The optimized implementation of snova_pk_expander can be tested against the reference version by generating the KAT files.
  *
  * Copyright (c) 2026 SNOVA TEAM
@@ -15,37 +16,6 @@
 #include <string.h>
 
 #include "snova.h"
-
-#ifndef snova_secure_clear
-#if __clang__
-__attribute__((optnone))
-#elif __GNUC__ > 4
-__attribute__((optimize("O0")))
-#endif
-void snova_secure_clear(void *ptr, size_t len) {
-	memset(ptr, 0, len);
-}
-#endif
-
-void snova_shake128_init(shake_t *instance) {
-	shake128_init(instance);
-}
-
-void snova_shake256_init(shake_t *instance) {
-	shake256_init(instance);
-}
-
-void snova_shake_absorb(shake_t *instance, const uint8_t *in, size_t inlen) {
-	(void)sha3_update(instance, in, inlen);
-}
-
-void snova_shake_finalize(shake_t *instance) {
-	shake_xof_final(instance);
-}
-
-void snova_shake_squeeze(shake_t *instance, uint8_t *out, size_t outlen) {
-	shake_squeeze(instance, out, outlen);
-}
 
 /**
  * SNOVA public key expander

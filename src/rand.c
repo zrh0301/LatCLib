@@ -1,4 +1,5 @@
 #include "rand.h"
+#include "secure_clear.h"
 #include <stdlib.h>
 
 #if defined(_WIN32)
@@ -14,10 +15,7 @@
 #endif
 
 static void clear_output(uint8_t *out, size_t len) {
-    volatile uint8_t *p = out;
-    while(len-- != 0) {
-        *p++ = 0;
-    }
+    pqc_secure_clear(out, len);
 }
 
 int pqc_system_random(void *rng_ctx, uint8_t *out, size_t out_len) {

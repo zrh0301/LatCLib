@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_snova_correctness.dir/Test/snova/test_snova.c.o -o algorithm_snova_correctness  libpqc.a libpqc_snova.a libpqc.a -lm 

@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_pack_correctness.dir/Test/pack/test_pack.c.o CMakeFiles/operator_pack_correctness.dir/Test/pack/cases.c.o CMakeFiles/operator_pack_correctness.dir/Test/pack/dilithium.c.o CMakeFiles/operator_pack_correctness.dir/Test/pack/kyber.c.o -o operator_pack_correctness  libpqc.a -lm 

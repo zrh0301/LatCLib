@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_hash_correctness.dir/Test/hash/test_hash.c.o CMakeFiles/operator_hash_correctness.dir/Test/hash/cases.c.o -o operator_hash_correctness  libpqc.a -lm 

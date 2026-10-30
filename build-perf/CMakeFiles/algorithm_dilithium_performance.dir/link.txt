@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_dilithium_performance.dir/Test/sig/test_sig.c.o CMakeFiles/algorithm_dilithium_performance.dir/Test/sig/cases.c.o -o algorithm_dilithium_performance  libpqc.a -lm 

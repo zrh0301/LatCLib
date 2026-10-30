@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_poly_correctness.dir/Test/poly/test_poly.c.o -o operator_poly_correctness  libpqc.a -lm 

@@ -19,19 +19,11 @@ static void keccak_finish_case(void *ctx, uint8_t *output) {
 }
 
 static void sha3_256_digest(uint8_t *output, const uint8_t *input, size_t input_len) {
-    KECCAK1600_CTX ctx;
-
-    sha3_256_starts(&ctx);
-    keccak_update_case(&ctx, input, input_len);
-    keccak_finish_case(&ctx, output);
+    sha3_256(output, input, input_len);
 }
 
 static void sha3_512_digest(uint8_t *output, const uint8_t *input, size_t input_len) {
-    KECCAK1600_CTX ctx;
-
-    sha3_512_starts(&ctx);
-    keccak_update_case(&ctx, input, input_len);
-    keccak_finish_case(&ctx, output);
+    sha3_512(output, input, input_len);
 }
 
 static const uint8_t sha3_256_empty[] = {

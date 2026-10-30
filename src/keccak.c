@@ -286,3 +286,17 @@ void shake256(unsigned char *output, size_t outlen, const unsigned char *input, 
     shake_xof_final(&ctx);
     shake_squeeze(&ctx, output, outlen);
 }
+
+void sha3_256(unsigned char *md, const unsigned char *input, size_t inlen) {
+    KECCAK1600_CTX ctx;
+    sha3_init(&ctx, 0x06, 256);
+    sha3_update(&ctx, input, inlen);
+    sha3_final(md, &ctx);
+}
+
+void sha3_512(unsigned char *md, const unsigned char *input, size_t inlen) {
+    KECCAK1600_CTX ctx;
+    sha3_init(&ctx, 0x06, 512);
+    sha3_update(&ctx, input, inlen);
+    sha3_final(md, &ctx);
+}

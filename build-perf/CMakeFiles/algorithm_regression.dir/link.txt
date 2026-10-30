@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_regression.dir/Test/regression/test_regression.c.o -o algorithm_regression  libpqc.a -lm 

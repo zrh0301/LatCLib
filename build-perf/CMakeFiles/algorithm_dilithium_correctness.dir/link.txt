@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_dilithium_correctness.dir/Test/sig/test_sig.c.o CMakeFiles/algorithm_dilithium_correctness.dir/Test/sig/cases.c.o -o algorithm_dilithium_correctness  libpqc.a -lm 

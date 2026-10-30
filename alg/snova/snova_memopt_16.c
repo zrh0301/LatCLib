@@ -55,16 +55,16 @@ static inline void compress_gf(uint8_t *byte_array, const uint8_t *gf_array, siz
 static inline void hash_combined(uint8_t *hash_out, const uint8_t *m, size_t mlen, const uint8_t *pk_seed,
                                  const uint8_t *salt) {
 	shake_t state;
-	snova_shake256_init(&state);
+	shake256_init(&state);
 #if HASH_PK
-	snova_shake_absorb(&state, pk_seed, BYTES_PK_HASH);
+	sha3_update(&state, pk_seed, BYTES_PK_HASH);
 #else
-	snova_shake_absorb(&state, pk_seed, SEED_LENGTH_PUBLIC);
+	sha3_update(&state, pk_seed, SEED_LENGTH_PUBLIC);
 #endif
-	snova_shake_absorb(&state, m, mlen);
-	snova_shake_absorb(&state, salt, BYTES_SALT);
-	snova_shake_finalize(&state);
-	snova_shake_squeeze(&state, hash_out, BYTES_HASH);
+	sha3_update(&state, m, mlen);
+	sha3_update(&state, salt, BYTES_SALT);
+	shake_xof_final(&state);
+	shake_squeeze(&state, hash_out, BYTES_HASH);
 }
 
 /**
@@ -284,13 +284,13 @@ int SNOVA_NAMESPACE(sign)(const expanded_SK *skx_arg, uint8_t *sig, const uint8_
 			uint8_t vinegar_in_byte[NUM_GEN_SEC_BYTES];
 			shake_t v_instance;
 
-			snova_shake256_init(&v_instance);
-			snova_shake_absorb(&v_instance, s_sk_seed, SEED_LENGTH_PRIVATE);
-			snova_shake_absorb(&v_instance, digest, BYTES_DIGEST);
-			snova_shake_absorb(&v_instance, salt, BYTES_SALT);
-			snova_shake_absorb(&v_instance, &num_sign, 1);
-			snova_shake_finalize(&v_instance);
-			snova_shake_squeeze(&v_instance, vinegar_in_byte, NUM_GEN_SEC_BYTES);
+			shake256_init(&v_instance);
+			sha3_update(&v_instance, s_sk_seed, SEED_LENGTH_PRIVATE);
+			sha3_update(&v_instance, digest, BYTES_DIGEST);
+			sha3_update(&v_instance, salt, BYTES_SALT);
+			sha3_update(&v_instance, &num_sign, 1);
+			shake_xof_final(&v_instance);
+			shake_squeeze(&v_instance, vinegar_in_byte, NUM_GEN_SEC_BYTES);
 
 			convert_bytes_to_GF(signature_in_GF, vinegar_in_byte, SNOVA_v * SNOVA_lr);
 

@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_sampling_correctness.dir/Test/sampling/test_sampling.c.o -o operator_sampling_correctness  libpqc.a -lm 

@@ -4,11 +4,7 @@
 #include <string.h>
 
 void kyber_g(uint8_t out[64], const uint8_t *in, size_t inlen) {
-    KECCAK1600_CTX ctx;
-
-    sha3_init(&ctx, 0x06, 512);
-    sha3_update(&ctx, in, inlen);
-    sha3_final(out, &ctx);
+    sha3_512(out, in, inlen);
 }
 
 void kyber_prf(uint8_t *out, size_t outlen, const uint8_t key[KYBER_SYMBYTES],

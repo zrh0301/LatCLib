@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_context_correctness.dir/Test/algebra/test_contexts.c.o -o operator_context_correctness  libpqc.a -lm 

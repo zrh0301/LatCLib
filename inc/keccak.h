@@ -36,6 +36,10 @@ void shake_squeeze(KECCAK1600_CTX *ctx, unsigned char *out, size_t len);
 void shake128(unsigned char *output, size_t outlen, const unsigned char *input, size_t inlen);
 void shake256(unsigned char *output, size_t outlen, const unsigned char *input, size_t inlen);
 
+/* 固定输出的一次性 SHA3 */
+void sha3_256(unsigned char *md, const unsigned char *input, size_t inlen);
+void sha3_512(unsigned char *md, const unsigned char *input, size_t inlen);
+
 #ifdef __cplusplus
 }
 #endif

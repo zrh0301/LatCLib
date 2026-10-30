@@ -3,6 +3,9 @@
 /**
  * Reference implementation of the symmetric primitives used by SNOVA
  *
+ * The SHAKE/SHA3 hash layer is provided by the shared inc/keccak.h of the pqc
+ * library.
+ *
  * Copyright (c) 2025 SNOVA TEAM
  */
 
@@ -10,30 +13,6 @@
 
 #include "snova.h"
 #include "symmetric.h"
-
-void snova_secure_clear(void *ptr, size_t len) {
-	memset(ptr, 0, len);
-}
-
-void snova_shake128_init(shake_t *instance) {
-	shake128_init(instance);
-}
-
-void snova_shake256_init(shake_t *instance) {
-	shake256_init(instance);
-}
-
-void snova_shake_absorb(shake_t *instance, const uint8_t *in, size_t inlen) {
-	(void)sha3_update(instance, in, inlen);
-}
-
-void snova_shake_finalize(shake_t *instance) {
-	shake_xof_final(instance);
-}
-
-void snova_shake_squeeze(shake_t *instance, uint8_t *out, size_t outlen) {
-	shake_squeeze(instance, out, outlen);
-}
 
 /**
  * Reference SNOVA public key expander
@@ -58,8 +37,8 @@ void snova_pk_expander_init(snova_pk_expander_t *ref_instance, const uint8_t *se
 	assert(input_bytes <= 152);
 
 	shake_t *instance = (shake_t *)ref_instance;
-	snova_shake128_init(instance);
-	snova_shake_absorb(instance, seed, input_bytes);
+	shake128_init(instance);
+	sha3_update(instance, seed, input_bytes);
 }
 
 void snova_pk_expander(uint8_t *data, size_t num_bytes, snova_pk_expander_t *instance) {
@@ -75,16 +54,16 @@ void snova_pk_expander(uint8_t *data, size_t num_bytes, snova_pk_expander_t *ins
 		for (int idx = 0; idx < 8; idx++) {
 			// Little endian
 			uint8_t block_i = (block >> (8 * idx)) & 0xff;
-			snova_shake_absorb(&block_instance, &block_i, 1);
+			sha3_update(&block_instance, &block_i, 1);
 		}
 
-		snova_shake_finalize(&block_instance);
+		shake_xof_final(&block_instance);
 		size_t bytes = num_bytes - index;
 		if (bytes > rate) {
 			bytes = rate;
 		}
 
-		snova_shake_squeeze(&block_instance, data, bytes);
+		shake_squeeze(&block_instance, data, bytes);
 
 		block++;
 		data += bytes;

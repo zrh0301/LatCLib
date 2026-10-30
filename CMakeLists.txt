@@ -19,7 +19,7 @@ endif()
 
 add_library(pqc STATIC
     src/fp32.c src/gf16.c src/gf16_matrix.c src/ring.c src/poly.c src/poly_ntt.c src/polyvec.c
-    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/keccak.c
+    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/secure_clear.c src/keccak.c
     alg/dilithium/dili.c alg/dilithium/dili_sample.c alg/dilithium/pack.c
     alg/kyber/kyber.c alg/kyber/kyber_sample.c alg/kyber/kyber_pack.c)
 target_include_directories(pqc PUBLIC inc alg/dilithium alg/kyber)

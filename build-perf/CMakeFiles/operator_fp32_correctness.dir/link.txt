@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_fp32_correctness.dir/Test/field/test_fp32.c.o -o operator_fp32_correctness  libpqc.a -lm 

@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/operator_performance.dir/Test/perf/test_operator_perf.c.o -o operator_performance  libpqc.a -lm 

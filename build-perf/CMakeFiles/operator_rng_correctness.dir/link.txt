@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG -Wl,--wrap=getrandom CMakeFiles/operator_rng_correctness.dir/Test/rng/test_rng.c.o -o operator_rng_correctness  libpqc.a -lm 

@@ -4,14 +4,11 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "keccak.h"
+#include "secure_clear.h"
 
 typedef KECCAK1600_CTX shake_t;
 
-void snova_shake128_init(shake_t *instance);
-void snova_shake256_init(shake_t *instance);
-void snova_shake_absorb(shake_t *instance, const uint8_t *in, size_t inlen);
-void snova_shake_finalize(shake_t *instance);
-void snova_shake_squeeze(shake_t *instance, uint8_t *out, size_t outlen);
+/* SHA3/SHAKE 不再单独定义 snova_* 包装, 哈希层直接使用 inc/keccak.h 的共享 API。 */
 
 void snova_pk_expand(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen);
 
@@ -25,8 +22,11 @@ void snova_pk_expander_squeeze(uint8_t *data, size_t num_bytes, snova_pk_expande
 void snova_pk_expander_goto(snova_pk_expander_t *instance, size_t index);
 void snova_pk_expander_free(snova_pk_expander_t *instance);
 
-void snova_secure_clear(void *ptr, size_t len);
-// #define snova_secure_clear(ptr, len) do { } while (0)
+/* 敏感数据清零统一使用 pqc_secure_clear (src/secure_clear.c)。
+ * 保留别名与外部覆盖点, 兼容原有调用方式和插桩测试。 */
+#ifndef snova_secure_clear
+#define snova_secure_clear(ptr, len) pqc_secure_clear(ptr, len)
+#endif
 
 #define SNOVA_SECURE_CLEAR(x) snova_secure_clear(x, sizeof(x));
 #define SNOVA_SECURE_CLEARI(x) snova_secure_clear(&x, sizeof(x));

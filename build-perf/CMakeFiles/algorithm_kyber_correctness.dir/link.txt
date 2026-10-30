@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/algorithm_kyber_correctness.dir/Test/enc/test_enc.c.o CMakeFiles/algorithm_kyber_correctness.dir/Test/enc/cases.c.o -o algorithm_kyber_correctness  libpqc.a -lm 
