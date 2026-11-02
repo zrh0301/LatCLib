@@ -51,7 +51,7 @@ message(STATUS "AES backend: ${PQC_AES_BACKEND_EFFECTIVE}")
 
 add_library(pqc STATIC
     src/fp32.c src/gf16.c src/gf16_matrix.c src/ring.c src/poly.c src/poly_ntt.c src/polyvec.c
-    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/secure_clear.c src/keccak.c src/aes.c
+    src/ntt_table.c src/ntt_compat.c src/poly_sample.c src/rand.c src/secure_clear.c src/keccak.c src/aes.c src/sm3.c
     alg/dilithium/dili.c alg/dilithium/dili_sample.c alg/dilithium/pack.c
     alg/kyber/kyber.c alg/kyber/kyber_sample.c alg/kyber/kyber_pack.c)
 target_include_directories(pqc PUBLIC inc alg/dilithium alg/kyber)
@@ -105,6 +105,7 @@ if(BUILD_TESTING)
     add_pqc_test(operator_pack_correctness Test/pack/test_pack.c)
     add_pqc_test(operator_hash_correctness Test/hash/test_hash.c)
     target_sources(operator_hash_correctness PRIVATE Test/hash/cases.c)
+    add_pqc_test(operator_sm3_correctness Test/hash/test_sm3.c)
     add_pqc_test(operator_rng_correctness Test/rng/test_rng.c)
 
     # Each operator runs in its own CTest entry and reports its own timing.
@@ -185,6 +186,7 @@ if(BUILD_TESTING)
                 operator_poly_correctness operator_ntt_correctness
                 operator_sampling_correctness operator_pack_correctness
                 operator_hash_correctness operator_rng_correctness
+                operator_sm3_correctness
                 algorithm_dilithium_correctness algorithm_kyber_correctness
                 algorithm_snova_correctness
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
