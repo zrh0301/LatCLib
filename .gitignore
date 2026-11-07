@@ -21,3 +21,9 @@ docs/
 !Test/perf/run_performance.cmake
 !Test/perf/bench.sh.in
 !config.sh
+
+# Local build outputs, configuration checks, and source backups.
+/build-*/
+
+# Local integration reports and source inventories.
+/docs/

@@ -1,0 +1,25 @@
+# Select the user's optimized implementation for the target architecture.
+# This is a build-time choice; GFNI remains an explicit opt-in.
+string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" pqc_processor)
+if(pqc_processor MATCHES "^(amd64|x86_64|x64)$")
+    set(PQC_OPTIMIZED_DEFAULT avx2)
+elseif(pqc_processor MATCHES "^(aarch64|arm64)$")
+    set(PQC_OPTIMIZED_DEFAULT neon)
+else()
+    message(FATAL_ERROR "Optimized GF/signatures require x86-64 or AArch64; target: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
+function(pqc_optimized_backend option_name label)
+    set(${option_name} "${PQC_OPTIMIZED_DEFAULT}" CACHE STRING "${label} optimized backend: ${ARGN}")
+    set_property(CACHE ${option_name} PROPERTY STRINGS ${ARGN})
+    set(allowed ${ARGN})
+    list(FIND allowed "${${option_name}}" index)
+    if(index EQUAL -1)
+        message(FATAL_ERROR "${option_name}=${${option_name}} is unsupported. Only optimized backends are available: ${ARGN}. Update the old CMake cache or use a new build directory.")
+    endif()
+    if((PQC_OPTIMIZED_DEFAULT STREQUAL "neon" AND NOT ${option_name} STREQUAL "neon") OR
+       (PQC_OPTIMIZED_DEFAULT STREQUAL "avx2" AND ${option_name} STREQUAL "neon"))
+        message(FATAL_ERROR "${option_name}=${${option_name}} does not match target ${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+    message(STATUS "${label} optimized backend: ${${option_name}}")
+endfunction()

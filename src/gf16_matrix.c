@@ -1,4 +1,6 @@
 #include "gf16_matrix.h"
+#include "gf16_vector.h"
+#include <string.h>
 
 #include <stdint.h>
 
@@ -14,13 +16,11 @@ int gf16_matrix_mul(gf16_t *out, const gf16_t *a, const gf16_t *b,
         return -1;
     }
 
+    memset(out, 0, rows * cols);
     for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            gf16_t sum = 0;
-            for (size_t k = 0; k < inner; ++k) {
-                sum ^= gf16_mul(a[i * inner + k], b[k * cols + j]);
-            }
-            out[i * cols + j] = sum;
+        for (size_t k = 0; k < inner; ++k) {
+            gf16_vector_madd(out + i * cols, b + k * cols,
+                             a[i * inner + k], cols);
         }
     }
     return 0;
@@ -33,12 +33,9 @@ int gf16_matrix_mul_add(gf16_t *out, const gf16_t *a, const gf16_t *b,
     }
 
     for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            gf16_t sum = 0;
-            for (size_t k = 0; k < inner; ++k) {
-                sum ^= gf16_mul(a[i * inner + k], b[k * cols + j]);
-            }
-            out[i * cols + j] ^= sum;
+        for (size_t k = 0; k < inner; ++k) {
+            gf16_vector_madd(out + i * cols, b + k * cols,
+                             a[i * inner + k], cols);
         }
     }
     return 0;

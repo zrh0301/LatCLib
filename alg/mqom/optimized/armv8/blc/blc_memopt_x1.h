@@ -1,0 +1,12 @@
+#ifndef __BLC_MEMOPT_X1_H__
+#define __BLC_MEMOPT_X1_H__
+
+#ifndef BLC_NB_LEAF_SEEDS_IN_PARALLEL
+#define BLC_NB_LEAF_SEEDS_IN_PARALLEL (8)
+#endif
+
+#if MQOM2_PARAM_NB_EVALS % BLC_NB_LEAF_SEEDS_IN_PARALLEL != 0
+#error BLC_NB_LEAF_SEEDS_IN_PARALLEL should divide MQOM2_PARAM_NB_EVALS.
+#endif
+
+#endif /* __BLC_MEMOPT_X1_H__ */

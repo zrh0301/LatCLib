@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
     #include <intrin.h>
 #elif defined(__i386__) || defined(__x86_64__)
@@ -116,6 +119,17 @@ static inline uint64_t test_cpu_cycles(unsigned int *cpu_aux) {
 #endif
 }
 
+static inline void test_wall_time(struct timespec *ts) {
+#ifdef _WIN32
+    LARGE_INTEGER value, frequency;
+    QueryPerformanceCounter(&value);
+    QueryPerformanceFrequency(&frequency);
+    ts->tv_sec = (time_t)(value.QuadPart / frequency.QuadPart);
+    ts->tv_nsec = (long)((value.QuadPart % frequency.QuadPart) * 1000000000LL / frequency.QuadPart);
+#else
+    timespec_get(ts, TIME_UTC);
+#endif
+}
 static inline test_perf_mark test_perf_begin(void) {
     test_perf_mark mark;
     memset(&mark, 0, sizeof(mark));
@@ -136,7 +150,7 @@ static inline test_perf_mark test_perf_begin(void) {
     }
 #endif
     mark.cycles = test_cpu_cycles(&mark.cpu_aux);
-    timespec_get(&mark.wall_time, TIME_UTC);
+    test_wall_time(&mark.wall_time);
     return mark;
 }
 
@@ -144,7 +158,7 @@ static inline test_perf_result test_perf_end(test_perf_mark start) {
     test_perf_mark end;
     memset(&end, 0, sizeof(end));
     end.cycles = test_cpu_cycles(&end.cpu_aux);
-    timespec_get(&end.wall_time, TIME_UTC);
+    test_wall_time(&end.wall_time);
     test_perf_result result = {0, 0.0, 0};
     int64_t sec = (int64_t)end.wall_time.tv_sec - (int64_t)start.wall_time.tv_sec;
     int64_t nsec = (int64_t)end.wall_time.tv_nsec - (int64_t)start.wall_time.tv_nsec;

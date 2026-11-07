@@ -1,0 +1,26 @@
+#ifndef __GGM_TREE_INCR_H__
+#define __GGM_TREE_INCR_H__
+
+#if defined(GGMTREE_NB_PARALLEL_DERIVATIONS_LOG) && GGMTREE_NB_PARALLEL_DERIVATIONS_LOG > 0
+#include "ggm_tree_incr_x1_adv.h"
+#define ggmtree_ctx_t ggmtree_ctx_adv_t
+#define ggmtree_ctx_t_clean ggmtree_ctx_adv_t_clean
+#define GGMTree_InitIncrementalExpansion GGMTree_InitIncrementalExpansion_adv
+#define GGMTree_GetNextLeaf GGMTree_GetNextLeaf_adv
+#define ggmtree_ctx_partial_t ggmtree_ctx_partial_adv_t
+#define ggmtree_ctx_partial_t_clean ggmtree_ctx_partial_adv_t_clean
+#define GGMTree_InitIncrementalPartialExpansion GGMTree_InitIncrementalPartialExpansion_adv
+#define GGMTree_GetNextLeafPartial GGMTree_GetNextLeafPartial_adv
+#else
+#include "ggm_tree_incr_x1_base.h"
+#define ggmtree_ctx_t ggmtree_ctx_base_t
+#define ggmtree_ctx_t_clean ggmtree_ctx_base_t_clean
+#define GGMTree_InitIncrementalExpansion GGMTree_InitIncrementalExpansion_base
+#define GGMTree_GetNextLeaf GGMTree_GetNextLeaf_base
+#define ggmtree_ctx_partial_t ggmtree_ctx_partial_base_t
+#define ggmtree_ctx_partial_t_clean ggmtree_ctx_partial_base_t_clean
+#define GGMTree_InitIncrementalPartialExpansion GGMTree_InitIncrementalPartialExpansion_base
+#define GGMTree_GetNextLeafPartial GGMTree_GetNextLeafPartial_base
+#endif
+
+#endif /* __GGM_TREE_INCR_H__ */

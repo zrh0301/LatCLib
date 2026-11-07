@@ -1,0 +1,12 @@
+/* Private helper namespace; do not expose through public include paths. */
+#define shake128_init latclib_snova_r2_shake128_init
+#define shake256 latclib_snova_r2_shake256
+#define shake256_init latclib_snova_r2_shake256_init
+#define shake_absorb latclib_snova_r2_shake_absorb
+#define shake_finalize latclib_snova_r2_shake_finalize
+#define shake_release latclib_snova_r2_shake_release
+#define shake_squeeze latclib_snova_r2_shake_squeeze
+#define shake_squeeze_keep latclib_snova_r2_shake_squeeze_keep
+#define snova_pk_expand latclib_snova_r2_snova_pk_expand
+#define snova_pk_expander latclib_snova_r2_snova_pk_expander
+#define snova_pk_expander_init latclib_snova_r2_snova_pk_expander_init

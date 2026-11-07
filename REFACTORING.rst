@@ -114,10 +114,10 @@ RNG 失败不会改写算法密钥或签名输出。dili_sign 的默认随机化
 GF(16) 算术现位于 ``inc/gf16.h`` / ``src/gf16.c``，采用
 ``GF(2)[x]/(x^4+x+1)`` 的低四位多项式表示。矩形矩阵乘法、异或累加及
 1 到 5 阶行列式位于 ``inc/gf16_matrix.h`` / ``src/gf16_matrix.c``。
-SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova``；CMake
-默认目标 ``pqc_snova`` 构建 ``SNOVA_OPT=10`` 优化实现，并链接 ``pqc``。
-参考实现和默认优化实现均复用这些标量表示算子；扩展表示及 SIMD 热路径
-仍留在 SNOVA 后端。GF(16) 求解器和其他多变量专用运算尚未拆分。
+SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova_r3``；CMake
+兼容目标 ``pqc_snova`` 指向 ``pqc_snova_r3`` 并链接 ``pqc``。
+当前仅接入用户优化实现：x86-64 默认 AVX2，AArch64 默认 NEON。
+公共标量算子按需复用；扩展表示及 SIMD 热路径仍留在 SNOVA 后端。GF(16) 求解器和其他多变量专用运算尚未拆分。
 
 test_fp32 使用独立取模/Euclid 参考和极值检查。
 test_contexts 只链接 algebra，验证构造失败、复制、每个旋转因子、缩放、
@@ -132,3 +132,17 @@ Test/regression/test_regression.c 中的 18 个 SHA3-256 摘要从重构前的�
 后续再处理：任意维度缓冲区视图、算法参数集封装、完整字节串 API、
 矩阵扩展域分离从 polyvec 迁回算法、GF(16) 消元/求解器及其他多变量专用
 算子、经验证的常数时间优化后端，以及标准向量/侧信道验证。
+
+GF 与多算法接入（2026-11-05）
+----------------------------
+
+当前构建以 CMakeLists.txt、cmake/gf.cmake、cmake/signatures.cmake 为准。
+GF 运算独立为 pqc_gf；签名目标为 pqc_snova_r2、pqc_snova_r3、
+pqc_mayo、pqc_mqom，pqc_snova 保留为 R3 兼容别名。
+四算法公共 signed-message 测试位于 Test/sig/test_signature_api.c。
+源码来源、后端选择、参数范围与验证边界见 docs/gf-integration/README.md
+及 VALIDATION.md。本文前述 field/algebra/common/core 是早期重构说明，
+并非当前实际链接目标。
+
+构建入口已移除 ref/portable 基线选择；GF 和四算法仅选择用户的优化后端。
+公共标量运算和优化实现的内部依赖保留，所有四算法公共测试继续位于 Test/sig。
