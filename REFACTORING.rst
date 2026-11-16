@@ -136,9 +136,13 @@ Test/regression/test_regression.c 中的 18 个 SHA3-256 摘要从重构前的�
 GF 与多算法接入（2026-11-05）
 ----------------------------
 
-当前构建以 CMakeLists.txt、cmake/gf.cmake、cmake/signatures.cmake 为准。
+当前构建以 CMakeLists.txt、cmake/options.cmake、cmake/arch.cmake、
+cmake/gf.cmake、cmake/algorithms.cmake、cmake/tests.cmake 和
+cmake/install.cmake 为准，配置头由 inc/pqc_conf.h.in 生成。
 GF 运算独立为 pqc_gf；签名目标为 pqc_snova_r2、pqc_snova_r3、
-pqc_mayo、pqc_mqom，pqc_snova 保留为 R3 兼容别名。
+pqc_mayo、pqc_mqom，pqc_snova 保留为 R3 兼容目标。
+共享库与静态库由同一 OBJECT 库生成，默认同时构建，并支持安装后
+find_package(pqc)。
 四算法公共 signed-message 测试位于 Test/sig/test_signature_api.c。
 源码来源、后端选择、参数范围与验证边界见 docs/gf-integration/README.md
 及 VALIDATION.md。本文前述 field/algebra/common/core 是早期重构说明，

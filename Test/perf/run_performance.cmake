@@ -1,8 +1,8 @@
 if(NOT DEFINED BUILD_DIR)
-    message(FATAL_ERROR "Set BUILD_DIR to the configured build directory")
+    set(BUILD_DIR "@PQC_RUNTIME_OUTPUT_DIRECTORY@")
 endif()
 
-get_filename_component(_build_dir "${BUILD_DIR}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_LIST_DIR}/../..")
+get_filename_component(_build_dir "${BUILD_DIR}" ABSOLUTE)
 set(_benchmarks
     "operator_performance|gf16_add"
     "operator_performance|gf16_sub"
@@ -51,6 +51,9 @@ foreach(_benchmark IN LISTS _benchmarks)
     list(GET _parts 0 _program)
     list(LENGTH _parts _part_count)
     set(_command "${_build_dir}/${_program}")
+    if(NOT EXISTS "${_command}")
+        continue()
+    endif()
     if(_part_count GREATER 1)
         list(GET _parts 1 _argument)
     else()
