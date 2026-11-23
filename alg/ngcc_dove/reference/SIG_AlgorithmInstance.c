@@ -12,7 +12,9 @@ other purposes.
 #include "SIG_AlgorithmInstance.h"
 #include "ngcc/drng.h"
 #include "ngcc/auxfunc.h"
-#include "matrix.h"
+#include "gf/byte_matrix.h"
+#include "gf/gf256_matrix.h"
+#include "util/ct.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,30 +56,26 @@ unsigned long long sig_get_sn_len_bytes()
 //int pseudoXOF(unsigned long long output_len_bits, const unsigned char *msg, unsigned long long msg_len_bits, unsigned char *output)
 
 // 从 seed_pk 生成第 k 个上三角矩阵 A_k
-static void generate_Ak(gf256_matrix_t *Ak, const uint8_t *seed_pk, uint32_t k) {
+static void generate_Ak(uint8_t *Ak, const uint8_t *seed_pk, uint32_t k) {
     size_t out_len = UPPER_SIZE(DOVE_V);
     uint8_t *out = malloc(out_len);
     pseudoXOFwithSeedAndCounter(out_len,seed_pk, DOVE_PK_SEED_BYTES, k, out);
-    matrix_fill_upper(Ak, out);
+    gf_byte_unpack_upper(Ak, out, DOVE_V);
     free(out);
 }
 
-static void generate_Pi2(gf256_matrix_t *Pi2, const uint8_t *seed_pk, uint32_t i) {
+static void generate_Pi2(uint8_t *Pi2, const uint8_t *seed_pk, uint32_t i) {
     size_t out_len = DOVE_V * DOVE_O;
-    uint32_t idx = DOVE_L + i;
-    uint8_t *out = malloc(out_len);
-	pseudoXOFwithSeedAndCounter(out_len,seed_pk, DOVE_PK_SEED_BYTES,idx,out);
-    matrix_fill(Pi2, out);
-    free(out);
+    pseudoXOFwithSeedAndCounter(out_len, seed_pk, DOVE_PK_SEED_BYTES, DOVE_L + i, Pi2);
 }
 
-static void derive_seedpk_T(uint8_t *seed_pk, gf256_matrix_t *T, const uint8_t *seed_sk) {
+static void derive_seedpk_T(uint8_t *seed_pk, uint8_t *T, const uint8_t *seed_sk) {
     size_t out_len = DOVE_PK_SEED_BYTES + DOVE_V * DOVE_O;
     uint8_t *out = malloc(out_len);
     pseudoXOF(out_len*8, seed_sk, DOVE_SK_SEED_BYTES*8, out);
 
     memcpy(seed_pk, out, DOVE_PK_SEED_BYTES);
-    matrix_fill(T, out + DOVE_PK_SEED_BYTES);
+    memcpy(T, out + DOVE_PK_SEED_BYTES, DOVE_V * DOVE_O);
     free(out);
 }
 
@@ -89,23 +87,23 @@ int sig_keygen(
     uint8_t seed_sk[DOVE_SK_SEED_BYTES];
     get_random_number(&drng_algorithm, seed_sk, (unsigned long long)DOVE_SK_SEED_BYTES*8 );
     uint8_t seed_pk[DOVE_PK_SEED_BYTES];
-    gf256_matrix_t *T = matrix_create(DOVE_V, DOVE_O);
+    uint8_t *T = malloc(DOVE_V * DOVE_O);
     if (!T) return -1;
     derive_seedpk_T(seed_pk, T, seed_sk);
 
-    gf256_matrix_t *Ak[DOVE_L];
-    gf256_matrix_t *Bk[DOVE_L]; // O×V
-    gf256_matrix_t *Ck[DOVE_L]; // V×O
-    gf256_matrix_t *Tt = matrix_create(DOVE_O, DOVE_V);
-    matrix_transpose(Tt, T);
+    uint8_t *Ak[DOVE_L];
+    uint8_t *Bk[DOVE_L]; // O×V
+    uint8_t *Ck[DOVE_L]; // V×O
+    uint8_t *Tt = malloc(DOVE_O * DOVE_V);
+    gf_byte_transpose(Tt, T, DOVE_V, DOVE_O);
 
     for (int k = 0; k < DOVE_L; k++) {
-        Ak[k] = matrix_create(DOVE_V, DOVE_V);
+        Ak[k] = malloc(DOVE_V * DOVE_V);
         generate_Ak(Ak[k], seed_pk, k);
-        Bk[k] = matrix_create(DOVE_O, DOVE_V);
-        matrix_mul(Bk[k], Tt, Ak[k]);
-        Ck[k] = matrix_create(DOVE_V, DOVE_O);
-        matrix_mul(Ck[k], Ak[k], T);
+        Bk[k] = malloc(DOVE_O * DOVE_V);
+        gf256_matrix_mul(Bk[k], Tt, Ak[k], DOVE_O, DOVE_V, DOVE_V);
+        Ck[k] = malloc(DOVE_V * DOVE_O);
+        gf256_matrix_mul(Ck[k], Ak[k], T, DOVE_V, DOVE_V, DOVE_O);
     }
 
     // 组装公钥
@@ -113,10 +111,8 @@ int sig_keygen(
     memcpy(pk_ptr, seed_pk, DOVE_PK_SEED_BYTES);
     pk_ptr += DOVE_PK_SEED_BYTES;
 
-    gf256_matrix_t *Pi2 = matrix_create(DOVE_V, DOVE_O);
-    gf256_matrix_t *tmp1 = matrix_create(DOVE_O, DOVE_O);
-    gf256_matrix_t *tmp2 = matrix_create(DOVE_O, DOVE_O);
-    gf256_matrix_t *Pi3 = matrix_create(DOVE_O, DOVE_O);
+    uint8_t *Pi2 = malloc(DOVE_V * DOVE_O);
+    uint8_t *Pi3 = malloc(DOVE_O * DOVE_O);
 
     for (int i = 0; i < DOVE_M; i++) {
         generate_Pi2(Pi2, seed_pk, i);
@@ -124,31 +120,26 @@ int sig_keygen(
         int k1 = i / DOVE_L;
         int k2 = i % DOVE_L;
 
-        matrix_mul(tmp1, Bk[k1], Ck[k2]);
-        matrix_mul(tmp2, Tt, Pi2);
-        matrix_add(Pi3, tmp1, tmp2);
-        matrix_upper(Pi3);
-        matrix_dump_upper(Pi3, pk_ptr);
+        gf256_matrix_mul(Pi3, Bk[k1], Ck[k2], DOVE_O, DOVE_V, DOVE_O);
+        gf256_matrix_mul_add(Pi3, Tt, Pi2, DOVE_O, DOVE_V, DOVE_O);
+        gf_byte_fold_upper(Pi3, DOVE_O);
+        gf_byte_pack_upper(pk_ptr, Pi3, DOVE_O);
         pk_ptr += UPPER_SIZE(DOVE_O);
     }
 
     // 组装私钥
     uint8_t *sk_ptr = sk;
     memcpy(sk_ptr, seed_sk, DOVE_SK_SEED_BYTES);
-    // sk_ptr += DOVE_SK_SEED_BYTES;
-    // matrix_dump(T, sk_ptr);
 
     // 释放资源
-    matrix_free(T);
-    matrix_free(Tt);
-    matrix_free(Pi2);
-    matrix_free(tmp1);
-    matrix_free(tmp2);
-    matrix_free(Pi3);
+    free(T);
+    free(Tt);
+    free(Pi2);
+    free(Pi3);
     for (int k = 0; k < DOVE_L; k++) {
-        matrix_free(Ak[k]);
-        matrix_free(Bk[k]);
-        matrix_free(Ck[k]);
+        free(Ak[k]);
+        free(Bk[k]);
+        free(Ck[k]);
     }
 
     *pk_len_bytes = sig_get_pk_len_bytes();
@@ -172,7 +163,7 @@ int sig_sign(
         return -1;
 
     const uint8_t *seed_sk = sk;
-    gf256_matrix_t *T = matrix_create(DOVE_V, DOVE_O);
+    uint8_t *T = malloc(DOVE_V * DOVE_O);
 
     uint8_t seed_pk[DOVE_PK_SEED_BYTES];
     derive_seedpk_T(seed_pk, T, seed_sk);
@@ -209,28 +200,28 @@ int sig_sign(
     free(input);
 #endif
 
-    gf256_matrix_t *Tt = matrix_create(DOVE_O, DOVE_V);
+    uint8_t *Tt = malloc(DOVE_O * DOVE_V);
 
-    matrix_transpose(Tt, T);
+    gf_byte_transpose(Tt, T, DOVE_V, DOVE_O);
 
     int ret = -1;
     uint8_t v[DOVE_V];
-    gf256_matrix_t *Ak[DOVE_L];
+    uint8_t *Ak[DOVE_L];
     uint8_t *xk[DOVE_L], *yk[DOVE_L];
-    gf256_matrix_t *Bk[DOVE_L], *Ck[DOVE_L];
+    uint8_t *Bk[DOVE_L], *Ck[DOVE_L];
 
     for (int k = 0; k < DOVE_L; k++) {
-        Ak[k] = matrix_create(DOVE_V, DOVE_V);
+        Ak[k] = malloc(DOVE_V * DOVE_V);
         xk[k] = malloc(DOVE_V);
         yk[k] = malloc(DOVE_V);
-        Bk[k] = matrix_create(DOVE_O, DOVE_V);
-        Ck[k] = matrix_create(DOVE_V, DOVE_O);
+        Bk[k] = malloc(DOVE_O * DOVE_V);
+        Ck[k] = malloc(DOVE_V * DOVE_O);
     }
 
-    gf256_matrix_t *L_mat = matrix_create(DOVE_M, DOVE_O);
+    uint8_t *L_mat = malloc(DOVE_M * DOVE_O);
     uint8_t w[DOVE_M], t_minus_w[DOVE_M], z[DOVE_M], s_v[DOVE_V];
-    gf256_matrix_t *Pi2 = matrix_create(DOVE_V, DOVE_O);
-    uint8_t term1[DOVE_O], term2[DOVE_O], term3[DOVE_O];
+    uint8_t *Pi2 = malloc(DOVE_V * DOVE_O);
+    uint8_t term3[DOVE_O];
 
     for (int ctr = 0; ctr < 256; ctr++) {
         // 生成醋变量 v
@@ -246,54 +237,38 @@ int sig_sign(
         for (int k = 0; k < DOVE_L; k++) {
 
             generate_Ak(Ak[k], seed_pk, k);
-            row_vec_mul_matrix(xk[k], v, Ak[k]);
-            matrix_mul_col_vec(yk[k], Ak[k], v);
-            matrix_mul(Bk[k], Tt, Ak[k]);
-            matrix_mul(Ck[k], Ak[k], T);
+            gf256_matrix_mul(xk[k], v, Ak[k], 1, DOVE_V, DOVE_V);
+            gf256_matrix_mul_vec(yk[k], Ak[k], v, DOVE_V, DOVE_V);
+            gf256_matrix_mul(Bk[k], Tt, Ak[k], DOVE_O, DOVE_V, DOVE_V);
+            gf256_matrix_mul(Ck[k], Ak[k], T, DOVE_V, DOVE_V, DOVE_O);
         }
 
         // 构造线性系统 L * z = t - w
-        memset(L_mat->data, 0, DOVE_M * DOVE_O);
         for (int i = 0; i < DOVE_M; i++) {
             generate_Pi2(Pi2, seed_pk, i);
             int k1 = i / DOVE_L;
             int k2 = i % DOVE_L;
 
-            w[i] = gf256_dot(xk[k1], yk[k2], DOVE_V);
+            w[i] = gf256_vector_dot(xk[k1], yk[k2], DOVE_V);
 
-            row_vec_mul_matrix(term1, v, Pi2);
-            row_vec_mul_matrix(term2, xk[k1], Ck[k2]);
-
-            uint8_t tmp[DOVE_O];
-
-            matrix_mul_col_vec(tmp, Bk[k1], yk[k2]);
-            memcpy(term3, tmp, DOVE_O);
-            
-
-
-            uint8_t *row = &L_mat->data[i * DOVE_O];
-            for (int j = 0; j < DOVE_O; j++) {
-                row[j] = term1[j] ^ term2[j] ^ term3[j];
-            }
-
-
+            uint8_t *row = L_mat + i * DOVE_O;
+            gf256_matrix_mul(row, v, Pi2, 1, DOVE_V, DOVE_O);
+            gf256_matrix_mul_add(row, xk[k1], Ck[k2], 1, DOVE_V, DOVE_O);
+            gf256_matrix_mul_vec(term3, Bk[k1], yk[k2], DOVE_O, DOVE_V);
+            gf_byte_add(row, row, term3, DOVE_O);
         }
 
-        // 计算 t - w（必须在 matrix_solve 之前完成）
-        for (int i = 0; i < DOVE_M; i++) {
-            t_minus_w[i] = t[i] ^ w[i];
-        }
+        // 计算 t - w
+        gf_byte_add(t_minus_w, t, w, DOVE_M);
 
         // 求解线性系统 L * z = t - w
-        if (matrix_solve(z, L_mat, t_minus_w) == 0) {
+        if (gf256_matrix_solve(z, L_mat, t_minus_w, DOVE_O) == 0) {
 
             // 构造签名 s = (v + Tz) || z
             uint8_t Tz[DOVE_V];
 
-            matrix_mul_col_vec(Tz, T, z);
-            for (int i = 0; i < DOVE_V; i++) {
-                s_v[i] = v[i] ^ Tz[i];
-            }
+            gf256_matrix_mul_vec(Tz, T, z, DOVE_V, DOVE_O);
+            gf_byte_add(s_v, v, Tz, DOVE_V);
 
             uint8_t *sig_ptr = sn;
             memcpy(sig_ptr, s_v, DOVE_V);
@@ -309,17 +284,17 @@ int sig_sign(
     }
 
     // 释放资源
-    matrix_free(T);
-    matrix_free(Tt);
-    matrix_free(L_mat);
-    matrix_free(Pi2);
+    free(T);
+    free(Tt);
+    free(L_mat);
+    free(Pi2);
     for (int k = 0; k < DOVE_L; k++) {
 
-        matrix_free(Ak[k]);
+        free(Ak[k]);
         free(xk[k]);
         free(yk[k]);
-        matrix_free(Bk[k]);
-        matrix_free(Ck[k]);
+        free(Bk[k]);
+        free(Ck[k]);
     }
     return ret;
 }
@@ -372,55 +347,48 @@ int sig_verify(
     }
 #endif
 
-    gf256_matrix_t *Ak[DOVE_L];
+    uint8_t *Ak[DOVE_L];
     uint8_t *xk[DOVE_L], *yk[DOVE_L];
     for (int k = 0; k < DOVE_L; k++) {
-        Ak[k] = matrix_create(DOVE_V, DOVE_V);
+        Ak[k] = malloc(DOVE_V * DOVE_V);
         generate_Ak(Ak[k], seed_pk, k);
         xk[k] = malloc(DOVE_V);
         yk[k] = malloc(DOVE_V);
-        row_vec_mul_matrix(xk[k], v, Ak[k]);
-        matrix_mul_col_vec(yk[k], Ak[k], v);
+        gf256_matrix_mul(xk[k], v, Ak[k], 1, DOVE_V, DOVE_V);
+        gf256_matrix_mul_vec(yk[k], Ak[k], v, DOVE_V, DOVE_V);
     }
 
-    gf256_matrix_t *Pi2 = matrix_create(DOVE_V, DOVE_O);
-    gf256_matrix_t *Pi3 = matrix_create(DOVE_O, DOVE_O);
+    uint8_t *Pi2 = malloc(DOVE_V * DOVE_O);
+    uint8_t *Pi3 = malloc(DOVE_O * DOVE_O);
     uint8_t w[DOVE_M];
 
     for (int i = 0; i < DOVE_M; i++) {
         generate_Pi2(Pi2, seed_pk, i);
-        matrix_fill_upper(Pi3, pi3_data + i * UPPER_SIZE(DOVE_O));
+        gf_byte_unpack_upper(Pi3, pi3_data + i * UPPER_SIZE(DOVE_O), DOVE_O);
 
 
 
         int k1 = i / DOVE_L;
         int k2 = i % DOVE_L;
 
-        uint8_t term1 = gf256_dot(xk[k1], yk[k2], DOVE_V);
+        uint8_t term1 = gf256_vector_dot(xk[k1], yk[k2], DOVE_V);
 
         uint8_t pi2_z[DOVE_V];
-        matrix_mul_col_vec(pi2_z, Pi2, z);
-        uint8_t term2 = gf256_dot(v, pi2_z, DOVE_V);
+        gf256_matrix_mul_vec(pi2_z, Pi2, z, DOVE_V, DOVE_O);
+        uint8_t term2 = gf256_vector_dot(v, pi2_z, DOVE_V);
 
-        uint8_t term3 = quadratic_form(z, Pi3);
+        uint8_t term3 = gf256_matrix_quadratic(z, Pi3, DOVE_O);
 
         w[i] = term1 ^ term2 ^ term3;
     }
 
     // 验证二次型结果等于消息哈希 t
-    int valid = 0;
-    for (int i = 0; i < DOVE_M; i++) {
+    int valid = pqc_ct_equal(w, t, DOVE_M) ? 0 : -1;
 
-        if (w[i] != t[i]) {
-            valid = -1;
-            break;
-        }
-    }
-
-    matrix_free(Pi2);
-    matrix_free(Pi3);
+    free(Pi2);
+    free(Pi3);
     for (int k = 0; k < DOVE_L; k++) {
-        matrix_free(Ak[k]);
+        free(Ak[k]);
         free(xk[k]);
         free(yk[k]);
     }

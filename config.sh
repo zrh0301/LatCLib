@@ -113,7 +113,8 @@ AES_BACKEND=$(choose AUTO "AES 后端" \
 
 echo "==== 选择要构建的算法模块 (y/N, 回车=Y) ====" >&2
 MODULES=""
-for module in DILITHIUM KYBER SNOVA_R2 SNOVA_R3 MAYO MQOM; do
+for module in DILITHIUM KYBER SNOVA_R2 SNOVA_R3 MAYO MQOM \
+              NGCC_DOVE NGCC_VDOO NGCC_FLEXTREE NGCC_AIGIS; do
     enabled=$(ask_bool "构建 ${module}" ON)
     if [ "$enabled" = ON ]; then
         if [ -z "$MODULES" ]; then
@@ -158,6 +159,24 @@ MAYO_VARIANT=$(choose 1 "MAYO 参数集" \
     "3:MAYO-3" \
     "5:MAYO-5")
 
+NGCC_DOVE_PARAM=$(choose 128 "NGCC DOVE 安全强度" \
+    "128:DOVE-128 (默认)" \
+    "256:DOVE-256" \
+    "512:DOVE-512")
+
+NGCC_DOVE_BIND_SALT=$(ask_bool "DOVE 把盐绑定进待签目标 (sign-09-1 加固)" OFF)
+
+NGCC_VDOO_PARAM=$(choose 128 "NGCC VDOO 安全强度" \
+    "128:VDOO-128 (默认, GF(16))" \
+    "256:VDOO-256 (GF(256))" \
+    "512:VDOO-512 (GF(256))")
+
+NGCC_FLEXTREE_PARAM=$(choose 160f "NGCC FlexTree 参数集" \
+    "160f:Flextree-160f (默认, 官方提交集)")
+
+NGCC_AIGIS_PARAM=$(choose I "NGCC Aigis-Enc+ 参数集" \
+    "I:Aigis-Enc+-I (默认, 官方提交集)")
+
 if [ "$SANITIZERS" = ON ] && [ "$BUILD_TYPE" != Debug ]; then
     echo
     echo "提示: sanitizer 通常配合 Debug 构建; Release 下结果不代表常规性能。" >&2
@@ -178,7 +197,12 @@ CMAKE_ARGS=(-S . -B "$BUILD_DIR"
              -DPQC_SANITIZERS="$SANITIZERS"
              -DPQC_DILITHIUM_MODE="$DILITHIUM_MODE"
              -DPQC_KYBER_MODE="$KYBER_MODE"
-             -DPQC_MAYO_VARIANT="$MAYO_VARIANT")
+             -DPQC_MAYO_VARIANT="$MAYO_VARIANT"
+             -DPQC_NGCC_DOVE_PARAM="$NGCC_DOVE_PARAM"
+             -DPQC_NGCC_DOVE_BIND_SALT="$NGCC_DOVE_BIND_SALT"
+             -DPQC_NGCC_VDOO_PARAM="$NGCC_VDOO_PARAM"
+             -DPQC_NGCC_FLEXTREE_PARAM="$NGCC_FLEXTREE_PARAM"
+             -DPQC_NGCC_AIGIS_PARAM="$NGCC_AIGIS_PARAM")
 
 echo
 echo "==================== 选择汇总 ===================="
@@ -197,6 +221,10 @@ printf 'ASan+UBSan   : %s\n' "$SANITIZERS"
 printf 'Dilithium    : %s\n' "$DILITHIUM_MODE"
 printf 'Kyber        : %s\n' "$KYBER_MODE"
 printf 'MAYO         : %s\n' "$MAYO_VARIANT"
+printf 'NGCC DOVE    : %s (绑定盐 %s)\n' "$NGCC_DOVE_PARAM" "$NGCC_DOVE_BIND_SALT"
+printf 'NGCC VDOO    : %s\n' "$NGCC_VDOO_PARAM"
+printf 'NGCC FlexTree: %s\n' "$NGCC_FLEXTREE_PARAM"
+printf 'NGCC Aigis   : %s\n' "$NGCC_AIGIS_PARAM"
 echo "=================================================="
 echo "执行: cmake ${CMAKE_ARGS[*]}"
 echo

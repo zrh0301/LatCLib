@@ -9,3 +9,11 @@ uint8_t gf256_mul(uint8_t a,uint8_t b) {
 uint8_t gf256_inv(uint8_t a) { uint8_t p=1;for(int i=7;i>=0;i--){p=gf256_mul(p,p);if((254u>>i)&1u)p=gf256_mul(p,a);}return p; }
 void gf2_vector_xor(uint64_t *o,const uint64_t *a,const uint64_t *b,size_t n){for(size_t i=0;i<n;i++)o[i]=a[i]^b[i];}
 uint8_t gf2_vector_dot(const uint64_t *a,const uint64_t *b,size_t n){uint64_t p=0;for(size_t i=0;i<n;i++)p^=a[i]&b[i];p^=p>>32;p^=p>>16;p^=p>>8;p^=p>>4;p^=p>>2;p^=p>>1;return p&1;}
+
+uint8_t gf256_vector_dot(const uint8_t *a, const uint8_t *b, size_t n)
+{
+    uint8_t result = 0;
+    for (size_t i = 0; i < n; ++i)
+        result ^= gf256_mul(a[i], b[i]);
+    return result;
+}

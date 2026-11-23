@@ -4,6 +4,10 @@
 
 set(pqc_core_sources
     src/poly/fp32.c
+    src/poly/fp16.c
+    src/poly/poly16.c
+    src/poly/poly16_pack.c
+    src/poly/ntt16.c
     src/poly/ring.c
     src/poly/poly.c
     src/poly/poly_ntt.c
@@ -13,6 +17,9 @@ set(pqc_core_sources
     src/poly/poly_sample.c
     src/util/rand.c
     src/util/secure_clear.c
+    src/util/ct.c
+    src/util/combinatorics.c
+    src/tree/merkle.c
     src/sym/keccak.c
     src/sym/aes.c
     src/sym/sm3.c
@@ -271,17 +278,104 @@ if(PQC_WITH_NGCC_DOVE)
     pqc_add_variants(pqc_ngcc_dove
         SOURCES
             "${pqc_dove_ref}/SIG_AlgorithmInstance.c"
-            "${pqc_dove_ref}/matrix.c"
-            "${pqc_dove_ref}/uov/blas_matrix_ref.c"
-            alg/ngcc_dove/gf256.c
             alg/ngcc_dove/adapter.c
-        INCLUDES
-            "${pqc_dove_ref}"
-            "${pqc_dove_ref}/uov"
+        INCLUDES "${pqc_dove_ref}"
         PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
             "$<BUILD_INTERFACE:${pqc_dove_ref}>"
         PUBLIC_DEFINITIONS ${pqc_dove_definitions}
         COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: VDOO (round-1 signature candidate, layered Oil-and-Vinegar) ----
+
+if(PQC_WITH_NGCC_VDOO)
+    set(pqc_vdoo_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_vdoo/reference")
+
+    set(pqc_vdoo_namespace
+        sig_keygen=pqc_ngcc_vdoo_keygen
+        sig_sign=pqc_ngcc_vdoo_sign
+        sig_verify=pqc_ngcc_vdoo_verify
+        sig_get_pk_len_bytes=pqc_ngcc_vdoo_pk_len
+        sig_get_sk_len_bytes=pqc_ngcc_vdoo_sk_len
+        sig_get_sn_len_bytes=pqc_ngcc_vdoo_sig_len)
+    pqc_add_variants(pqc_ngcc_vdoo
+        SOURCES
+            "${pqc_vdoo_ref}/SIG_AlgorithmInstance.c"
+            "${pqc_vdoo_ref}/api.c"
+            "${pqc_vdoo_ref}/vdoo_keypair.c"
+            "${pqc_vdoo_ref}/vdoo_sign.c"
+            "${pqc_vdoo_ref}/vdoo_verif.c"
+            alg/ngcc_vdoo/adapter.c
+        INCLUDES
+            "${pqc_vdoo_ref}"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_vdoo_ref}>"
+        DEFINITIONS
+            ${pqc_vdoo_namespace}
+            crypto_sign=pqc_vdoo_crypto_sign
+            crypto_sign_keypair=pqc_vdoo_crypto_sign_keypair
+            crypto_sign_open=pqc_vdoo_crypto_sign_open
+        PUBLIC_DEFINITIONS VDOO_${PQC_NGCC_VDOO_PARAM}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: FlexTree (round-1 signature candidate, PORS+FP and WOTS) ----
+
+if(PQC_WITH_NGCC_FLEXTREE)
+    set(pqc_flextree_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_flextree/reference")
+
+    set(pqc_flextree_definitions
+        crypto_sign=pqc_flextree_crypto_sign
+        crypto_sign_keypair=pqc_flextree_crypto_sign_keypair
+        crypto_sign_open=pqc_flextree_crypto_sign_open
+        drng_algorithm=pqc_ngcc_flextree_drng
+        sig_keygen=pqc_ngcc_flextree_keygen
+        sig_sign=pqc_ngcc_flextree_sign
+        sig_verify=pqc_ngcc_flextree_verify
+        sig_get_pk_len_bytes=pqc_ngcc_flextree_pk_len
+        sig_get_sk_len_bytes=pqc_ngcc_flextree_sk_len
+        sig_get_sn_len_bytes=pqc_ngcc_flextree_sig_len)
+    if(PQC_NGCC_FLEXTREE_STRICT)
+        list(APPEND pqc_flextree_definitions PQC_NGCC_FLEXTREE_STRICT)
+    endif()
+
+    pqc_add_variants(pqc_ngcc_flextree
+        SOURCES
+            "${pqc_flextree_ref}/address.c"
+            "${pqc_flextree_ref}/hash.c"
+            "${pqc_flextree_ref}/merkle.c"
+            "${pqc_flextree_ref}/pors_fp.c"
+            "${pqc_flextree_ref}/sign.c"
+            "${pqc_flextree_ref}/wots.c"
+            alg/ngcc_flextree/adapter.c
+        INCLUDES
+            "${pqc_flextree_ref}"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_flextree_ref}>"
+        DEFINITIONS ${pqc_flextree_definitions}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: Aigis-Enc+ (round-1 KEM candidate, module-LWE) ----
+
+if(PQC_WITH_NGCC_AIGIS)
+    set(pqc_aigis_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis/reference")
+    set(pqc_aigis_namespace "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis/namespace.h")
+
+    pqc_add_variants(pqc_ngcc_aigis
+        SOURCES
+            "${pqc_aigis_ref}/kem.c"
+            "${pqc_aigis_ref}/owcpa.c"
+            alg/ngcc_aigis/adapter.c
+        INCLUDES
+            "${pqc_aigis_ref}"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_aigis_ref}>"
+        DEFINITIONS PARAMS=1
+        COMPILE_OPTIONS -include "${pqc_aigis_namespace}"
         DEPENDS pqc)
 endif()
 

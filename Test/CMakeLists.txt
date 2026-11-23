@@ -4,20 +4,38 @@
 
 pqc_add_test(operator_fp32_correctness
     SOURCES field/test_fp32.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_fp16_correctness
+    SOURCES field/test_fp16.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_gf16_correctness
     SOURCES field/test_gf16.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_context_correctness
     SOURCES algebra/test_contexts.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_poly_correctness
     SOURCES poly/test_poly.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_poly16_correctness
+    SOURCES poly/test_poly16.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_ntt_correctness
     SOURCES ntt/test_ntt.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_ntt16_correctness
+    SOURCES ntt/test_ntt16.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_hash_correctness
     SOURCES hash/test_hash.c hash/cases.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_sm3_correctness
     SOURCES hash/test_sm3.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_gf_vectors_correctness
     SOURCES field/test_gf_vectors.c LIBS ${PQC_LINK_pqc_gf})
+pqc_add_test(operator_ngcc_gf_correctness
+    SOURCES field/test_ngcc_gf.c LIBS ${PQC_LINK_pqc_gf})
+pqc_add_test(operator_u256_correctness
+    SOURCES util/test_u256.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_poly16_pack_correctness
+    SOURCES poly/test_poly16_pack.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_merkle_correctness
+    SOURCES tree/test_merkle.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_combinatorics_correctness
+    SOURCES util/test_combinatorics.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_ct_correctness
+    SOURCES util/test_ct.c LIBS ${PQC_LINK_pqc})
 
 # ---- Operator performance ----
 
@@ -31,7 +49,24 @@ set(PQC_OPERATOR_PERF_CASES
     gf16_add gf16_sub gf16_mul gf16_inv
     gf16_matrix_mul_4 gf16_matrix_mul_16 gf16_matrix_mul_add_4
     gf16_matrix_det_4 gf16_matrix_det_5
+    gf256_dot_256 gf256_solve_16 gf256_inv_16 gf256_matvec_16 gf256_quadratic_16
+    gf_byte_upper_16 gf_byte_batch_upper_16
+    gf16_composite_mul gf256_composite_mul gf16_composite_inv gf256_composite_inv
+    gf16_composite_madd_256 gf256_composite_madd_256
+    gf16_composite_solve_16 gf16_composite_triangular_16 gf16_composite_matvec_16
+    gf16_composite_batch_16 gf256_composite_quad_16
+    u256_mod_add u256_mul_div_u32 bytes_be_64
+    merkle_treehash_h4 merkle_root_path_h4 merkle_auth_nodes_13
+    merkle_build_13 merkle_root_proof_13
+    u256_binomial_4721_27 combination_unrank_128_16 u256_reduce_bytes_4
     fp32_add fp32_sub fp32_mul fp32_mont_reduce fp32_inv
+    fp16_mont_reduce fp16_barrett_reduce fp16_caddq2
+    poly16_add_512 poly16_barrett_512 poly16_tomont_512
+    cbd_eta5_512 cbd_eta6_512
+    poly16_encode_512 poly16_compress_512 poly16_rej_uniform12_512
+    poly16_repeat_encode_512 poly16_repeat_decode_512
+    ntt16_128 ntt16_blocks_512 ntt16_product_512
+    ct_equal_32 ct_select_32
     poly_add_256 poly_sub_256 poly_reduce_256 poly_ntt_256
     poly_invntt_256 poly_mul_ntt_256
     polyvec_add_4 polyvec_ntt_4 polyvec_inner_4 polyvec_matrix_4
@@ -54,6 +89,7 @@ if(PQC_WITH_DILITHIUM)
         DEFINITIONS PQC_DILITHIUM_MODE=${PQC_DILITHIUM_MODE} PQC_PERF_ONLY)
     set_property(GLOBAL APPEND PROPERTY PQC_PERF_TEST_NAMES
         algorithm_dilithium_performance)
+    pqc_record_benchmark(algorithm_dilithium_performance _)
 endif()
 
 if(PQC_WITH_KYBER)
@@ -67,6 +103,7 @@ if(PQC_WITH_KYBER)
         DEFINITIONS PQC_KYBER_MODE=${PQC_KYBER_MODE} PQC_PERF_ONLY)
     set_property(GLOBAL APPEND PROPERTY PQC_PERF_TEST_NAMES
         algorithm_kyber_performance)
+    pqc_record_benchmark(algorithm_kyber_performance _)
 endif()
 
 # These tests exercise both lattice algorithms, so they need both modules.
@@ -155,6 +192,127 @@ if(PQC_WITH_NGCC_DOVE)
         TIMEOUT 600 LABELS signatures)
 endif()
 
+if(PQC_WITH_NGCC_VDOO)
+    pqc_add_test(ngcc_vdoo_kat
+        SOURCES ngcc/test_vdoo_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_vdoo}
+        DEFINITIONS
+            ${pqc_vdoo_namespace}
+            PQC_VDOO_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_SIG_VDOO-128.txt"
+        TIMEOUT 900 LABELS ngcc)
+    if(NOT PQC_NGCC_VDOO_PARAM STREQUAL "128")
+        set_tests_properties(ngcc_vdoo_kat PROPERTIES DISABLED TRUE)
+    endif()
+
+    # VDOO hashes the salt into the target, so the whole signature field is
+    # authenticated and any byte flip must be rejected.
+    pqc_add_test(signature_ngcc_vdoo_correctness
+        SOURCES sig/test_signature_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_vdoo}
+        DEFINITIONS
+            PQC_SIG_GETTER=pqc_ngcc_vdoo_algorithm
+            PQC_SIG_TAMPER_TRAILER=0
+        TIMEOUT 600 LABELS signatures)
+endif()
+
+if(PQC_WITH_NGCC_FLEXTREE)
+    pqc_add_test(ngcc_flextree_kat
+        SOURCES ngcc/test_flextree_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_flextree}
+        DEFINITIONS
+            sig_keygen=pqc_ngcc_flextree_keygen
+            sig_sign=pqc_ngcc_flextree_sign
+            sig_verify=pqc_ngcc_flextree_verify
+            sig_get_pk_len_bytes=pqc_ngcc_flextree_pk_len
+            sig_get_sk_len_bytes=pqc_ngcc_flextree_sk_len
+            sig_get_sn_len_bytes=pqc_ngcc_flextree_sig_len
+            PQC_FLEXTREE_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_SIG_Flextree-160f.txt"
+        TIMEOUT 900 LABELS ngcc)
+    # The strict build changes the OTS signer predicate (sign-11-7), so its
+    # signatures intentionally differ from the published vectors.
+    if(PQC_NGCC_FLEXTREE_STRICT)
+        set_tests_properties(ngcc_flextree_kat PROPERTIES DISABLED TRUE)
+    endif()
+
+    # FlexTree binds every signature field into the root, including the PORS
+    # padding that the reference signer zeroes, so any byte flip is rejected.
+    pqc_add_test(signature_ngcc_flextree_correctness
+        SOURCES sig/test_signature_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_flextree}
+        DEFINITIONS
+            PQC_SIG_GETTER=pqc_ngcc_flextree_algorithm
+            PQC_SIG_TAMPER_TRAILER=0
+        TIMEOUT 600 LABELS signatures)
+endif()
+
+if(PQC_WITH_NGCC_AIGIS)
+    pqc_add_test(ngcc_aigis_kat
+        SOURCES ngcc/test_aigis_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_aigis}
+        DEFINITIONS
+            PARAMS=1
+            PQC_AIGIS_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_KEM_Aigis-enc1.txt"
+        TIMEOUT 600 LABELS ngcc)
+    # The reference entry points are force-prefixed with the same namespace
+    # header that the library target uses.
+    target_compile_options(ngcc_aigis_kat PRIVATE
+        -include "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis/namespace.h")
+
+    pqc_add_test(kem_ngcc_aigis_correctness
+        SOURCES kem/test_kem_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_aigis}
+        DEFINITIONS PQC_KEM_GETTER=pqc_ngcc_aigis_algorithm
+        TIMEOUT 600 LABELS kem)
+
+    add_executable(kem_ngcc_aigis_performance perf/test_kem_perf.c)
+    target_include_directories(kem_ngcc_aigis_performance
+        PRIVATE "${PROJECT_SOURCE_DIR}/Test")
+    target_link_libraries(kem_ngcc_aigis_performance
+        PRIVATE ${PQC_LINK_pqc_ngcc_aigis})
+    target_compile_definitions(kem_ngcc_aigis_performance
+        PRIVATE PQC_KEM_GETTER=pqc_ngcc_aigis_algorithm)
+    pqc_apply_compile_flags(kem_ngcc_aigis_performance)
+    pqc_apply_link_flags(kem_ngcc_aigis_performance)
+    foreach(case keypair encaps decaps)
+        pqc_add_perf_case(kem_ngcc_aigis_${case}_performance
+            kem_ngcc_aigis_performance ${case})
+    endforeach()
+endif()
+
+foreach(algorithm dove vdoo flextree)
+    string(TOUPPER "${algorithm}" algorithm_upper)
+    if(PQC_WITH_NGCC_${algorithm_upper})
+        set(target signature_ngcc_${algorithm}_performance)
+        add_executable(${target} perf/test_signature_perf.c)
+        target_include_directories(${target} PRIVATE "${PROJECT_SOURCE_DIR}/Test")
+        target_link_libraries(${target} PRIVATE ${PQC_LINK_pqc_ngcc_${algorithm}})
+        target_compile_definitions(${target} PRIVATE
+            PQC_SIG_GETTER=pqc_ngcc_${algorithm}_algorithm)
+        pqc_apply_compile_flags(${target})
+        pqc_apply_link_flags(${target})
+        foreach(case keygen sign open)
+            pqc_add_perf_case(signature_ngcc_${algorithm}_${case}_performance
+                ${target} ${case})
+        endforeach()
+    endif()
+endforeach()
+
+if(PQC_WITH_NGCC_DOVE AND PQC_WITH_NGCC_VDOO AND
+   PQC_WITH_NGCC_FLEXTREE AND PQC_WITH_NGCC_AIGIS)
+    set(pqc_ngcc_link_defs "")
+    set(pqc_ngcc_link_libs
+        ${PQC_LINK_pqc_ngcc_dove} ${PQC_LINK_pqc_ngcc_vdoo}
+        ${PQC_LINK_pqc_ngcc_flextree} ${PQC_LINK_pqc_ngcc_aigis})
+    if(PQC_WITH_SNOVA_R3)
+        list(APPEND pqc_ngcc_link_defs PQC_NGCC_LINK_TEST_SNOVA)
+        list(APPEND pqc_ngcc_link_libs ${PQC_LINK_pqc_snova_r3})
+    endif()
+    pqc_add_test(ngcc_coexistence
+        SOURCES ngcc/test_link.c LIBS ${pqc_ngcc_link_libs}
+        DEFINITIONS ${pqc_ngcc_link_defs}
+        TIMEOUT 600 LABELS ngcc)
+endif()
+
 # ---- Unified signature API ----
 
 foreach(algorithm snova_r2 snova_r3 mayo mqom)
@@ -188,16 +346,25 @@ add_custom_target(run_test
     WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 if(PQC_PERF_TESTS)
+    # The benchmark list and the target dependencies both come from the
+    # registrations above, so a newly added algorithm cannot be silently left
+    # out of bench.sh or left unbuilt by the run_performance target.
+    get_property(pqc_perf_cases GLOBAL PROPERTY PQC_PERF_CASES)
+    get_property(pqc_perf_executables GLOBAL PROPERTY PQC_PERF_EXECUTABLES)
+    list(REMOVE_DUPLICATES pqc_perf_executables)
+    set(PQC_PERF_CASES "${pqc_perf_cases}")
+    configure_file(${PROJECT_SOURCE_DIR}/Test/perf/run_performance.cmake
+        "${PROJECT_BINARY_DIR}/run_performance.cmake" @ONLY)
+
     add_custom_target(run_performance
         COMMAND ${CMAKE_COMMAND} -DBUILD_DIR="${PQC_RUNTIME_OUTPUT_DIRECTORY}"
                 -P "${PROJECT_BINARY_DIR}/run_performance.cmake"
+        DEPENDS ${pqc_perf_executables}
         WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
 
     if(UNIX)
         configure_file(${PROJECT_SOURCE_DIR}/Test/perf/bench.sh.in
             "${PROJECT_BINARY_DIR}/bench.sh" @ONLY)
-        configure_file(${PROJECT_SOURCE_DIR}/Test/perf/run_performance.cmake
-            "${PROJECT_BINARY_DIR}/run_performance.cmake" @ONLY)
         execute_process(COMMAND chmod +x "${PROJECT_BINARY_DIR}/bench.sh"
             RESULT_VARIABLE bench_chmod_result)
         if(NOT bench_chmod_result EQUAL 0)

@@ -1,9 +1,8 @@
 /* Adapter from the ICCS NGCC signature ABI to the library signature API.
  *
  * Reference sources: ICCS NGCC round-1 submission package, "DOVE" (digital
- * signature track), Reference_Implementation/DOVE_pkc_skc_ref. Only the
- * intra-package include paths, the GF(256) vector layer and one out-of-bounds
- * read were changed; see reference/gf256.h and reference/SIG_AlgorithmInstance.c.
+ * signature track), Reference_Implementation/DOVE_pkc_skc_ref. The library
+ * GF(256) layer provides field arithmetic, vector and matrix operators.
  *
  * ICCS NGCC public review, sign-09: sign-09-3 (out-of-bounds reads) is fixed in
  * the reference sources, and sign-09-1 (unauthenticated salt) can be fixed at

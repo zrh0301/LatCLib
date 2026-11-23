@@ -8,4 +8,5 @@ uint8_t gf256_inv(uint8_t a);
 /* Exact in-place allowed; no partial overlap. n==0 permits NULL. */
 void gf256_vector_mul(uint8_t *out,const uint8_t *a,const uint8_t *b,size_t n);
 void gf256_vector_madd(uint8_t *acc,const uint8_t *a,uint8_t k,size_t n);
+uint8_t gf256_vector_dot(const uint8_t *a, const uint8_t *b, size_t n);
 #endif

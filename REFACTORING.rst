@@ -44,6 +44,33 @@ Windows/POSIX 备用随机源需要在对应平台另行验证。
 将这些对象当作域。一般规范化接口使用整数余数，是可移植参考后端；
 它们未承诺所有处理器上的常数时间执行，也未完成侧信道审计。
 
+``fp16_ctx``（inc/poly/fp16.h）是同一约定的 16 位版本，描述 3 到
+INT16_MAX 的奇素数域，供系数以 int16_t 存储的算法复用。Montgomery
+约简使用 R=2^16，``barrett`` 为 floor(2^15/q)，``mont_r2`` 为 R^2 mod q。
+Aigis-Enc+ 的 ``reduce.c`` 只保留算法侧入口，约简运算全部转发到该算子。
+
+``inc/poly/poly16.h`` 提供 int16_t 系数向量的通用算子：逐系数加/减、
+Barrett 归约、``caddq``/``caddq2``、转入 Montgomery 域，以及
+``fp16_poly_cbd`` 中心二项分布采样。采样器把 eta 拆成不超过 eta 的最大 2
+的幂 hi 与 lo：前 n*hi/4 字节编码一个标准 CBD_hi，其后编码 CBD_lo 并与前者
+逐系数相加。eta 为 1、2、4 时即普通连续 CBD；3、5、6 使用 ICCS NGCC 参考
+实现的拆分布局，因此与参考输出逐位一致。
+
+``inc/poly/ntt16.h`` 提供 128 点负循环 NTT（q=3329，官方 Kyber 旋转因子表，
+逆变换自带 1/128 缩放，故 ``pqc_invntt128(pqc_ntt128(a)) == a``）。它与
+``ntt_plan`` 的差别是系数为 int16_t、按 128 点分块，Aigis-Enc+ 的 512 项
+多项式正好是 4 个块。
+
+Aigis-Enc+ 的 ``ntt.c``、``cbd.c`` 与 ``poly.c`` 中对应的函数现在只转发到
+上述算子；仍留在算法侧的是与规格绑定的位打包（压缩/解压缩、frommsg/tomsg、
+tobytes/frombytes）、``gen_a`` 的拒绝采样，以及 NTT 域的 4 块 Karatsuba
+乘法 ``poly_mont_mul``（含 NTT_Y 旋转因子表，随参数集与环布局变化）。
+
+``inc/util/ct.h`` 提供常数时间等值比较与条件选择。Aigis-Enc+ 的 verify/cmov
+只把 0/1 约定映射到这两个算子，因此 KEM 的密文校验与隐式拒绝共用同一实现。
+两个函数都遍历全部字节，运行时间只与长度有关；它们不是编译器屏障，调用方
+仍需避免把比较结果用于数据相关分支。
+
 Montgomery 常量统一为正逆元 qinv = q^(-1) mod 2^32，使用减法形式。
 ``fp32_mont_reduce`` 是热路径内联内核，要求 |a| <= 2^31*q。
 函数的输入范围、规范表示与延迟归约范围详见头文件。
@@ -119,7 +146,36 @@ SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova_
 当前仅接入用户优化实现：x86-64 默认 AVX2，AArch64 默认 NEON。
 公共标量算子按需复用；扩展表示及 SIMD 热路径仍留在 SNOVA 后端。GF(16) 求解器和其他多变量专用运算尚未拆分。
 
-test_fp32 使用独立取模/Euclid 参考和极值检查。
+NGCC 算法位于 ``alg/ngcc_*``，包含参数、密钥和密文或签名格式、算法流程及
+公共 API 适配。哈希和确定性随机数统一调用 ``inc/ngcc/auxfunc.h`` 和
+``inc/ngcc/drng.h``。底层算子按表示和用途放在共享模块中。
+
+- DOVE 复用多项式基 GF(256) 内核及矩阵乘法，矩阵向量积、求逆、求解和
+  上三角布局转换位于 ``inc/gf`` 和 ``src/gf/common``，签名实现直接调用这些接口。
+- VDOO 的 GF(16)/GF(256) 字节使用 GF(4) 塔域坐标。算术、向量乘加和批量矩阵
+  运算位于 ``inc/gf/composite*.h`` 和 ``src/gf/tower``，以兼容提交版 KAT。
+- Aigis-Enc+ 的 KEM 和公钥加密流程直接调用 ``poly16``、``ntt16``、
+  ``ngcc`` 和 ``util/ct.h``。系数编解码和重复位消息编解码统一由
+  ``src/poly/poly16_pack.c`` 实现。密钥与密文布局、种子派生和噪声参数
+  在算法层定义。
+- FlexTree 的完整树与截短底层树共用 ``inc/tree/merkle.h`` 和
+  ``src/tree/merkle.c``，覆盖树构建、单叶认证路径、多叶认证节点位置与根重建。
+  PORS 的组合数查表、字典序组合解码和按字节查表模约减调用
+  ``util/combinatorics.h``。算法层保留域分离地址、哈希输入格式、WOTS 链、
+  签名计数器搜索和 Flextree-160f 参数表。WOTS 叶生成与验签位于同一个
+  ``wots.c``，计数器编解码直接调用 ``util/bytes.h``。
+
+NGCC 正确性测试覆盖提交版 KAT、公共 API 及多算法链接。算子测试覆盖塔域参考
+乘法、矩阵求解及逆矩阵、分块 NTT 与朴素卷积的对照、位编码及大整数边界。
+Merkle 算子与递归构造的树对照，对 1 到 9 个叶子的全部非空叶集合验证多叶认证；
+组合解码与小参数的全部字典序组合枚举对照。对应
+基准由 CMake 注册，打开 ``PQC_PERF_TESTS`` 后可通过 ``run_performance``
+或 CTest 的 ``performance`` 标签运行。
+
+test_fp32 使用独立取模/Euclid 参考和极值检查；test_fp16 使用相同的参考
+策略覆盖 16 位 Montgomery/Barrett 与条件加法。test_poly16 用逐位参考验证
+16 位多项式算术与 eta 1 到 6 的 CBD；test_ntt16 用直接按定义求值的 NTT
+（psi^(2*bitrev(j)+1)）验证 128 点变换、往返一致性与分块包装。
 test_contexts 只链接 algebra，验证构造失败、复制、每个旋转因子、缩放、
 朴素负循环乘法、原地输出、矩形矩阵及长向量累加。
 test_rng 检查注入、系统接口故障传播及输出不变契约。

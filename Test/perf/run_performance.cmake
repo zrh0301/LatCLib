@@ -3,45 +3,9 @@ if(NOT DEFINED BUILD_DIR)
 endif()
 
 get_filename_component(_build_dir "${BUILD_DIR}" ABSOLUTE)
-set(_benchmarks
-    "operator_performance|gf16_add"
-    "operator_performance|gf16_sub"
-    "operator_performance|gf16_mul"
-    "operator_performance|gf16_inv"
-    "operator_performance|gf16_matrix_mul_4"
-    "operator_performance|gf16_matrix_mul_16"
-    "operator_performance|gf16_matrix_mul_add_4"
-    "operator_performance|gf16_matrix_det_4"
-    "operator_performance|gf16_matrix_det_5"
-    "operator_performance|fp32_add"
-    "operator_performance|fp32_sub"
-    "operator_performance|fp32_mul"
-    "operator_performance|fp32_mont_reduce"
-    "operator_performance|fp32_inv"
-    "operator_performance|poly_add_256"
-    "operator_performance|poly_sub_256"
-    "operator_performance|poly_reduce_256"
-    "operator_performance|poly_ntt_256"
-    "operator_performance|poly_invntt_256"
-    "operator_performance|poly_mul_ntt_256"
-    "operator_performance|polyvec_add_4"
-    "operator_performance|polyvec_ntt_4"
-    "operator_performance|polyvec_inner_4"
-    "operator_performance|polyvec_matrix_4"
-    "operator_performance|sample_cbd_256"
-    "operator_performance|randombytes_168"
-    "operator_performance|sha3_256_168"
-    "algorithm_snova_performance|keygen"
-    "algorithm_snova_performance|sign"
-    "algorithm_snova_performance|verify"
-    "algorithm_snova_performance|shake"
-    "algorithm_snova_performance|genkeys"
-    "algorithm_snova_performance|sk_expand"
-    "algorithm_snova_performance|pk_expand"
-    "algorithm_snova_performance|sign_core"
-    "algorithm_snova_performance|verify_core"
-    "algorithm_dilithium_performance|_"
-    "algorithm_kyber_performance|_")
+# Generated from the perf cases registered in Test/CMakeLists.txt: every module
+# that registers a case is listed here automatically.
+set(_benchmarks @PQC_PERF_CASES@)
 
 set(_ran 0)
 foreach(_benchmark IN LISTS _benchmarks)

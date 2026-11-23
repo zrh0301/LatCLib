@@ -2,4 +2,16 @@
 
 include("${CMAKE_CURRENT_LIST_DIR}/pqcTargets.cmake")
 
+# Component availability, so find_package(pqc COMPONENTS ngcc_aigis) works.
+set(pqc_dilithium_FOUND @PQC_WITH_DILITHIUM@)
+set(pqc_kyber_FOUND @PQC_WITH_KYBER@)
+set(pqc_snova_r2_FOUND @PQC_WITH_SNOVA_R2@)
+set(pqc_snova_r3_FOUND @PQC_WITH_SNOVA_R3@)
+set(pqc_mayo_FOUND @PQC_WITH_MAYO@)
+set(pqc_mqom_FOUND @PQC_WITH_MQOM@)
+set(pqc_ngcc_dove_FOUND @PQC_WITH_NGCC_DOVE@)
+set(pqc_ngcc_vdoo_FOUND @PQC_WITH_NGCC_VDOO@)
+set(pqc_ngcc_flextree_FOUND @PQC_WITH_NGCC_FLEXTREE@)
+set(pqc_ngcc_aigis_FOUND @PQC_WITH_NGCC_AIGIS@)
+
 check_required_components(pqc)

@@ -50,6 +50,10 @@ pqc_add_variants(pqc_gf
         src/gf/gf16_matrix.c
         src/gf/common/vector.c
         src/gf/common/matrix.c
+        src/gf/common/gf256_solve.c
+        src/gf/common/byte_matrix.c
         src/gf/tower/coordinates.c
+        src/gf/tower/composite.c
+        src/gf/tower/composite_matrix.c
     PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
     EXTRA_OBJECTS pqc_gf_kernels_obj)

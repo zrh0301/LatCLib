@@ -27,16 +27,26 @@ function(pqc_add_test name)
     set_property(GLOBAL APPEND PROPERTY PQC_CORRECTNESS_TARGETS ${name})
 endfunction()
 
+# Records one benchmark for bench.sh/run_performance. Kept separate from CTest
+# registration so algorithms benchmarked through their own test executable can
+# join the same list.
+function(pqc_record_benchmark executable case)
+    set_property(GLOBAL APPEND PROPERTY PQC_PERF_CASES "${executable}|${case}")
+    set_property(GLOBAL APPEND PROPERTY PQC_PERF_EXECUTABLES ${executable})
+endfunction()
+
 # Registers one performance case of an already declared executable.
 function(pqc_add_perf_case name executable case)
     add_test(NAME ${name} COMMAND ${executable} ${case})
     set_property(GLOBAL APPEND PROPERTY PQC_PERF_TEST_NAMES ${name})
+    pqc_record_benchmark(${executable} ${case})
 endfunction()
 
 # Registers a whole executable as one performance benchmark.
 function(pqc_add_benchmark name executable)
     add_test(NAME ${name} COMMAND ${executable})
     set_property(GLOBAL APPEND PROPERTY PQC_PERF_TEST_NAMES ${name})
+    pqc_record_benchmark(${executable} _)
 endfunction()
 
 # Applies the performance label and the enabled/disabled state in one place.
