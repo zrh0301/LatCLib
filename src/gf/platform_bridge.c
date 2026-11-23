@@ -1,7 +1,7 @@
 #include "gfext.h"
 #include <stdatomic.h>
-#include "../../inc/gf16.h"
-#include "../../inc/gf256.h"
+#include "../../inc/gf/gf16.h"
+#include "../../inc/gf/gf256.h"
 /* All public wrappers initialize imported read-only tables before use. */
 static atomic_int initialized=0;
 static void init(void){int expected=0;if(atomic_compare_exchange_strong_explicit(&initialized,&expected,1,memory_order_acq_rel,memory_order_acquire)){pqc_kernel_gf16_tables_init();pqc_kernel_gf256_tower_init();atomic_store_explicit(&initialized,2,memory_order_release);}else{while(atomic_load_explicit(&initialized,memory_order_acquire)!=2){}}}

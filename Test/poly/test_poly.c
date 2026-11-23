@@ -1,6 +1,6 @@
 #include "test.h"
-#include "polyvec.h"
-#include "fp32.h"
+#include "poly/polyvec.h"
+#include "poly/fp32.h"
 
 static lssi_t reference_mod(lssi_t a, lssi_t q) {
     a %= q;

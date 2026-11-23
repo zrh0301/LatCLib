@@ -31,6 +31,7 @@ message("   PQC_WITH=SNOVA_R2    SNOVA round 2 signatures.")
 message("   PQC_WITH=SNOVA_R3    SNOVA round 3 signatures.")
 message("   PQC_WITH=MAYO        MAYO signatures.")
 message("   PQC_WITH=MQOM        MQOM signatures.")
+message("   PQC_WITH=NGCC_DOVE   NGCC round-1 DOVE signatures.")
 message("   PQC_WITH=ALL         All of the above.\n")
 
 message(STATUS "Available switches (default = SHLIB, STLIB, TESTS, INSTALL):\n")
@@ -54,8 +55,8 @@ include(cmake/functions.cmake)
 include(cmake/gf.cmake)
 include(cmake/algorithms.cmake)
 
-configure_file(inc/pqc_conf.h.in
-    "${PROJECT_BINARY_DIR}/include/pqc_conf.h" @ONLY)
+configure_file(inc/core/pqc_conf.h.in
+    "${PROJECT_BINARY_DIR}/include/core/pqc_conf.h" @ONLY)
 
 if(PQC_TESTS)
     enable_testing()

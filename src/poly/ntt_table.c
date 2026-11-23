@@ -1,4 +1,4 @@
-#include "ntt.h"
+#include "poly/ntt.h"
 
 /* Fixed n=256 plans. Tables equal R*root^bitreverse(i) modulo q, centered.
  * q=8380417 uses root=1753; q=3329 uses root=17. Index zero is unused. */

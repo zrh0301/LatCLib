@@ -1,9 +1,15 @@
-#include "pqc_signature.h"
+#include "core/pqc_signature.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #ifndef PQC_SIG_GETTER
 #error "Select the algorithm descriptor"
+#endif
+/* Trailing signature bytes that the format does not authenticate, so that a
+ * flip there must still verify. Zero for every format that signs its whole
+ * signature field. */
+#ifndef PQC_SIG_TAMPER_TRAILER
+#define PQC_SIG_TAMPER_TRAILER 0
 #endif
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"FAIL %s:%d: %s\n",a->name,__LINE__,#x);rc=1;goto done;} }while(0)
 int main(int argc,char **argv){
@@ -25,7 +31,7 @@ int main(int argc,char **argv){
   CHECK(a->sign(sm,&slen,msg,n,sk)==0);CHECK(slen==n+a->signature_bytes);
   CHECK(a->open(out,&olen,sm,slen,pk)==0);CHECK(olen==n);CHECK(memcmp(msg,out,n)==0);
   memcpy(bad,sm,slen);bad[0]^=1;CHECK(a->open(out,&olen,bad,slen,pk)!=0);
-  memcpy(bad,sm,slen);bad[slen-1]^=1;CHECK(a->open(out,&olen,bad,slen,pk)!=0);
+  memcpy(bad,sm,slen);bad[a->signature_bytes-1-PQC_SIG_TAMPER_TRAILER]^=1;CHECK(a->open(out,&olen,bad,slen,pk)!=0);
   CHECK(a->open(out,&olen,sm,a->signature_bytes-1,pk)!=0);
   CHECK(a->open(out,&olen,sm,slen-1,pk)!=0);
  }

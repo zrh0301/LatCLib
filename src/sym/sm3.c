@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <string.h>
-#include "sm3.h"
+#include "sym/sm3.h"
 
 #ifndef PUT_UINT32_BE
 /* Put 32-bit integer(n) to big endian bytes(b) */

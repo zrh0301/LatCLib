@@ -1,6 +1,6 @@
 #include "kyber_sample.h"
 #include "kyber_pack.h"
-#include "keccak.h"
+#include "sym/keccak.h"
 #include <string.h>
 
 void kyber_g(uint8_t out[64], const uint8_t *in, size_t inlen) {

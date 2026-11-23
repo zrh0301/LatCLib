@@ -1,9 +1,10 @@
 # GF(16)/GF(256) arithmetic module.
 #
 # The portable scalar sources and the platform kernels use different views of
-# "gf16.h": the scalar sources include the public inc/gf16.h, while the kernels
-# include the architecture-specific internal/gf16.h. They are therefore built
-# as two OBJECT libraries that end up in the same shared and static variants.
+# "gf16.h": the scalar sources include the public inc/gf/gf16.h, while the
+# kernels include the architecture-specific internal/gf16.h. They are
+# therefore built as two OBJECT libraries that end up in the same shared and
+# static variants.
 
 if(PQC_GF_BACKEND_EFFECTIVE MATCHES "^(AVX2|GFNI)$")
     set(pqc_gf_platform x86)
@@ -45,8 +46,8 @@ pqc_apply_compile_flags(pqc_gf_kernels_obj)
 
 pqc_add_variants(pqc_gf
     SOURCES
-        src/gf16.c
-        src/gf16_matrix.c
+        src/gf/gf16.c
+        src/gf/gf16_matrix.c
         src/gf/common/vector.c
         src/gf/common/matrix.c
         src/gf/tower/coordinates.c

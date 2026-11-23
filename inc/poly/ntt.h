@@ -2,7 +2,7 @@
 #define PQC_NTT_H
 
 #include <stddef.h>
-#include "ring.h"
+#include "poly/ring.h"
 
 /* This first backend is explicitly limited to n=256. The plan owns its ring
  * by value; zetas points to immutable, process-lifetime tables. Copying a plan

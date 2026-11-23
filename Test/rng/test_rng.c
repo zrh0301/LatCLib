@@ -1,5 +1,5 @@
-#include "rand.h"
-#include "poly_sample.h"
+#include "util/rand.h"
+#include "poly/poly_sample.h"
 #include "dili.h"
 #include "kyber.h"
 #include <stdio.h>

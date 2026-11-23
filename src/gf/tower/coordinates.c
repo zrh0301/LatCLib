@@ -1,6 +1,6 @@
 /* Coordinate tables from GF_cal/gf256_tower.c; provenance in sources.json. */
-#include "gf256_tower.h"
-#include "gf16.h"
+#include "gf/gf256_tower.h"
+#include "gf/gf16.h"
 static const uint8_t TOWER_PHI_LO[16] = {
     0x00, 0x01, 0x20, 0x21, 0x46, 0x47, 0x66, 0x67,
     0x4c, 0x4d, 0x6c, 0x6d, 0x0a, 0x0b, 0x2a, 0x2b

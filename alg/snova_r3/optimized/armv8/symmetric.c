@@ -17,7 +17,7 @@
 #include <string.h>
 
 #include "snova.h"
-#include "keccak.h"
+#include "sym/keccak.h"
 
 /**
  * SNOVA public key expander

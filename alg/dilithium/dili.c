@@ -1,8 +1,8 @@
 #include "dili.h"
-#include "poly.h"
-#include "polyvec.h"
+#include "poly/poly.h"
+#include "poly/polyvec.h"
 #include "pack.h"
-#include "rand.h"
+#include "util/rand.h"
 #include "dili_sample.h"
 #include <stdlib.h>
 #include <string.h>

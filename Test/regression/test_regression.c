@@ -1,6 +1,6 @@
 #include "dili.h"
 #include "kyber.h"
-#include "keccak.h"
+#include "sym/keccak.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

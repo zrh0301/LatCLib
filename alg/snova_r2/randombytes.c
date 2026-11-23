@@ -1,4 +1,4 @@
-#include "rand.h"
+#include "util/rand.h"
 #include <stdlib.h>
 #include <stdint.h>
 int pqc_snova_r2_randombytes(unsigned char *out,unsigned long long n){

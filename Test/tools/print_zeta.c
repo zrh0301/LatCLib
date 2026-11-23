@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "poly.h"
+#include "poly/poly.h"
 
 static void print_zetas(const char *name, const lp_ctx *ctx, int used) {
     printf("%s immutable zetas\n", name);

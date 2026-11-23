@@ -1,4 +1,4 @@
-#include "rand.h"
+#include "util/rand.h"
 #include <stdlib.h>
 #include <stdint.h>
 int pqc_mayo_randombytes(unsigned char *out,size_t n){

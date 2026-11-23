@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "sm3.h"
+#include "sym/sm3.h"
 
 static const uint8_t sm3_abc_digest[SM3_HASH_SIZE] = {
     0x66, 0xc7, 0xf0, 0xf4, 0x62, 0xee, 0xed, 0xd9,

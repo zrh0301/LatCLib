@@ -1,7 +1,7 @@
 #ifndef DILI_SAMPLE_H
 #define DILI_SAMPLE_H
 
-#include "poly.h"
+#include "poly/poly.h"
 
 void poly_uniform(poly *a, lp_ctx *ctx);
 void poly_uniform_eta(poly *a, lp_ctx *ctx, int ETA);

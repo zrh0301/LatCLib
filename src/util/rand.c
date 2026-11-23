@@ -1,5 +1,5 @@
-#include "rand.h"
-#include "secure_clear.h"
+#include "util/rand.h"
+#include "util/secure_clear.h"
 #include <stdlib.h>
 
 #if defined(_WIN32)

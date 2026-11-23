@@ -1,4 +1,4 @@
-#include "poly.h"
+#include "poly/poly.h"
 
 /* Scheme presets live in the compatibility/algorithm target. Algebra's
  * ntt_plan_init_256 knows only the numerical configurations it supports. */

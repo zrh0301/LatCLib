@@ -497,7 +497,7 @@ static void oqs_aes256_CTR_inc_stream_blks(void *ctx, uint8_t *out, size_t out_b
 #include <stdlib.h>
 #include <string.h>
 
-// #include "aes.h"
+// #include "sym/aes.h"
 // #include "oqs_common.h"
 
 #define AES128_KEYBYTES 16

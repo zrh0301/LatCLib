@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "keccak.h"
-#include "aes.h"
-#include "secure_clear.h"
+#include "sym/keccak.h"
+#include "sym/aes.h"
+#include "util/secure_clear.h"
 
 typedef KECCAK1600_CTX shake_t;
 

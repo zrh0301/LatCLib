@@ -1,4 +1,4 @@
-#include "poly_sample.h"
+#include "poly/poly_sample.h"
 #include <stdlib.h>
 
 int poly_rand_with_rng(lssi_t *a, int coefs, pqc_rng_func rng, void *rng_ctx)

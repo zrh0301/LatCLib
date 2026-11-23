@@ -43,6 +43,7 @@ set(_benchmarks
     "algorithm_dilithium_performance|_"
     "algorithm_kyber_performance|_")
 
+set(_ran 0)
 foreach(_benchmark IN LISTS _benchmarks)
     if(DEFINED BENCH_FILTER AND NOT _benchmark MATCHES "${BENCH_FILTER}")
         continue()
@@ -54,6 +55,7 @@ foreach(_benchmark IN LISTS _benchmarks)
     if(NOT EXISTS "${_command}")
         continue()
     endif()
+    math(EXPR _ran "${_ran} + 1")
     if(_part_count GREATER 1)
         list(GET _parts 1 _argument)
     else()
@@ -78,3 +80,9 @@ foreach(_benchmark IN LISTS _benchmarks)
         endif()
     endforeach()
 endforeach()
+
+if(_ran EQUAL 0)
+    message(FATAL_ERROR
+        "No benchmark executable found under ${_build_dir}. "
+        "Build the project with PQC_PERF_TESTS=ON first.")
+endif()

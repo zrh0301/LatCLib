@@ -2,8 +2,8 @@
 #define KYBER_H
 
 #include <stdint.h>
-#include "poly.h"
-#include "rand.h"
+#include "poly/poly.h"
+#include "util/rand.h"
 
 #define KYBER_N 256
 #define KYBER_Q 3329

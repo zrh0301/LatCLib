@@ -18,4 +18,5 @@ const pqc_signature *pqc_snova_r2_algorithm(void);
 const pqc_signature *pqc_snova_r3_algorithm(void);
 const pqc_signature *pqc_mayo_algorithm(void);
 const pqc_signature *pqc_mqom_algorithm(void);
+const pqc_signature *pqc_ngcc_dove_algorithm(void);
 #endif

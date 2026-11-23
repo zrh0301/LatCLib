@@ -38,7 +38,7 @@ Windows/POSIX 备用随机源需要在对应平台另行验证。
 数学接口
 --------
 
-``fp32_ctx``（inc/fp32.h）描述 3 到 INT32_MAX 的奇素数域。
+``fp32_ctx``（inc/poly/fp32.h）描述 3 到 INT32_MAX 的奇素数域。
 ``fp32_init`` 校验公开模数；失败返回 -1，原上下文不变。
 ``fp32_reduce_raw`` 等原始取模工具还允许正的合数/偶数模数，但并不因此
 将这些对象当作域。一般规范化接口使用整数余数，是可移植参考后端；
@@ -48,10 +48,10 @@ Montgomery 常量统一为正逆元 qinv = q^(-1) mod 2^32，使用减法形式�
 ``fp32_mont_reduce`` 是热路径内联内核，要求 |a| <= 2^31*q。
 函数的输入范围、规范表示与延迟归约范围详见头文件。
 
-``ring_ctx``（inc/ring.h）描述 F_q[X]/(X^n+1)，包含域的值副本；
+``ring_ctx``（inc/poly/ring.h）描述 F_q[X]/(X^n+1)，包含域的值副本；
 不包含 NTT 表，也不依赖 NTT 是否存在。初始化允许任意正维度。
 
-``ntt_plan``（inc/ntt.h）描述具体变换后端。本轮显式支持：
+``ntt_plan``（inc/poly/ntt.h）描述具体变换后端。本轮显式支持：
 
 * q=8380417、n=256、8 层，标量乘法；
 * q=8380417、n=256、7 层，二次块乘法；
@@ -104,16 +104,16 @@ RNG 失败不会改写算法密钥或签名输出。dili_sign 的默认随机化
 旧 void 接口 dili_keygen、rand_bytes、rand_bits 在无法获得安全随机数时
 会 abort；新调用者应采用可返回错误的接口。
 
-数学层不再主动取得随机数。旧多项式采样声明迁入 inc/poly_sample.h，
+数学层不再主动取得随机数。旧多项式采样声明迁入 inc/poly/poly_sample.h，
 实现迁入 core；新增 poly_rand_with_rng 和 poly_uniform_CBD_with_rng。
 确定性伪随机辅助函数只位于 Test/，不提供生产环境全局切换。
 
 测试边界与后续工作
 ------------------
 
-GF(16) 算术现位于 ``inc/gf16.h`` / ``src/gf16.c``，采用
+GF(16) 算术现位于 ``inc/gf/gf16.h`` / ``src/gf/gf16.c``，采用
 ``GF(2)[x]/(x^4+x+1)`` 的低四位多项式表示。矩形矩阵乘法、异或累加及
-1 到 5 阶行列式位于 ``inc/gf16_matrix.h`` / ``src/gf16_matrix.c``。
+1 到 5 阶行列式位于 ``inc/gf/gf16_matrix.h`` / ``src/gf/gf16_matrix.c``。
 SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova_r3``；CMake
 兼容目标 ``pqc_snova`` 指向 ``pqc_snova_r3`` 并链接 ``pqc``。
 当前仅接入用户优化实现：x86-64 默认 AVX2，AArch64 默认 NEON。
@@ -138,7 +138,7 @@ GF 与多算法接入（2026-11-05）
 
 当前构建以 CMakeLists.txt、cmake/options.cmake、cmake/arch.cmake、
 cmake/gf.cmake、cmake/algorithms.cmake、cmake/tests.cmake 和
-cmake/install.cmake 为准，配置头由 inc/pqc_conf.h.in 生成。
+cmake/install.cmake 为准，配置头由 inc/core/pqc_conf.h.in 生成。
 GF 运算独立为 pqc_gf；签名目标为 pqc_snova_r2、pqc_snova_r3、
 pqc_mayo、pqc_mqom，pqc_snova 保留为 R3 兼容目标。
 共享库与静态库由同一 OBJECT 库生成，默认同时构建，并支持安装后

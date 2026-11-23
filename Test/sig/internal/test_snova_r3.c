@@ -1,5 +1,5 @@
 #include "api.h"
-#include "keccak.h"
+#include "sym/keccak.h"
 #include "symmetric.h"
 
 #include <stdio.h>

@@ -1,4 +1,4 @@
-#include "ring.h"
+#include "poly/ring.h"
 #include <stddef.h>
 
 int ring_init_negacyclic(ring_ctx *out, const fp32_ctx *field, int n)

@@ -1,4 +1,4 @@
-#include "poly.h"
+#include "poly/poly.h"
 
 /* Legacy qbits argument is retained for source compatibility. The field
  * reference backend provides exact reduction for the full input width. */

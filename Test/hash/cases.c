@@ -1,6 +1,6 @@
 #include "test.h"
-#include "keccak.h"
-#include "sm3.h"
+#include "sym/keccak.h"
+#include "sym/sm3.h"
 #include <stddef.h>
 
 static void sha3_256_starts(void *ctx) {

@@ -1,4 +1,4 @@
-#include "gf16.h"
+#include "gf/gf16.h"
 
 gf16_t gf16_add(gf16_t a, gf16_t b) {
     return (gf16_t)((a ^ b) & 0x0fu);

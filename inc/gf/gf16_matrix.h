@@ -2,7 +2,7 @@
 #define PQC_GF16_MATRIX_H
 
 #include <stddef.h>
-#include "gf16.h"
+#include "gf/gf16.h"
 
 /* Row-major matrices. Output storage must not overlap either input. Return
  * 0 on success or -1 for invalid pointers/dimensions; failure leaves output

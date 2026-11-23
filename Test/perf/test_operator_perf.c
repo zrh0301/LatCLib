@@ -1,8 +1,8 @@
 #include "test.h"
-#include "polyvec.h"
-#include "keccak.h"
-#include "gf16.h"
-#include "gf16_matrix.h"
+#include "poly/polyvec.h"
+#include "sym/keccak.h"
+#include "gf/gf16.h"
+#include "gf/gf16_matrix.h"
 
 #include <stdio.h>
 

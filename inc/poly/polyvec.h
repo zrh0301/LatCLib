@@ -2,7 +2,7 @@
 #define POLYVEC_H
 
 #include <stdint.h>
-#include "poly.h"
+#include "poly/poly.h"
 
 typedef void (*polyvec_matrix_sample_fn)(poly out, const uint8_t seed[34],
                                          lp_ctx *ctx, void *arg);

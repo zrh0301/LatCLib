@@ -1,10 +1,10 @@
-#include "gf16.h"
-#include "gf16_vector.h"
-#include "gf256.h"
-#include "gf256_matrix.h"
-#include "gf256_tower.h"
-#include "gf2.h"
-#include "gf_backend.h"
+#include "gf/gf16.h"
+#include "gf/gf16_vector.h"
+#include "gf/gf256.h"
+#include "gf/gf256_matrix.h"
+#include "gf/gf256_tower.h"
+#include "gf/gf2.h"
+#include "gf/gf_backend.h"
 #include <stdio.h>
 #include <string.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"GF FAIL line %d\n",__LINE__);return 1;}}while(0)

@@ -1,7 +1,7 @@
 #ifndef PQC_RING_H
 #define PQC_RING_H
 
-#include "fp32.h"
+#include "poly/fp32.h"
 
 typedef enum {
     RING_XN_PLUS_ONE = 1

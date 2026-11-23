@@ -1,4 +1,4 @@
-#include "poly.h"
+#include "poly/poly.h"
 
 void ntt_vector(poly* vec, int count, lp_ctx* Q) {
     for(int i = 0; i < count; i++) {

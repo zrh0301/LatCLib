@@ -1,8 +1,8 @@
 #ifndef POLY_H
 #define POLY_H
 
-#include "types.h"
-#include "ntt.h"
+#include "core/types.h"
+#include "poly/ntt.h"
 
 #define MAX_POLY_COEFS 256
 typedef lssi_t poly256_i32[MAX_POLY_COEFS];

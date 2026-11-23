@@ -1,4 +1,4 @@
-#include "secure_clear.h"
+#include "util/secure_clear.h"
 
 void pqc_secure_clear(void *ptr, size_t len) {
     volatile unsigned char *p = ptr;

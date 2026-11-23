@@ -1,4 +1,4 @@
-#include "polyvec.h"
+#include "poly/polyvec.h"
 #include <string.h>
 
 lssi_t poly_reduce_mod_one(lssi_t a, lssi_t q) {

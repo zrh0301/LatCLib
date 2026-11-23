@@ -121,6 +121,40 @@ if(PQC_WITH_SNOVA_R3)
     endforeach()
 endif()
 
+# ---- NGCC round-1 candidates ----
+
+if(PQC_WITH_NGCC_DOVE)
+    pqc_add_test(ngcc_dove_kat
+        SOURCES ngcc/test_dove_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_dove}
+        DEFINITIONS
+            PQC_DOVE_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_SIG_dove_pkc_skc_128.txt"
+        TIMEOUT 900 LABELS ngcc)
+    if(NOT PQC_NGCC_DOVE_PARAM STREQUAL "128" OR PQC_NGCC_DOVE_BIND_SALT)
+        set_tests_properties(ngcc_dove_kat PROPERTIES DISABLED TRUE)
+    endif()
+
+    # The submitted construction appends a salt that its verifier never reads
+    # (sign-09-1), so that trailer is excluded from the tampering checks.
+    # PQC_NGCC_DOVE_BIND_SALT binds it into the target and covers it.
+    if(PQC_NGCC_DOVE_BIND_SALT)
+        set(pqc_dove_trailer 0)
+    elseif(PQC_NGCC_DOVE_PARAM STREQUAL "128")
+        set(pqc_dove_trailer 24)
+    elseif(PQC_NGCC_DOVE_PARAM STREQUAL "256")
+        set(pqc_dove_trailer 40)
+    else()
+        set(pqc_dove_trailer 72)
+    endif()
+    pqc_add_test(signature_ngcc_dove_correctness
+        SOURCES sig/test_signature_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_dove}
+        DEFINITIONS
+            PQC_SIG_GETTER=pqc_ngcc_dove_algorithm
+            PQC_SIG_TAMPER_TRAILER=${pqc_dove_trailer}
+        TIMEOUT 600 LABELS signatures)
+endif()
+
 # ---- Unified signature API ----
 
 foreach(algorithm snova_r2 snova_r3 mayo mqom)

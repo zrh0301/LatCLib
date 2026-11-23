@@ -2,7 +2,7 @@
 #define PACK_H
 
 #include <stdint.h>
-#include "poly.h"
+#include "poly/poly.h"
 
 void dili_polyt1_pack(uint8_t *r, const poly p, int n, int d);
 void dili_polyt1_unpack(poly p, const uint8_t *a, int n, int d);

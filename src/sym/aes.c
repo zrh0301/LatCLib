@@ -43,8 +43,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "aes.h"
-#include "secure_clear.h"
+#include "sym/aes.h"
+#include "util/secure_clear.h"
 
 #if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic ignored "-Wunused-function"

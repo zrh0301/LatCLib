@@ -1,5 +1,5 @@
-#include "pqc_signature.h"
-#include "keccak.h"
+#include "core/pqc_signature.h"
+#include "sym/keccak.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

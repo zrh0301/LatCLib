@@ -1,5 +1,5 @@
 #include "api.h"
-#include "pqc_signature.h"
+#include "core/pqc_signature.h"
 #include <stdint.h>
 static int sign_adapter(uint8_t *out,size_t *len,const uint8_t *m,size_t n,const uint8_t *sk){
  if(!out||!len||!m||!sk||n>SIZE_MAX-(size_t)CRYPTO_BYTES)return -1;

@@ -189,7 +189,7 @@ _Static_assert(SNOVA_M2 == SNOVA_M * SNOVA_L2,
 
 // #include "gf16_core/gf16.c"
 
-//#include "gf16.h"
+//#include "gf/gf16.h"
 /**
  * @file gf16.h
  */

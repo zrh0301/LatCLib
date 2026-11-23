@@ -1,6 +1,6 @@
-#include "poly.h"
+#include "poly/poly.h"
 #include "dili_sample.h"
-#include "rand.h"
+#include "util/rand.h"
 
 void poly_uniform_eta(poly *a, lp_ctx *ctx, int ETA) {
     int i, j;

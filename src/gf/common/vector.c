@@ -1,8 +1,8 @@
-#include "gf16.h"
-#include "gf16_vector.h"
-#include "gf256.h"
-#include "gf2.h"
-#include "gf_backend.h"
+#include "gf/gf16.h"
+#include "gf/gf16_vector.h"
+#include "gf/gf256.h"
+#include "gf/gf2.h"
+#include "gf/gf_backend.h"
 uint8_t gf256_mul(uint8_t a,uint8_t b) {
  uint8_t p=0; for(unsigned i=0;i<8;i++){p^=a & (uint8_t)(0u-(b&1u)); a=(uint8_t)((a<<1)^(0x1bu & (0u-(a>>7))));b>>=1;}return p;
 }

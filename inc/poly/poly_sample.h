@@ -1,8 +1,8 @@
 #ifndef PQC_POLY_SAMPLE_H
 #define PQC_POLY_SAMPLE_H
 
-#include "poly.h"
-#include "rand.h"
+#include "poly/poly.h"
+#include "util/rand.h"
 
 /* Compatibility sampling utilities, outside the deterministic algebra layer.
  * The injected variants return 0/-1 and leave output unchanged on RNG error.

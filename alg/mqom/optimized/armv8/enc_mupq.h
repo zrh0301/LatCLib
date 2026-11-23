@@ -5,7 +5,7 @@
 /********** MUPQ API *****************/
 /*************************************/
 /* For 128 bits security for MUPQ when local Rijndael is not defined, we use the AES-128 dedicated "private" API */
-#include "aes.h"
+#include "sym/aes.h"
 #include "aes-publicinputs.h"
 /* XXX: NOTE: when possible, we use the faster LUT based AES for key schedule
  * and the constant-time "fixsliced" AES for encryption.

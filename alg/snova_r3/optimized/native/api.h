@@ -25,7 +25,7 @@ NIST employees is not subject to copyright protection within the United States.
 #define api_h
 
 #include "snova.h"
-#include "rand.h"
+#include "util/rand.h"
 
 // Set these three values apropriately for your algorithm
 #define CRYPTO_SECRETKEYBYTES BYTES_SK

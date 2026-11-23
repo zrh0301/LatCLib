@@ -21,9 +21,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "poly.h"
-#include "keccak.h"
-#include "rand.h"
+#include "poly/poly.h"
+#include "sym/keccak.h"
+#include "util/rand.h"
 
 typedef struct {
     uint8_t rho[32];

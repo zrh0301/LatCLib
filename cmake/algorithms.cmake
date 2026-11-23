@@ -3,20 +3,22 @@
 # ---- Core: shared operators, hash/symmetric layers, Dilithium and Kyber ----
 
 set(pqc_core_sources
-    src/fp32.c
-    src/ring.c
-    src/poly.c
-    src/poly_ntt.c
-    src/polyvec.c
-    src/ntt_table.c
-    src/ntt_compat.c
-    src/poly_sample.c
-    src/rand.c
-    src/secure_clear.c
-    src/keccak.c
-    src/aes.c
-    src/sm3.c
-    src/pqc_conf.c)
+    src/poly/fp32.c
+    src/poly/ring.c
+    src/poly/poly.c
+    src/poly/poly_ntt.c
+    src/poly/polyvec.c
+    src/poly/ntt_table.c
+    src/poly/ntt_compat.c
+    src/poly/poly_sample.c
+    src/util/rand.c
+    src/util/secure_clear.c
+    src/sym/keccak.c
+    src/sym/aes.c
+    src/sym/sm3.c
+    src/ngcc/auxfunc.c
+    src/ngcc/drng.c
+    src/core/pqc_conf.c)
 
 set(pqc_core_private_includes
     "${PROJECT_SOURCE_DIR}/alg/dilithium"
@@ -40,7 +42,7 @@ if(PQC_WITH_KYBER)
 endif()
 
 if(PQC_AES_EFFECTIVE STREQUAL "NI")
-    set_source_files_properties(src/aes.c PROPERTIES
+    set_source_files_properties(src/sym/aes.c PROPERTIES
         COMPILE_OPTIONS "-maes;-mavx2")
 endif()
 
@@ -253,6 +255,33 @@ if(PQC_WITH_MQOM)
         PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
         DEFINITIONS ${pqc_mqom_definitions}
         COMPILE_OPTIONS ${pqc_mqom_flags}
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: DOVE (round-1 signature candidate, UOV over GF(256)) ----
+
+if(PQC_WITH_NGCC_DOVE)
+    set(pqc_dove_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_dove/reference")
+
+    set(pqc_dove_definitions DOVE_PARAM_SET=DOVE${PQC_NGCC_DOVE_PARAM})
+    if(PQC_NGCC_DOVE_BIND_SALT)
+        list(APPEND pqc_dove_definitions DOVE_BIND_SALT=1)
+    endif()
+
+    pqc_add_variants(pqc_ngcc_dove
+        SOURCES
+            "${pqc_dove_ref}/SIG_AlgorithmInstance.c"
+            "${pqc_dove_ref}/matrix.c"
+            "${pqc_dove_ref}/uov/blas_matrix_ref.c"
+            alg/ngcc_dove/gf256.c
+            alg/ngcc_dove/adapter.c
+        INCLUDES
+            "${pqc_dove_ref}"
+            "${pqc_dove_ref}/uov"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_dove_ref}>"
+        PUBLIC_DEFINITIONS ${pqc_dove_definitions}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
         DEPENDS pqc)
 endif()
 

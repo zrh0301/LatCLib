@@ -10,10 +10,11 @@ install(TARGETS ${pqc_library_targets}
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin)
 
-file(GLOB pqc_public_headers "${PROJECT_SOURCE_DIR}/inc/*.h")
-install(FILES ${pqc_public_headers}
-    "${PROJECT_BINARY_DIR}/include/pqc_conf.h"
-    DESTINATION include/pqc)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/inc/"
+    DESTINATION include/pqc
+    FILES_MATCHING PATTERN "*.h")
+install(FILES "${PROJECT_BINARY_DIR}/include/core/pqc_conf.h"
+    DESTINATION include/pqc/core)
 
 if(PQC_WITH_DILITHIUM)
     install(FILES alg/dilithium/dili.h DESTINATION include/pqc)

@@ -2,4 +2,4 @@
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-exec "@CMAKE_COMMAND@" -DBUILD_DIR="$script_dir" -P "$script_dir/run_performance.cmake"
+exec "@CMAKE_COMMAND@" -DBUILD_DIR="$script_dir/bin" -P "$script_dir/run_performance.cmake"

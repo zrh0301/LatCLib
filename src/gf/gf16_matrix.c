@@ -1,5 +1,5 @@
-#include "gf16_matrix.h"
-#include "gf16_vector.h"
+#include "gf/gf16_matrix.h"
+#include "gf/gf16_vector.h"
 #include <string.h>
 
 #include <stdint.h>

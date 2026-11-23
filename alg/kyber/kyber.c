@@ -1,7 +1,7 @@
 #include "kyber.h"
 #include "kyber_pack.h"
 #include "kyber_sample.h"
-#include "polyvec.h"
+#include "poly/polyvec.h"
 #include <string.h>
 
 static void kyber_matrix_sample_ntt(poly out, const uint8_t seed[34],

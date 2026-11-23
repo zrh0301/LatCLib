@@ -1,5 +1,5 @@
 #include "test.h"
-#include "polyvec.h"
+#include "poly/polyvec.h"
 
 /* Exhaustive mathematical contracts live in test_contexts, linked only to
  * algebra. Here check the compatibility presets used by existing callers. */

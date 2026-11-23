@@ -23,10 +23,10 @@
     #include <sched.h>
 #endif
 #include "test_rng.h"
-#include "types.h"
-#include "poly.h"
-#include "poly_sample.h"
-#include "rand.h"
+#include "core/types.h"
+#include "poly/poly.h"
+#include "poly/poly_sample.h"
+#include "util/rand.h"
 #include "dili.h"
 #include "kyber.h"
 #include "kyber_pack.h"

@@ -1,4 +1,4 @@
-#include "polyvec.h"
+#include "poly/polyvec.h"
 
 #include <limits.h>
 #include <stdio.h>
