@@ -48,6 +48,9 @@ pqc_add_variants(pqc_gf
     SOURCES
         src/gf/gf16.c
         src/gf/gf16_matrix.c
+        src/gf/gf31.c
+        src/gf/gf31_matrix.c
+        src/gf/mod_pow2.c
         src/gf/common/vector.c
         src/gf/common/matrix.c
         src/gf/common/gf256_solve.c

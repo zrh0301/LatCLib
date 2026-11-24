@@ -3,6 +3,7 @@
 #include "poly/fp16.h"
 #include "poly/poly16.h"
 #include "poly/ntt16.h"
+#include "poly/ring4171.h"
 #include "poly/polyvec.h"
 #include "sym/keccak.h"
 #include "sym/sm3.h"
@@ -10,6 +11,9 @@
 #include "util/combinatorics.h"
 #include "gf/gf16.h"
 #include "gf/gf16_matrix.h"
+#include "gf/gf31.h"
+#include "gf/gf31_matrix.h"
+#include "gf/mod_pow2.h"
 #include "gf/byte_matrix.h"
 #include "gf/composite_matrix.h"
 #include "gf/gf256_matrix.h"
@@ -67,7 +71,13 @@ int main(int argc, char **argv) {
     KECCAK1600_CTX h;
     gf16_t gf_a[16], gf_b[16], gf_c[16];
     gf16_t gf_a16[256], gf_b16[256], gf_c16[256];
+    gf31_t q31_a[64], q31_b[64], q31_out[64];
+    uint8_t q31_t2_a[4 * 2 * 32] = {0}, q31_t2_b[4 * 2 * 32] = {0};
+    uint8_t q31_t2_c[4 * 2 * 4] = {0};
+    uint8_t q31_t2_v[2 * 32] = {0}, q31_t2_m[4 * 2 * 32] = {0};
+    uint8_t q31_t2_vc[2 * 4] = {0};
     int16_t p16_a[512], p16_b[512], p16_c[512];
+    int32_t q41_a[PQC_Q4171_N], q41_b[PQC_Q4171_N], q41_c[PQC_Q4171_N];
     uint8_t cbd_buf[768], packed_poly[768];
     uint8_t gm[16 * 16] = {0}, gi[16 * 16], gs[16], work[16 * 17];
     uint8_t batch[16 * 16 * 8] = {0}, batch_out[16 * 16 * 8] = {0};
@@ -105,9 +115,25 @@ int main(int argc, char **argv) {
     memcpy(gf_a, gf_a16, sizeof(gf_a));
     memcpy(gf_b, gf_b16, sizeof(gf_b));
 
+    for (int i = 0; i < 64; ++i) {
+        q31_a[i] = (gf31_t)(i % 31);
+        q31_b[i] = (gf31_t)((i * 7 + 3) % 31);
+    }
+    for (size_t i = 0; i < sizeof(q31_t2_a); ++i) {
+        q31_t2_a[i] = (uint8_t)((i * 3 + 1) % 31);
+        q31_t2_b[i] = (uint8_t)((i * 5 + 2) % 31);
+        q31_t2_m[i] = (uint8_t)((i * 7 + 4) % 31);
+    }
+    for (int i = 0; i < 4; ++i) {
+        q31_t2_v[i] = (uint8_t)(i + 1);
+        q31_t2_v[32 + i] = (uint8_t)(i + 2);
+    }
+
     for (int i = 0; i < 512; ++i) {
         p16_a[i] = (int16_t)(i % 3329);
         p16_b[i] = (int16_t)((i * 7 + 3) % 3329);
+        q41_a[i] = (int32_t)((i * 97 + 11) % PQC_Q4171);
+        q41_b[i] = (int32_t)((i * 53 + 7) % PQC_Q4171);
     }
     for (size_t i = 0; i < sizeof(cbd_buf); ++i) {
         cbd_buf[i] = (uint8_t)(i * 37 + 11);
@@ -227,6 +253,26 @@ int main(int argc, char **argv) {
              gf_c[0] = gf16_mul(gf_a[i & 15], gf_b[(i + 1) & 15]));
     RUN_CASE("gf16_inv", "GF16 inverse", ROUNDS, gf_c[0],
              gf_c[0] = gf16_inv(gf_a[(i % 15) + 1]));
+    RUN_CASE("gf31_add", "GF31 add", ROUNDS, q31_out[0],
+             q31_out[0] = gf31_add(q31_a[i & 63], q31_b[(i + 1) & 63]));
+    RUN_CASE("gf31_mul", "GF31 multiply", ROUNDS, q31_out[0],
+             q31_out[0] = gf31_mul(q31_a[i & 63], q31_b[(i + 1) & 63]));
+    RUN_CASE("gf31_inv", "GF31 inverse", ROUNDS, q31_out[0],
+             q31_out[0] = gf31_inv(q31_a[(i % 30) + 1]));
+    RUN_CASE("gf31_vector_add_64", "GF31 vector add (64)", ROUNDS, q31_out[0],
+             gf31_vector_add(q31_out, q31_b, 64));
+    RUN_CASE("gf31_vector_dot_64", "GF31 vector dot product (64)", ROUNDS, q31_out[0],
+             q31_out[0] = gf31_vector_dot(q31_a, q31_b, 64));
+    RUN_CASE("gf31_t2_matrix_mul_4", "GF31^2 planar matrix multiply (4x4)",
+             10000, q31_t2_c[0],
+             gf31_t2_matrix_mul(q31_t2_a, q31_t2_b, q31_t2_c, 4, 4, 4, 4));
+    RUN_CASE("gf31_t2_matvec_4", "GF31^2 planar matrix-vector product (4)",
+             ROUNDS, q31_t2_vc[0],
+             gf31_t2_matrix_vec_mul(q31_t2_v, q31_t2_m, q31_t2_vc, 4, 4, 4));
+    RUN_CASE("mod_pow2_1024", "reduce modulo 2^10", ROUNDS, q31_out[0],
+             q31_out[0] = (gf31_t)pqc_mod_pow2((uint32_t)i * 1234567u, 10));
+    RUN_CASE("mod_pow2_round_1024", "round 2^10 coefficient to 4 bits", ROUNDS, q31_out[0],
+             q31_out[0] = (gf31_t)pqc_round_pow2((uint16_t)(i * 37), 10, 4));
     RUN_CASE("gf16_matrix_mul_4", "GF16 matrix multiply (4x4)", 10000, gf_c[0],
              gf16_matrix_mul(gf_c, gf_a, gf_b, 4, 4, 4));
     RUN_CASE("gf16_matrix_mul_16", "GF16 matrix multiply (16x16)", 1000, gf_c16[0],
@@ -297,6 +343,19 @@ int main(int argc, char **argv) {
     RUN_CASE("ntt16_product_512", "128-point NTT split product (4 blocks)", ROUNDS, p16_c[0],
              p16_a[0] = (int16_t)(i % 3329),
              pqc_ntt128_blocks_mont_mul(p16_c, p16_a, p16_b, 4));
+
+    RUN_CASE("q4171_montgomery", "q=4171777 Montgomery reduce", ROUNDS, q41_c[0],
+             q41_c[0] = pqc_q4171_montgomery_reduce((int64_t)q41_a[i & 511] * q41_b[i & 511]));
+    RUN_CASE("q4171_barrett", "q=4171777 Barrett reduce", ROUNDS, q41_c[0],
+             q41_a[0] = (int32_t)i, q41_c[0] = pqc_q4171_barrett_reduce(q41_a[0]));
+    RUN_CASE("q4171_ntt_512", "512-point NTT over q=4171777", 5000, q41_c[0],
+             memcpy(q41_c, q41_a, sizeof(q41_c)), pqc_q4171_ntt(q41_c));
+    RUN_CASE("q4171_invntt_512", "512-point inverse NTT over q=4171777", 5000, q41_c[0],
+             memcpy(q41_c, q41_a, sizeof(q41_c)), pqc_q4171_invntt_frominvmont(q41_c));
+    RUN_CASE("q4171_pointwise_512", "512-point Montgomery product over q=4171777", ROUNDS, q41_c[0],
+             pqc_q4171_pointwise_invmontgomery(q41_c, q41_a, q41_b, PQC_Q4171_N));
+    RUN_CASE("q4171_chknorm_512", "512-point norm check over q=4171777", ROUNDS, q41_c[0],
+             q41_c[0] = (int32_t)pqc_q4171_chknorm(q41_a, PQC_Q4171_N, 1000));
 
     RUN_CASE("poly_add_256", "poly add (256)", ROUNDS, c[0],
              { a[0] = i & 0x7fff; POLY_ADD(c, a, b, 256); });

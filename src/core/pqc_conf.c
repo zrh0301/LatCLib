@@ -15,7 +15,7 @@ void pqc_conf_print(void) {
     printf("  libraries:    %s%s\n",
            PQC_CONF_BUILD_SHARED ? "shared " : "",
            PQC_CONF_BUILD_STATIC ? "static" : "");
-    printf("  modules:      %s%s%s%s%s%s%s%s%s%s\n",
+    printf("  modules:      %s%s%s%s%s%s%s%s%s%s%s%s%s\n",
            PQC_CONF_WITH_DILITHIUM ? "dilithium " : "",
            PQC_CONF_WITH_KYBER ? "kyber " : "",
            PQC_CONF_WITH_SNOVA_R2 ? "snova_r2 " : "",
@@ -25,14 +25,20 @@ void pqc_conf_print(void) {
            PQC_CONF_WITH_NGCC_DOVE ? "ngcc_dove " : "",
            PQC_CONF_WITH_NGCC_VDOO ? "ngcc_vdoo " : "",
            PQC_CONF_WITH_NGCC_FLEXTREE ? "ngcc_flextree " : "",
-           PQC_CONF_WITH_NGCC_AIGIS ? "ngcc_aigis" : "");
+           PQC_CONF_WITH_NGCC_AIGIS ? "ngcc_aigis " : "",
+           PQC_CONF_WITH_NGCC_AIGIS_SIG ? "ngcc_aigis_sig " : "",
+           PQC_CONF_WITH_NGCC_SCLOUD ? "ngcc_scloud " : "",
+           PQC_CONF_WITH_NGCC_TSUOV ? "ngcc_tsuov" : "");
     printf("  params:       dilithium=%d kyber=%d mayo=%d "
            "mqom=%d/%d/%d/%d ngcc_dove=%d ngcc_vdoo=%d "
-           "ngcc_flextree=%s%s ngcc_aigis=%s\n",
+           "ngcc_flextree=%s%s ngcc_aigis=%s "
+           "ngcc_aigis_sig=%s%s ngcc_scloud=%s ngcc_tsuov=%s\n",
            PQC_CONF_DILITHIUM_MODE, PQC_CONF_KYBER_MODE, PQC_CONF_MAYO_VARIANT,
            PQC_CONF_MQOM_SECURITY, PQC_CONF_MQOM_FIELD, PQC_CONF_MQOM_ROUNDS,
            PQC_CONF_MQOM_TRADEOFF, PQC_CONF_NGCC_DOVE_PARAM,
            PQC_CONF_NGCC_VDOO_PARAM, PQC_CONF_NGCC_FLEXTREE_PARAM,
            PQC_CONF_NGCC_FLEXTREE_STRICT ? "+strict" : "",
-           PQC_CONF_NGCC_AIGIS_PARAM);
+           PQC_CONF_NGCC_AIGIS_PARAM, PQC_CONF_NGCC_AIGIS_SIG_PARAM,
+           PQC_CONF_NGCC_AIGIS_SIG_STRICT ? "+strict" : "",
+           PQC_CONF_NGCC_SCLOUD_PARAM, PQC_CONF_NGCC_TSUOV_PARAM);
 }

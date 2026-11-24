@@ -141,10 +141,36 @@ RNG 失败不会改写算法密钥或签名输出。dili_sign 的默认随机化
 GF(16) 算术现位于 ``inc/gf/gf16.h`` / ``src/gf/gf16.c``，采用
 ``GF(2)[x]/(x^4+x+1)`` 的低四位多项式表示。矩形矩阵乘法、异或累加及
 1 到 5 阶行列式位于 ``inc/gf/gf16_matrix.h`` / ``src/gf/gf16_matrix.c``。
-SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova_r3``；CMake
-兼容目标 ``pqc_snova`` 指向 ``pqc_snova_r3`` 并链接 ``pqc``。
-当前仅接入用户优化实现：x86-64 默认 AVX2，AArch64 默认 NEON。
-公共标量算子按需复用；扩展表示及 SIMD 热路径仍留在 SNOVA 后端。GF(16) 求解器和其他多变量专用运算尚未拆分。
+GF(31) 的域运算、逆元表、向量算子与 ``GF(31^2)=GF(31)[x]/(x^2-3)`` 的
+平面布局矩阵乘法位于 ``inc/gf/gf31.h``、``inc/gf/gf31_matrix.h`` 和
+``src/gf/gf31.c``、``src/gf/gf31_matrix.c``，对应
+``operator_gf31_correctness`` 与 ``gf31_*`` 性能用例。
+2 的幂模数算术位于 ``inc/gf/mod_pow2.h`` / ``src/gf/mod_pow2.c``
+（``pqc_mod_pow2``、``pqc_round_pow2``），对应
+``operator_mod_pow2_correctness`` 与 ``mod_pow2_*`` 性能用例。
+``q = 4171777``、``n = 512`` 的环算术位于 ``inc/poly/ring4171.h`` /
+``src/poly/ring4171.c``：Montgomery/Barrett/通用约减、规范与中心表示、
+512 点正反 NTT、Montgomery 逐点乘、范数检查及系数级加减/缩放。官方
+zeta 表随之迁入库内。Aigis-Sig+ 的 ``poly.c`` 只剩算法侧的打包、采样与
+类型适配，``reduce.c``、``ntt.c`` 已删除；对应
+``operator_ring4171_correctness`` 与 ``q4171_*`` 性能用例。
+各算法模块的底层依赖现状：
+
+* DOVE、VDOO、Aigis-Enc+、Aigis-Sig+、Scloud+、TSUOV、FlexTree 均已
+  不携带自己的 GF/AES/SHA 实现，统一调用 ``inc/gf``、``inc/sym``、
+  ``inc/ngcc``、``inc/util`` 与 ``inc/tree``。
+* Scloud+ 的采样与 BW/RBW 编解码仍留在 ``reference``，属于参数专用编码；
+  其 608 维矩阵加减已改用库内 2 的幂模算子。
+* FlexTree 的 ``reference/params/pors_precomputed-*.h`` 是每个参数集的
+  预计算 PORS 表，属于算法数据而非算子实现。
+* SNOVA R2/R3、MAYO、MQOM 使用上游提交的 AES/Keccak/Rijndael 优化内核
+  （含 AVX2/NEON 汇编）；这些内核与其 SIMD 数据布局绑定，替换会改变
+  性能特征，暂按“不破坏现有实现”保留，后续可先替换其通用 C 分支。
+  SNOVA 的算法实现、签名 API、对称层及平台变体位于 ``alg/snova_r3``；
+  CMake 兼容目标 ``pqc_snova`` 指向 ``pqc_snova_r3`` 并链接 ``pqc``。
+  当前仅接入用户优化实现：x86-64 默认 AVX2，AArch64 默认 NEON。公共
+  标量算子按需复用；扩展表示及 SIMD 热路径仍留在 SNOVA 后端。GF(16)
+  求解器和其他多变量专用运算尚未拆分。
 
 NGCC 算法位于 ``alg/ngcc_*``，包含参数、密钥和密文或签名格式、算法流程及
 公共 API 适配。哈希和确定性随机数统一调用 ``inc/ngcc/auxfunc.h`` 和
@@ -158,6 +184,34 @@ NGCC 算法位于 ``alg/ngcc_*``，包含参数、密钥和密文或签名格式
   ``ngcc`` 和 ``util/ct.h``。系数编解码和重复位消息编解码统一由
   ``src/poly/poly16_pack.c`` 实现。密钥与密文布局、种子派生和噪声参数
   在算法层定义。
+- Aigis-Sig+ 的哈希与扩展复用 ``inc/ngcc`` 的 pseudoXOF/pseudohash/sm3hash
+  和 DRNG。其环参数为 q=4171777、n=512，与 Kyber/Dilithium 的
+  q=3329 不同，因此 NTT、多项式算术和约减保留在
+  ``alg/ngcc_aigis_sig/reference``，未并入 ``poly16``/``ntt16``。
+- Scloud+ 的公开矩阵 A 用 AES-128-CTR 逐行展开，接口保留在
+  ``alg/ngcc_scloud/aes_shim.c``，实际分组加密复用 ``src/sym/aes.c``
+  （纯 C 或 AES-NI 后端），输出与参考实现逐字节一致。F/G/H/K 是带单字节
+  标签的 SHAKE256/SHA3-512，直接构建在 ``inc/sym/keccak.h`` 上：增量
+  absorb/finalize/squeeze/squeezeblocks 只是对库内海绵接口的薄封装，参考
+  实现自带的 TweetFips202 副本已删除。常量时间比较、条件选择和安全清零
+  分别复用 ``util/ct.h`` 与 ``util/secure_clear.h``。采样分布为 BD4/BD2
+  （128 级），矩阵乘法、BW/RBW 消息编解码和 Pack10/ShortPack 布局按参考
+  实现保留，因为其维度为 608、模数 q=1024，与现有 ``poly16``/``ntt16``
+  不兼容。评审报告 kem-35-1（重加密拒绝采样泄漏解密消息类别）只影响
+  256/384/512 级的 BD6/BD12 拒绝采样；128 级是非拒绝采样对照实现，不受影响。
+- TSUOV 的哈希、伪哈希与 XOF 调用 ``inc/ngcc/auxfunc.h`` 的
+  sm3hash/pseudohash/pseudoXOF，随机源使用 ``inc/ngcc/drng.h``，安全清零
+  复用 ``util/secure_clear.h``。域元素与签名的 5 比特打包、Scloud+ 的
+  消息块打包共用 ``inc/util/bits.h`` 的 LSB-first 位打包算子。域运算、
+  逆元、向量算子与 L=2 平面塔的矩阵乘法和 phi 坐标映射都已移入库内
+  ``inc/gf/gf31*.h`` / ``src/gf/gf31*.c``，``alg/ngcc_tsuov/reference``
+  只保留 E 算子、扩展与拒绝采样、UOV 消元求解和签名编码。评审报告
+  sign-31 的处理：
+  报告缺陷 sign-31-3/5（分配失败复用旧消息代表、长度加法溢出）、sign-31-4
+  （忽略声明长度）、sign-31-6（非规范 5 比特编码）和 sign-31-8（忽略 XOF
+  失败）已在参考源码中修复，签名格式不变，官方 KAT 仍逐字节一致；
+  sign-31-1、sign-31-7 属于规范/证明问题，sign-31-2 是参考实现的局部
+  计时侧信道，均在 ``alg/ngcc_tsuov/adapter.c`` 顶部记录。
 - FlexTree 的完整树与截短底层树共用 ``inc/tree/merkle.h`` 和
   ``src/tree/merkle.c``，覆盖树构建、单叶认证路径、多叶认证节点位置与根重建。
   PORS 的组合数查表、字典序组合解码和按字节查表模约减调用

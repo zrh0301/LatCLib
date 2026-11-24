@@ -14,6 +14,7 @@ set(pqc_core_sources
     src/poly/polyvec.c
     src/poly/ntt_table.c
     src/poly/ntt_compat.c
+    src/poly/ring4171.c
     src/poly/poly_sample.c
     src/util/rand.c
     src/util/secure_clear.c
@@ -376,6 +377,102 @@ if(PQC_WITH_NGCC_AIGIS)
             "$<BUILD_INTERFACE:${pqc_aigis_ref}>"
         DEFINITIONS PARAMS=1
         COMPILE_OPTIONS -include "${pqc_aigis_namespace}"
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: Aigis-Sig+ (round-1 signature candidate, module-LWE/SIS) ----
+
+if(PQC_WITH_NGCC_AIGIS_SIG)
+    set(pqc_aigis_sig_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis_sig/reference")
+    set(pqc_aigis_sig_namespace
+        "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis_sig/namespace.h")
+
+    set(pqc_aigis_sig_definitions PARAMS=1)
+    if(PQC_NGCC_AIGIS_SIG_STRICT)
+        list(APPEND pqc_aigis_sig_definitions PQC_NGCC_AIGIS_SIG_STRICT)
+    endif()
+
+    pqc_add_variants(pqc_ngcc_aigis_sig
+        SOURCES
+            "${pqc_aigis_sig_ref}/sign.c"
+            "${pqc_aigis_sig_ref}/polyvec.c"
+            "${pqc_aigis_sig_ref}/packing.c"
+            "${pqc_aigis_sig_ref}/poly.c"
+            "${pqc_aigis_sig_ref}/rounding.c"
+            "${pqc_aigis_sig_ref}/hashkdf.c"
+            "${pqc_aigis_sig_ref}/pspm.c"
+            "${pqc_aigis_sig_ref}/SIG_AlgorithmInstance.c"
+            alg/ngcc_aigis_sig/adapter.c
+        INCLUDES
+            "${pqc_aigis_sig_ref}"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_aigis_sig_ref}>"
+        DEFINITIONS ${pqc_aigis_sig_definitions}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+            -include "${pqc_aigis_sig_namespace}"
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: Scloud+ (round-1 KEM candidate, unstructured LWE) ----
+
+if(PQC_WITH_NGCC_SCLOUD)
+    set(pqc_scloud_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_scloud/reference")
+    set(pqc_scloud_namespace
+        "${PROJECT_SOURCE_DIR}/alg/ngcc_scloud/namespace.h")
+
+    # 提交默认实例：128 位安全级 + AES 族。矩阵 A 用 AES-128-CTR 展开；
+    # F/G/H/K 使用带标签的 SHAKE256/SHA3-512。
+    set(pqc_scloud_definitions
+        SCLOUDPLUS_FAMILY_AES
+        SCLOUDPLUS_TIER_REFERENCE
+        SCLOUDPLUS_REF_FAMILY_AES)
+
+    pqc_add_variants(pqc_ngcc_scloud
+        SOURCES
+            "${pqc_scloud_ref}/common/kem.c"
+            "${pqc_scloud_ref}/common/pke.c"
+            "${pqc_scloud_ref}/common/sample.c"
+            "${pqc_scloud_ref}/common/encode.c"
+            "${pqc_scloud_ref}/common/hash_aes_shake.c"
+            "${pqc_scloud_ref}/common/util.c"
+            "${pqc_scloud_ref}/ref/matrix_reference.c"
+            "${pqc_scloud_ref}/ref/pack_reference.c"
+            alg/ngcc_scloud/aes_shim.c
+            alg/ngcc_scloud/random.c
+            alg/ngcc_scloud/adapter.c
+        INCLUDES
+            "${pqc_scloud_ref}"
+            "${pqc_scloud_ref}/include"
+            "${pqc_scloud_ref}/common"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_scloud_ref}>"
+            "$<BUILD_INTERFACE:${pqc_scloud_ref}/include>"
+        DEFINITIONS ${pqc_scloud_definitions}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+            -include "${pqc_scloud_namespace}"
+        DEPENDS pqc)
+endif()
+
+# ---- NGCC: TSUOV (round-1 signature candidate, multivariate over GF(31)) ----
+
+if(PQC_WITH_NGCC_TSUOV)
+    set(pqc_tsuov_ref "${PROJECT_SOURCE_DIR}/alg/ngcc_tsuov/reference")
+    set(pqc_tsuov_namespace
+        "${PROJECT_SOURCE_DIR}/alg/ngcc_tsuov/namespace.h")
+
+    pqc_add_variants(pqc_ngcc_tsuov
+        SOURCES
+            "${pqc_tsuov_ref}/tsuov_core.c"
+            "${pqc_tsuov_ref}/mgf.c"
+            "${pqc_tsuov_ref}/SIG_AlgorithmInstance.c"
+            alg/ngcc_tsuov/adapter.c
+        INCLUDES
+            "${pqc_tsuov_ref}"
+        PUBLIC_INCLUDES ${PQC_PUBLIC_INCLUDE_DIRS}
+            "$<BUILD_INTERFACE:${pqc_tsuov_ref}>"
+        DEFINITIONS TSUOV_VARIANT=${PQC_NGCC_TSUOV_PARAM}
+        COMPILE_OPTIONS -Wno-unused-parameter -Wno-unused-variable
+            -include "${pqc_tsuov_namespace}"
         DEPENDS pqc)
 endif()
 

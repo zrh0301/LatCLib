@@ -15,4 +15,5 @@ typedef struct pqc_kem {
  int (*decaps)(uint8_t *,const uint8_t *,const uint8_t *);
 } pqc_kem;
 const pqc_kem *pqc_ngcc_aigis_algorithm(void);
+const pqc_kem *pqc_ngcc_scloud_algorithm(void);
 #endif

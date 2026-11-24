@@ -1,0 +1,122 @@
+#ifndef PQC_NGCC_AIGIS_SIG_NAMESPACE_H
+#define PQC_NGCC_AIGIS_SIG_NAMESPACE_H
+
+/* Force-prefix every external symbol of the Aigis-Sig+ reference layer so the
+ * module can be linked next to the other algorithms. */
+
+#define randombytes pqc_aigis_sig_randombytes
+#define drng_algorithm pqc_aigis_sig_drng
+
+/* reduce.c / ntt.c / rounding.c */
+#define montgomery_reduce pqc_aigis_sig_montgomery_reduce
+#define barrat_reduce pqc_aigis_sig_barrat_reduce
+#define general_reduce pqc_aigis_sig_general_reduce
+#define amodq pqc_aigis_sig_amodq
+#define cmodq pqc_aigis_sig_cmodq
+#define zetas pqc_aigis_sig_zetas
+#define ntt pqc_aigis_sig_ntt
+#define invntt_frominvmont pqc_aigis_sig_invntt_frominvmont
+#define power2round pqc_aigis_sig_power2round
+#define decompose pqc_aigis_sig_decompose
+#define make_hint pqc_aigis_sig_make_hint
+#define use_hint pqc_aigis_sig_use_hint
+
+/* poly.c */
+#define poly_amodq pqc_aigis_sig_poly_amodq
+#define poly_cmodq pqc_aigis_sig_poly_cmodq
+#define poly_reduce pqc_aigis_sig_poly_reduce
+#define poly_g_reduce pqc_aigis_sig_poly_g_reduce
+#define poly_add pqc_aigis_sig_poly_add
+#define poly_sub pqc_aigis_sig_poly_sub
+#define poly_subw pqc_aigis_sig_poly_subw
+#define poly_shiftl pqc_aigis_sig_poly_shiftl
+#define poly_ntt pqc_aigis_sig_poly_ntt
+#define poly_invntt_montgomery pqc_aigis_sig_poly_invntt_montgomery
+#define poly_pointwise_invmontgomery pqc_aigis_sig_poly_pointwise_invmontgomery
+#define poly_chknorm pqc_aigis_sig_poly_chknorm
+#define poly_uniform pqc_aigis_sig_poly_uniform
+#define poly_uniform_eta_1 pqc_aigis_sig_poly_uniform_eta_1
+#define poly_uniform_eta_2 pqc_aigis_sig_poly_uniform_eta_2
+#define poly_uniform_eta_5 pqc_aigis_sig_poly_uniform_eta_5
+#define poly_uniform_gamma1 pqc_aigis_sig_poly_uniform_gamma1
+#define polyeta1_pack pqc_aigis_sig_polyeta1_pack
+#define polyeta1_unpack pqc_aigis_sig_polyeta1_unpack
+#define polyeta2_pack pqc_aigis_sig_polyeta2_pack
+#define polyeta2_unpack pqc_aigis_sig_polyeta2_unpack
+#define polyt1_pack pqc_aigis_sig_polyt1_pack
+#define polyt1_unpack pqc_aigis_sig_polyt1_unpack
+#define polyt0_pack pqc_aigis_sig_polyt0_pack
+#define polyt0_unpack pqc_aigis_sig_polyt0_unpack
+#define polyz_pack pqc_aigis_sig_polyz_pack
+#define polyz_unpack pqc_aigis_sig_polyz_unpack
+#define polyw1_pack pqc_aigis_sig_polyw1_pack
+
+/* polyvec.c */
+#define expand_mat pqc_aigis_sig_expand_mat
+#define challenge pqc_aigis_sig_challenge
+#define unpack_c pqc_aigis_sig_unpack_c
+#define polyvecl_reduce pqc_aigis_sig_polyvecl_reduce
+#define polyvecl_add pqc_aigis_sig_polyvecl_add
+#define polyvecl_sub pqc_aigis_sig_polyvecl_sub
+#define polyvecl_uniform_eta1 pqc_aigis_sig_polyvecl_uniform_eta1
+#define polyvecl_uniform_gamma1 pqc_aigis_sig_polyvecl_uniform_gamma1
+#define polyvecl_ntt pqc_aigis_sig_polyvecl_ntt
+#define polyvecl_invntt_montgomery pqc_aigis_sig_polyvecl_invntt_montgomery
+#define polyvecl_pointwise_acc_invmontgomery \
+    pqc_aigis_sig_polyvecl_pointwise_acc_invmontgomery
+#define polyvecl_chknorm pqc_aigis_sig_polyvecl_chknorm
+#define polyveck_amodq pqc_aigis_sig_polyveck_amodq
+#define polyveck_cmodq pqc_aigis_sig_polyveck_cmodq
+#define polyveck_reduce pqc_aigis_sig_polyveck_reduce
+#define polyveck_g_reduce pqc_aigis_sig_polyveck_g_reduce
+#define polyveck_add pqc_aigis_sig_polyveck_add
+#define polyveck_sub pqc_aigis_sig_polyveck_sub
+#define polyveck_subw pqc_aigis_sig_polyveck_subw
+#define polyveck_shiftl pqc_aigis_sig_polyveck_shiftl
+#define polyveck_uniform_eta2 pqc_aigis_sig_polyveck_uniform_eta2
+#define polyveck_ntt pqc_aigis_sig_polyveck_ntt
+#define polyveck_invntt_montgomery pqc_aigis_sig_polyveck_invntt_montgomery
+#define polyveck_chknorm pqc_aigis_sig_polyveck_chknorm
+#define polyveck_power2round pqc_aigis_sig_polyveck_power2round
+#define polyveck_decompose pqc_aigis_sig_polyveck_decompose
+#define polyveck_make_hint pqc_aigis_sig_polyveck_make_hint
+#define polyveck_use_hint pqc_aigis_sig_polyveck_use_hint
+
+/* packing.c */
+#define pack_pk pqc_aigis_sig_pack_pk
+#define pack_sk pqc_aigis_sig_pack_sk
+#define pack_sig pqc_aigis_sig_pack_sig
+#define unpack_pk pqc_aigis_sig_unpack_pk
+#define unpack_sk pqc_aigis_sig_unpack_sk
+#define unpack_sig pqc_aigis_sig_unpack_sig
+#define unpack4bits pqc_aigis_sig_unpack4bits
+#define unpack6bits pqc_aigis_sig_unpack6bits
+
+/* pspm.c */
+#define emulate_cs1 pqc_aigis_sig_emulate_cs1
+#define emulate_cs2 pqc_aigis_sig_emulate_cs2
+#define emulate_ct0 pqc_aigis_sig_emulate_ct0
+#define emulate_ct1 pqc_aigis_sig_emulate_ct1
+
+/* hashkdf.c */
+#define kdf_init pqc_aigis_sig_kdf_init
+#define kdf_squeezeblocks pqc_aigis_sig_kdf_squeezeblocks
+#define kdf128 pqc_aigis_sig_kdf128
+#define kdf256 pqc_aigis_sig_kdf256
+#define kdf512 pqc_aigis_sig_kdf512
+#define hash256 pqc_aigis_sig_hash256
+#define hash512 pqc_aigis_sig_hash512
+#define hash1024 pqc_aigis_sig_hash1024
+
+/* sign.c / SIG_AlgorithmInstance.c */
+#define msig_keygen pqc_aigis_sig_msig_keygen
+#define msig_sign pqc_aigis_sig_msig_sign
+#define msig_verf pqc_aigis_sig_msig_verf
+#define sig_get_pk_len_bytes pqc_aigis_sig_pk_len
+#define sig_get_sk_len_bytes pqc_aigis_sig_sk_len
+#define sig_get_sn_len_bytes pqc_aigis_sig_sn_len
+#define sig_keygen pqc_aigis_sig_keygen
+#define sig_sign pqc_aigis_sig_sign
+#define sig_verify pqc_aigis_sig_verify
+
+#endif

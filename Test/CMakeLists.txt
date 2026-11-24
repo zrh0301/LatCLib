@@ -18,12 +18,18 @@ pqc_add_test(operator_ntt_correctness
     SOURCES ntt/test_ntt.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_ntt16_correctness
     SOURCES ntt/test_ntt16.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_ring4171_correctness
+    SOURCES poly/test_ring4171.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_hash_correctness
     SOURCES hash/test_hash.c hash/cases.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_sm3_correctness
     SOURCES hash/test_sm3.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_gf_vectors_correctness
     SOURCES field/test_gf_vectors.c LIBS ${PQC_LINK_pqc_gf})
+pqc_add_test(operator_gf31_correctness
+    SOURCES field/test_gf31.c LIBS ${PQC_LINK_pqc_gf})
+pqc_add_test(operator_mod_pow2_correctness
+    SOURCES field/test_mod_pow2.c LIBS ${PQC_LINK_pqc_gf})
 pqc_add_test(operator_ngcc_gf_correctness
     SOURCES field/test_ngcc_gf.c LIBS ${PQC_LINK_pqc_gf})
 pqc_add_test(operator_u256_correctness
@@ -36,6 +42,8 @@ pqc_add_test(operator_combinatorics_correctness
     SOURCES util/test_combinatorics.c LIBS ${PQC_LINK_pqc})
 pqc_add_test(operator_ct_correctness
     SOURCES util/test_ct.c LIBS ${PQC_LINK_pqc})
+pqc_add_test(operator_bits_correctness
+    SOURCES util/test_bits.c LIBS ${PQC_LINK_pqc})
 
 # ---- Operator performance ----
 
@@ -52,6 +60,10 @@ set(PQC_OPERATOR_PERF_CASES
     gf256_dot_256 gf256_solve_16 gf256_inv_16 gf256_matvec_16 gf256_quadratic_16
     gf_byte_upper_16 gf_byte_batch_upper_16
     gf16_composite_mul gf256_composite_mul gf16_composite_inv gf256_composite_inv
+    gf31_add gf31_mul gf31_inv
+    gf31_vector_add_64 gf31_vector_dot_64
+    gf31_t2_matrix_mul_4 gf31_t2_matvec_4
+    mod_pow2_1024 mod_pow2_round_1024
     gf16_composite_madd_256 gf256_composite_madd_256
     gf16_composite_solve_16 gf16_composite_triangular_16 gf16_composite_matvec_16
     gf16_composite_batch_16 gf256_composite_quad_16
@@ -66,6 +78,8 @@ set(PQC_OPERATOR_PERF_CASES
     poly16_encode_512 poly16_compress_512 poly16_rej_uniform12_512
     poly16_repeat_encode_512 poly16_repeat_decode_512
     ntt16_128 ntt16_blocks_512 ntt16_product_512
+    q4171_montgomery q4171_barrett q4171_ntt_512 q4171_invntt_512
+    q4171_pointwise_512 q4171_chknorm_512
     ct_equal_32 ct_select_32
     poly_add_256 poly_sub_256 poly_reduce_256 poly_ntt_256
     poly_invntt_256 poly_mul_ntt_256
@@ -279,7 +293,92 @@ if(PQC_WITH_NGCC_AIGIS)
     endforeach()
 endif()
 
-foreach(algorithm dove vdoo flextree)
+if(PQC_WITH_NGCC_AIGIS_SIG)
+    pqc_add_test(ngcc_aigis_sig_kat
+        SOURCES ngcc/test_aigis_sig_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_aigis_sig}
+        DEFINITIONS
+            PARAMS=1
+            PQC_AIGIS_SIG_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_SIG_Aigis-sig1.txt"
+        TIMEOUT 900 LABELS ngcc)
+    target_compile_options(ngcc_aigis_sig_kat PRIVATE
+        -include "${PROJECT_SOURCE_DIR}/alg/ngcc_aigis_sig/namespace.h")
+    # The strict build fixes the challenge sign schedule (sign-01-5), so its
+    # signatures intentionally differ from the published vectors.
+    if(PQC_NGCC_AIGIS_SIG_STRICT)
+        set_tests_properties(ngcc_aigis_sig_kat PROPERTIES DISABLED TRUE)
+    endif()
+
+    # The adapter zero-pads the variable-length signature and authenticates the
+    # whole fixed field, so any byte flip must be rejected.
+    pqc_add_test(signature_ngcc_aigis_sig_correctness
+        SOURCES sig/test_signature_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_aigis_sig}
+        DEFINITIONS
+            PQC_SIG_GETTER=pqc_ngcc_aigis_sig_algorithm
+            PQC_SIG_TAMPER_TRAILER=0
+        TIMEOUT 600 LABELS signatures)
+endif()
+
+if(PQC_WITH_NGCC_SCLOUD)
+    pqc_add_test(ngcc_scloud_kat
+        SOURCES ngcc/test_scloud_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_scloud}
+        DEFINITIONS
+            SCLOUDPLUS_FAMILY_AES
+            SCLOUDPLUS_TIER_REFERENCE
+            PQC_SCLOUD_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_KEM_Scloudplus-128-AES-packed10.txt"
+        TIMEOUT 900 LABELS ngcc)
+    target_compile_options(ngcc_scloud_kat PRIVATE
+        -include "${PROJECT_SOURCE_DIR}/alg/ngcc_scloud/namespace.h")
+
+    pqc_add_test(kem_ngcc_scloud_correctness
+        SOURCES kem/test_kem_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_scloud}
+        DEFINITIONS PQC_KEM_GETTER=pqc_ngcc_scloud_algorithm
+        TIMEOUT 600 LABELS kem)
+
+    add_executable(kem_ngcc_scloud_performance perf/test_kem_perf.c)
+    target_include_directories(kem_ngcc_scloud_performance
+        PRIVATE "${PROJECT_SOURCE_DIR}/Test")
+    target_link_libraries(kem_ngcc_scloud_performance
+        PRIVATE ${PQC_LINK_pqc_ngcc_scloud})
+    target_compile_definitions(kem_ngcc_scloud_performance
+        PRIVATE PQC_KEM_GETTER=pqc_ngcc_scloud_algorithm)
+    pqc_apply_compile_flags(kem_ngcc_scloud_performance)
+    pqc_apply_link_flags(kem_ngcc_scloud_performance)
+    foreach(case keypair encaps decaps)
+        pqc_add_perf_case(kem_ngcc_scloud_${case}_performance
+            kem_ngcc_scloud_performance ${case})
+    endforeach()
+endif()
+
+if(PQC_WITH_NGCC_TSUOV)
+    pqc_add_test(ngcc_tsuov_kat
+        SOURCES ngcc/test_tsuov_kat.c
+        LIBS ${PQC_LINK_pqc_ngcc_tsuov}
+        DEFINITIONS
+            PQC_TSUOV_KAT_FILE="${PROJECT_SOURCE_DIR}/Test/ngcc/vectors/KAT_SIG_TSUOV-128.txt"
+        TIMEOUT 900 LABELS ngcc)
+    target_compile_options(ngcc_tsuov_kat PRIVATE
+        -include "${PROJECT_SOURCE_DIR}/alg/ngcc_tsuov/namespace.h")
+    # Only the 128-bit submitted instance ships a KAT file.
+    if(NOT PQC_NGCC_TSUOV_PARAM STREQUAL "128")
+        set_tests_properties(ngcc_tsuov_kat PROPERTIES DISABLED TRUE)
+    endif()
+
+    # The construction hashes the salt into the target, so the whole signature
+    # field is authenticated and any byte flip must be rejected.
+    pqc_add_test(signature_ngcc_tsuov_correctness
+        SOURCES sig/test_signature_api.c
+        LIBS ${PQC_LINK_pqc_ngcc_tsuov}
+        DEFINITIONS
+            PQC_SIG_GETTER=pqc_ngcc_tsuov_algorithm
+            PQC_SIG_TAMPER_TRAILER=0
+        TIMEOUT 600 LABELS signatures)
+endif()
+
+foreach(algorithm dove vdoo flextree aigis_sig tsuov)
     string(TOUPPER "${algorithm}" algorithm_upper)
     if(PQC_WITH_NGCC_${algorithm_upper})
         set(target signature_ngcc_${algorithm}_performance)
@@ -298,11 +397,15 @@ foreach(algorithm dove vdoo flextree)
 endforeach()
 
 if(PQC_WITH_NGCC_DOVE AND PQC_WITH_NGCC_VDOO AND
-   PQC_WITH_NGCC_FLEXTREE AND PQC_WITH_NGCC_AIGIS)
+   PQC_WITH_NGCC_FLEXTREE AND PQC_WITH_NGCC_AIGIS AND
+   PQC_WITH_NGCC_AIGIS_SIG AND PQC_WITH_NGCC_SCLOUD AND
+   PQC_WITH_NGCC_TSUOV)
     set(pqc_ngcc_link_defs "")
     set(pqc_ngcc_link_libs
         ${PQC_LINK_pqc_ngcc_dove} ${PQC_LINK_pqc_ngcc_vdoo}
-        ${PQC_LINK_pqc_ngcc_flextree} ${PQC_LINK_pqc_ngcc_aigis})
+        ${PQC_LINK_pqc_ngcc_flextree} ${PQC_LINK_pqc_ngcc_aigis}
+        ${PQC_LINK_pqc_ngcc_aigis_sig} ${PQC_LINK_pqc_ngcc_scloud}
+        ${PQC_LINK_pqc_ngcc_tsuov})
     if(PQC_WITH_SNOVA_R3)
         list(APPEND pqc_ngcc_link_defs PQC_NGCC_LINK_TEST_SNOVA)
         list(APPEND pqc_ngcc_link_libs ${PQC_LINK_pqc_snova_r3})

@@ -114,7 +114,8 @@ AES_BACKEND=$(choose AUTO "AES 后端" \
 echo "==== 选择要构建的算法模块 (y/N, 回车=Y) ====" >&2
 MODULES=""
 for module in DILITHIUM KYBER SNOVA_R2 SNOVA_R3 MAYO MQOM \
-              NGCC_DOVE NGCC_VDOO NGCC_FLEXTREE NGCC_AIGIS; do
+              NGCC_DOVE NGCC_VDOO NGCC_FLEXTREE NGCC_AIGIS \
+              NGCC_AIGIS_SIG NGCC_SCLOUD NGCC_TSUOV; do
     enabled=$(ask_bool "构建 ${module}" ON)
     if [ "$enabled" = ON ]; then
         if [ -z "$MODULES" ]; then
@@ -177,6 +178,20 @@ NGCC_FLEXTREE_PARAM=$(choose 160f "NGCC FlexTree 参数集" \
 NGCC_AIGIS_PARAM=$(choose I "NGCC Aigis-Enc+ 参数集" \
     "I:Aigis-Enc+-I (默认, 官方提交集)")
 
+NGCC_AIGIS_SIG_PARAM=$(choose I "NGCC Aigis-Sig+ 参数集" \
+    "I:Aigis-Sig+-I (默认, 官方提交集)")
+
+NGCC_AIGIS_SIG_STRICT=$(ask_bool \
+    "Aigis-Sig+ 每个挑战系数使用独立符号位 (sign-01-5 加固; 签名改变, 官方 KAT 不再适用)" OFF)
+
+NGCC_SCLOUD_PARAM=$(choose 128 "NGCC Scloud+ KEM 安全强度" \
+    "128:Scloud+-128 (默认, AES 族)")
+
+NGCC_TSUOV_PARAM=$(choose 128 "NGCC TSUOV 签名安全强度" \
+    "128:TSUOV-128 (默认, 官方 KAT)" \
+    "256:TSUOV-256" \
+    "512:TSUOV-512")
+
 if [ "$SANITIZERS" = ON ] && [ "$BUILD_TYPE" != Debug ]; then
     echo
     echo "提示: sanitizer 通常配合 Debug 构建; Release 下结果不代表常规性能。" >&2
@@ -202,7 +217,11 @@ CMAKE_ARGS=(-S . -B "$BUILD_DIR"
              -DPQC_NGCC_DOVE_BIND_SALT="$NGCC_DOVE_BIND_SALT"
              -DPQC_NGCC_VDOO_PARAM="$NGCC_VDOO_PARAM"
              -DPQC_NGCC_FLEXTREE_PARAM="$NGCC_FLEXTREE_PARAM"
-             -DPQC_NGCC_AIGIS_PARAM="$NGCC_AIGIS_PARAM")
+             -DPQC_NGCC_AIGIS_PARAM="$NGCC_AIGIS_PARAM"
+             -DPQC_NGCC_AIGIS_SIG_PARAM="$NGCC_AIGIS_SIG_PARAM"
+             -DPQC_NGCC_AIGIS_SIG_STRICT="$NGCC_AIGIS_SIG_STRICT"
+             -DPQC_NGCC_SCLOUD_PARAM="$NGCC_SCLOUD_PARAM"
+             -DPQC_NGCC_TSUOV_PARAM="$NGCC_TSUOV_PARAM")
 
 echo
 echo "==================== 选择汇总 ===================="
@@ -225,6 +244,9 @@ printf 'NGCC DOVE    : %s (绑定盐 %s)\n' "$NGCC_DOVE_PARAM" "$NGCC_DOVE_BIND_
 printf 'NGCC VDOO    : %s\n' "$NGCC_VDOO_PARAM"
 printf 'NGCC FlexTree: %s\n' "$NGCC_FLEXTREE_PARAM"
 printf 'NGCC Aigis   : %s\n' "$NGCC_AIGIS_PARAM"
+printf 'NGCC AigisSig: %s (严格 %s)\n' "$NGCC_AIGIS_SIG_PARAM" "$NGCC_AIGIS_SIG_STRICT"
+printf 'NGCC Scloud  : %s\n' "$NGCC_SCLOUD_PARAM"
+printf 'NGCC TSUOV   : %s\n' "$NGCC_TSUOV_PARAM"
 echo "=================================================="
 echo "执行: cmake ${CMAKE_ARGS[*]}"
 echo

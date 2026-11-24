@@ -55,6 +55,8 @@ int main(void)
         pqc_ngcc_dove_algorithm(),
         pqc_ngcc_vdoo_algorithm(),
         pqc_ngcc_flextree_algorithm(),
+        pqc_ngcc_aigis_sig_algorithm(),
+        pqc_ngcc_tsuov_algorithm(),
 #ifdef PQC_NGCC_LINK_TEST_SNOVA
         pqc_snova_r3_algorithm(),
 #endif
@@ -62,5 +64,6 @@ int main(void)
     for (size_t i = 0; i < sizeof(algorithms) / sizeof(*algorithms); ++i)
         if (signature_roundtrip(algorithms[i]))
             return 1;
-    return kem_roundtrip(pqc_ngcc_aigis_algorithm());
+    return kem_roundtrip(pqc_ngcc_aigis_algorithm()) ||
+           kem_roundtrip(pqc_ngcc_scloud_algorithm());
 }

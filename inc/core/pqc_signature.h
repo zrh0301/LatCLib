@@ -21,4 +21,6 @@ const pqc_signature *pqc_mqom_algorithm(void);
 const pqc_signature *pqc_ngcc_dove_algorithm(void);
 const pqc_signature *pqc_ngcc_vdoo_algorithm(void);
 const pqc_signature *pqc_ngcc_flextree_algorithm(void);
+const pqc_signature *pqc_ngcc_aigis_sig_algorithm(void);
+const pqc_signature *pqc_ngcc_tsuov_algorithm(void);
 #endif
